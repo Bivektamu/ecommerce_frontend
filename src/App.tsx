@@ -4,30 +4,30 @@ import Products from "./pages/admin/Products"
 import SignIn from "./pages/admin/SignIn"
 import { Provider } from "react-redux"
 import { AdminStore } from "./store"
+import Sidebar from "./components/ui/Sidebar"
+import PageNotFound from "./pages/admin/PageNotFound"
 
 function App() {
 
   return (
     <>
-      <Router>
-
-      </Router>
       <Provider store={AdminStore}>
-
         <Router>
           <Routes>
+            <Route path="/admin" element={<>
+              <Sidebar />
+              <Outlet />
+            </>}>
+              <Route path="" element={<DashBoard />} />
+              <Route path="products" element={<Products />} />
+            </Route>
 
             <Route path="/admin/login" element={<SignIn />} />
-
-            <Route path='/admin' element={<Outlet />}>
-            </Route>
-            <Route path="/admin/dashboard" element={<DashBoard />} />
-            <Route path="/admin/products" element={<Products />} />
+            <Route path="*" element={<PageNotFound />} />
 
           </Routes>
-
         </Router>
-      </Provider>
+      </Provider >
 
     </>
   )
