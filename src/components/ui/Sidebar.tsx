@@ -20,11 +20,11 @@ const Sidebar = () => {
         </svg>
       </div>
       <nav className='flex flex-col gap-y-4'>
-        <NavLink className={`text-sm pt-2`} to="/admin/">Dashboard</NavLink>
+        <NavLink className={({isActive}) => (isActive? 'font-semibold': '')+` text-sm pt-2`} to="/admin/dashboard">Dashboard</NavLink>
         <NavLink className={({isActive}) => (isActive? 'font-semibold': '')+` text-sm pt-2`} to="/admin/products">Products</NavLink>
-        <NavLink className={`text-sm pt-2`} to="/admin/orders">Orders</NavLink>
-        <NavLink className={`text-sm pt-2`} to="/admin/customers">Customers</NavLink>
-        <NavLink className={`text-sm pt-2`} to="/admin/reviews">Reviews</NavLink>
+        <NavLink className={({isActive}) => (isActive? 'font-semibold': '')+` text-sm pt-2`} to="/admin/orders">Orders</NavLink>
+        <NavLink className={({isActive}) => (isActive? 'font-semibold': '')+` text-sm pt-2`} to="/admin/customers">Customers</NavLink>
+        <NavLink className={({isActive}) => (isActive? 'font-semibold': '')+` text-sm pt-2`} to="/admin/reviews">Reviews</NavLink>
       </nav>
     </section>
   )

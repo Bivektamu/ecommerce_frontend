@@ -6,10 +6,8 @@ type Props = {}
 
 const DashBoard = (props: Props) => {
   return (
-
-    <>
-        <section className='w-3/4'>DashBoard</section>
-    </>
+    <section className="w-full pl-[340px] pb-12 pr-12">
+      DashBoard</section>
   )
 }
 
