@@ -8,14 +8,12 @@ const BreadCrumbs = () => {
     const mactches = location.pathname.split('/').filter(str => str !== '')
     const crumb = mactches.map((url, index) => {
         links += '/' + url
-        console.log(mactches.length)
-
         return (
-            <>
-                <Link key={index} to={links} className={`text-sm  capitalize ${mactches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>{url}</Link>
+            <div key={index}>
+                <Link  to={links} className={`text-sm  capitalize ${mactches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>{url}</Link>
                 {mactches.length !== index + 1 ? (<span className="text-sm font-medium text-slate-500"> &gt;</span>) : ''}
 
-            </>)
+            </div>)
     }
     )
 

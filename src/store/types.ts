@@ -33,7 +33,7 @@ export enum ProductColor {
     RED = "RED",
     GRAY = "GRAY",
     WHITE = "WHITE",
-    ORANGE = "ORANGE"
+    AMBER = "AMBER"
 }
 
 export enum ProductSize {
@@ -43,16 +43,16 @@ export enum ProductSize {
     EXTRA_LARGE = "EXTRA_LARGE",
 }
 
-export interface ProdcutImage {
-    color: ProductColor,
-    imgSrc: String
-
+export interface ProductImage {
+    id:string,
+    img: File
 }
+
 
 export interface Product {
     id: String,
     userId: String,
-    imgs: ProdcutImage[],
+    imgs: ProductImage[],
     title: string,
     slug: string,
     details: string,
