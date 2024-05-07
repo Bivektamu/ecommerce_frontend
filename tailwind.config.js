@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        'black': '#0E1422'
+        'black': '#0E1422',
+        'regal-white': 'rgb(226, 226, 226)'
       },
       gridTemplateColumns: {
         'table': '1fr 3fr 2fr 2fr 2fr 3fr 1fr'

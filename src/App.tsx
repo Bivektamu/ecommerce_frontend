@@ -1,4 +1,4 @@
-import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom"
+import { Link, Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import DashBoard from "./pages/admin/DashBoard"
 import Products from "./pages/admin/Products"
 import SignIn from "./pages/admin/SignIn"
@@ -17,13 +17,23 @@ function App() {
         <Router>
           <Routes>
             <Route path="/admin" element={<Private />}>
-              <Route path="dashboard" element={<DashBoard />} />
-              <Route path="products" element={<Products />} />
-              <Route path="products/add" element={<AddProduct />} />
+              <Route
+                path="dashboard" element={<DashBoard />}
+              />
+              <Route
+                path="products"
+                element={<Products />} />
+              <Route
+                path="products/add"
+                element={<AddProduct />} />
             </Route>
 
-            <Route path="/admin/login" element={<SignIn />} />
-            <Route path="*" element={<PageNotFound />} />
+            <Route
+              path="/admin/login"
+              element={<SignIn />} />
+            <Route
+              path="*"
+              element={<PageNotFound />} />
 
           </Routes>
         </Router>

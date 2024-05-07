@@ -4,7 +4,7 @@ import Logo from './Logo'
 
 const Sidebar = () => {
   return (
-    <section className='w-[280px] bg-white h-screen px-6 fixed left-0 top-0'>
+    <section className='w-[280px] bg-white h-screen px-6 fixed left-0 top-0 pt-8'>
       <div className="h-[72px] w-full flex items-center justify-center mb-12">
         <svg id="logo" className='' width="116" height="40" viewBox="0 0 116 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clipPath="url(#clip0_1524_896)">
