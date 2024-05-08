@@ -32,7 +32,7 @@ const initial: Form = {
 }
 
 
-const AddProduct = () => {
+const EditProduct = () => {
 
     const [formData, setFormData] = useState<typeof initial>(initial)
     const [formErrors, setFormErrors] = useState<FormError>({})
@@ -231,7 +231,7 @@ const AddProduct = () => {
 
         <div className='bg-white rounded-lg'>
             <div className="border-t-[1px] px-8 py-6 border-b-[1px]">
-                <span className='font-medium'>Add Product</span>
+                <span className='font-medium'>Edit Product</span>
             </div>
             <div className=' px-8 py-12  max-w-[800px]'>
 
@@ -376,7 +376,7 @@ const AddProduct = () => {
 
                     </fieldset>
 
-                    <button type="submit" className='w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer'>Add Product</button>
+                    <button type="submit" className='w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer'>Edit Product</button>
 
                 </form>
             </div>
@@ -385,4 +385,4 @@ const AddProduct = () => {
     )
 }
 
-export default AddProduct
+export default EditProduct

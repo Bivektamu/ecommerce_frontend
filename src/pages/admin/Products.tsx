@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Close from '../../components/ui/Close'
 
 type Props = {}
 
@@ -27,7 +28,7 @@ const Products = (props: Props) => {
 
 
 
-      <div className='grid grid-cols-table px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
+      <div className='grid grid-cols-table gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
         <button>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 3.3087L3.37549 1.00035M3.37549 1.00035L5.75246 3.30726M3.37549 1.00035L3.37935 13M13 10.692L10.6238 12.9997M10.6238 12.9997L8.24754 10.692M10.6238 12.9997V1" stroke="#474B57" strokeWidth="1.14286" strokeLinecap="round" strokeLinejoin="round" />
@@ -52,6 +53,11 @@ const Products = (props: Props) => {
           Categories
         </span>
 
+        
+        <span className='text-sm text-slate-500 font-medium'>
+          Featured
+        </span>
+
         <span className='text-sm text-slate-500 font-medium'>
           Action
         </span>
@@ -62,10 +68,10 @@ const Products = (props: Props) => {
       <div className="w-full">
 
         <div className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
-          <Link to='/prodcts/asdf23'>
+          <Link to='/admin/products/asdf23'>
             <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
           </Link>
-          <Link to='/prodcts/asdf23' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
+          <Link to='/admin/products/asdf23' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
           <span className='text-sm text-slate-500'>
             WVT002
           </span>
@@ -82,10 +88,14 @@ const Products = (props: Props) => {
             Hoodies
           </span>
 
-          <div className='text-lg text-slate-500 font-semibold relative'>
+          <span className='text-sm text-slate-500 flex items-center'>
+            <Close classN='w-4 h-4' />
+          </span>
+
+          <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
             <button onClick={() => setActionId('id1')} >...</button>
             {actionId === 'id1' &&
-              <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[100px]' onMouseLeave={() => setActionId('')}>
+              <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[55px] translate-y-[75px]' onMouseLeave={() => setActionId('')}>
                 <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pt-4'>View</button>
                 <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2'>Edit</button>
                 <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pb-4'>Delete</button>
@@ -96,41 +106,7 @@ const Products = (props: Props) => {
 
         </div>
 
-        <div className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
-          <Link to='/prodcts/asdf23'>
-            <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
-          </Link>
-          <Link to='/prodcts/asdf23' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
-          <span className='text-sm text-slate-500'>
-            WVT002
-          </span>
-
-          <span className='text-sm text-slate-500'>
-            $67.00
-          </span>
-
-          <span className='text-sm text-slate-500'>
-            In Stock
-          </span>
-
-          <span className='text-sm text-slate-500'>
-            Hoodies
-          </span>
-
-          <div className='text-lg text-slate-500 font-semibold relative'>
-            <button onClick={() => setActionId('id2')} >...</button>
-            {actionId === 'id2' &&
-              <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[100px]' onMouseLeave={() => setActionId('')}>
-                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pt-4'>View</button>
-                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2'>Edit</button>
-                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pb-4'>Delete</button>
-              </div>
-            }
-
-          </div>
-
-        </div>
-
+      
       </div>
 
     </div>

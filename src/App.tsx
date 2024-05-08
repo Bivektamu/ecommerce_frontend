@@ -8,6 +8,7 @@ import Sidebar from "./components/ui/Sidebar"
 import PageNotFound from "./pages/admin/PageNotFound"
 import Private from "./pages/admin/Private"
 import AddProduct from "./components/AddProduct"
+import EditProduct from "./components/EditProduct"
 
 function App() {
 
@@ -26,6 +27,10 @@ function App() {
               <Route
                 path="products/add"
                 element={<AddProduct />} />
+
+              <Route
+                path="products/:id"
+                element={<EditProduct />} />
             </Route>
 
             <Route

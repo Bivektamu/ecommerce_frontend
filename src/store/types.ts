@@ -55,7 +55,7 @@ export interface Product {
     imgs: ProductImage[],
     title: string,
     slug: string,
-    details: string,
+    description: string,
     colors: ProductColor[],
     sizes: ProductSize[],
     price: number,
@@ -64,4 +64,14 @@ export interface Product {
     stockStatus: boolean,
     category: string[],
     featured: boolean
+}
+
+
+export interface ValidateSchema<T> {
+    name: string,
+    type: string,
+    value: T
+}
+export interface FormError {
+    [key:string]: string
 }
