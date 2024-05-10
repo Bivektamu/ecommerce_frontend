@@ -45,13 +45,12 @@ export enum ProductSize {
 
 export interface ProductImage {
     id:string,
-    img: File
+    img: File | string
 }
 
 
 export interface Product {
     id: String,
-    userId: String,
     imgs: ProductImage[],
     title: string,
     slug: string,
