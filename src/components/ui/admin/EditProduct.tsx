@@ -1,12 +1,12 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { Product, ProductColor, ProductSize, ProductImage, ValidateSchema, FormError } from '../store/types'
-import validateForm from '../utils/validate';
-import Close from './ui/Close';
+import { Product, ProductColor, ProductSize, ProductImage, ValidateSchema, FormError } from '../../../store/types'
+import validateForm from '../../../utils/validate';
+import Close from '../Close';
 import { useParams } from 'react-router-dom';
 
-import data from '../data'
-import PageNotFound from '../pages/admin/PageNotFound';
+import data from '../../../data'
+import PageNotFound from '../../../pages/admin/PageNotFound';
 
 interface Form extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
     quantity: number | null,
@@ -41,7 +41,7 @@ const EditProduct = () => {
     const params = useParams()
     const { products } = data
 
-    const product = products.filter(pro => pro.id === params.id)
+    const product = products.filter(pro => pro.slug === params.slug)
 
 
     const [formData, setFormData] = useState<Form>(initial)

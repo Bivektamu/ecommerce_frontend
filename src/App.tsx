@@ -7,8 +7,9 @@ import { AdminStore } from "./store"
 import Sidebar from "./components/ui/Sidebar"
 import PageNotFound from "./pages/admin/PageNotFound"
 import Private from "./pages/admin/Private"
-import AddProduct from "./components/AddProduct"
-import EditProduct from "./components/EditProduct"
+import AddProduct from "./components/ui/admin/AddProduct"
+import EditProduct from "./components/ui/admin/EditProduct"
+import Orders from "./pages/admin/Orders"
 
 function App() {
 
@@ -29,8 +30,12 @@ function App() {
                 element={<AddProduct />} />
 
               <Route
-                path="products/:id"
+                path="products/:slug"
                 element={<EditProduct />} />
+
+            <Route
+                path="orders/"
+                element={<Orders />} />
             </Route>
 
             <Route

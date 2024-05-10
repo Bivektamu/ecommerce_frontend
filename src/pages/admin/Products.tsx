@@ -68,10 +68,10 @@ const Products = (props: Props) => {
       <div className="w-full">
 
         <div className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
-          <Link to='/admin/products/asdf123'>
+          <Link to='/admin/products/sleek-and-cozy-black'>
             <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
           </Link>
-          <Link to='/admin/products/asdf123' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
+          <Link to='/admin/products/sleek-and-cozy-black' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
           <span className='text-sm text-slate-500'>
             WVT002
           </span>

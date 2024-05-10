@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { Product, ProductColor, ProductSize, ProductImage, ValidateSchema, FormError } from '../store/types'
-import validateForm from '../utils/validate';
-import Close from './ui/Close';
+import { Product, ProductColor, ProductSize, ProductImage, ValidateSchema, FormError } from '../../../store/types'
+import validateForm from '../../../utils/validate';
+import Close from '../Close';
 
 interface Form extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
     quantity: number | null,

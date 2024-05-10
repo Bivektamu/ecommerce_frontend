@@ -1,7 +1,8 @@
-import { Product, ProductColor, ProductSize } from './store/types'
+import { Order, Order_Status, Product, ProductColor, ProductSize } from './store/types'
 
 type Data = {
-    products: Product[]
+    products: Product[],
+    orders: Order[]
 }
 
 const data:Data = 
@@ -28,6 +29,22 @@ const data:Data =
                 }
             ]
     
+        },
+    ],
+    orders: [
+        {
+            id: 'order1',
+            total: 223,
+            customerId: 'user1',
+            timeStamp: new Date,
+            products: [
+                {
+                    productId: 'prodcut1',
+                    quantity: 3
+                },
+            ],
+            status: Order_Status.COMPLETED
+
         },
     ]
 }

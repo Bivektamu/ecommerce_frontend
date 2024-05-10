@@ -44,13 +44,13 @@ export enum ProductSize {
 }
 
 export interface ProductImage {
-    id:string,
+    id: string,
     img: File | string
 }
 
 
 export interface Product {
-    id: String,
+    id: string,
     imgs: ProductImage[],
     title: string,
     slug: string,
@@ -65,6 +65,10 @@ export interface Product {
     featured: boolean
 }
 
+export interface Product_Order {
+    productId: string,
+    quantity: number
+}
 
 export interface ValidateSchema<T> {
     name: string,
@@ -72,5 +76,39 @@ export interface ValidateSchema<T> {
     value: T
 }
 export interface FormError {
-    [key:string]: string
+    [key: string]: string
+}
+
+export interface Customer {
+    id:string
+}
+
+export enum Order_Status {
+    PENDING = 'PENDING',
+    COMPLETED = 'COMPLETED',
+    PROCESSING = 'PROCESSING',
+    CANCELLED = 'CANCELLED',
+    FAILED = 'FAILED',
+    SHIPPED = 'SHIPPED',
+    REFUNDED = 'REFUNDED',
+}
+
+export interface Order {
+    id: string,
+    total: number,
+    customerId: string,
+    timeStamp: Date,
+    products: Product_Order[],
+    status: Order_Status
+}
+
+export enum Toast_Vairant {
+    DANGER = 'DANGER',
+    SUCCESS = 'SUCCESS',
+    INFO = 'INFO',
+}
+export type Toast =  {
+    id: String,
+    variant: Toast_Vairant,
+    msg:String
 }

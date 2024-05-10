@@ -10,7 +10,7 @@ const BreadCrumbs = () => {
         links += '/' + url
         return (
             <div key={index}>
-                <Link  to={links} className={`text-sm  capitalize ${mactches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>{url}</Link>
+                <Link  to={links} className={`text-sm  capitalize ${mactches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>{url.replaceAll('-', ' ')}</Link>
                 {mactches.length !== index + 1 ? (<span className="text-sm font-medium text-slate-500"> &gt;</span>) : ''}
 
             </div>)
