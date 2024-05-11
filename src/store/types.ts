@@ -1,8 +1,8 @@
-export interface User {
+export interface Customer {
+    id:string,
     firstName: string,
     lastName: string,
     email: string,
-    password: string
 }
 
 export interface FormData {
@@ -25,10 +25,11 @@ export interface Auth {
 }
 
 export interface RootState {
-    auth: Auth
+    auth: Auth,
+    toasts:ToastSlice
 }
 
-export enum ProductColor {
+export enum Colour {
     BLACK = "BLACK",
     RED = "RED",
     GRAY = "GRAY",
@@ -36,11 +37,11 @@ export enum ProductColor {
     AMBER = "AMBER"
 }
 
-export enum ProductSize {
-    SMALL = "SMALL",
-    MEDIUM = "MEDIUM",
-    LARGE = "LARGE",
-    EXTRA_LARGE = "EXTRA_LARGE",
+export enum Size {
+    SMALL = "S",
+    MEDIUM = "M",
+    LARGE = "L",
+    EXTRA_LARGE = "XL",
 }
 
 export interface ProductImage {
@@ -55,8 +56,8 @@ export interface Product {
     title: string,
     slug: string,
     description: string,
-    colors: ProductColor[],
-    sizes: ProductSize[],
+    colors: Colour[],
+    sizes: Size[],
     price: number,
     quantity: number,
     sku: string,
@@ -65,9 +66,17 @@ export interface Product {
     featured: boolean
 }
 
-export interface Product_Order {
+export interface ProductInput extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
+    quantity: number | null,
+    price: number | null,
+    stockStatus: boolean | null,
+}
+
+export interface OrderedProduct {
     productId: string,
-    quantity: number
+    color:Colour,
+    quantity: number,
+    size: Size
 }
 
 export interface ValidateSchema<T> {
@@ -98,7 +107,7 @@ export interface Order {
     total: number,
     customerId: string,
     timeStamp: Date,
-    products: Product_Order[],
+    products: OrderedProduct[],
     status: Order_Status
 }
 
@@ -111,4 +120,8 @@ export type Toast =  {
     id: String,
     variant: Toast_Vairant,
     msg:String
+}
+
+export type ToastSlice =  {
+    toasts: Toast[]
 }

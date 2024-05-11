@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Auth, Status, RootState } from "../types";
-import { useSelector } from "react-redux";
 
 const initialState:Auth = {
     isLoggedIn:false,

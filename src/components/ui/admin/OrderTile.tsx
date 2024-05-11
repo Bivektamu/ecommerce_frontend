@@ -4,32 +4,38 @@ import { v4 as uuidv4 } from 'uuid';
 import { Order, Order_Status, Toast, Toast_Vairant } from '../../../store/types'
 import getMonth from '../../../utils/getMonth'
 import Modal from '../Modal'
+import OrderDetails from './OrderDetails';
+import { useDispatch } from 'react-redux';
+import { addToast } from '../../../store/slices/toastSlice';
 
 type Props = {
     order: Order
 }
 
 const OrderTile = ({ order }: Props) => {
+    const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
     const [product, setProduct] = useState({})
     const [newStatus, setNewStatus] = useState<Order_Status | null>(null)
     const [modalContent, setModalContent] = useState<ReactElement | null>(null)
     const [showModal, setShowModal] = useState(false)
+    const [showToast, setShowToast] = useState(false)
 
     const saveHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
-        console.log(id);
-        if(!newStatus) {
-            const newToast:Toast = {
+        if (!newStatus) {
+            const newToast: Toast = {
                 id: uuidv4(),
-                variant:Toast_Vairant.DANGER,
-                msg:'Please select a status'
+                variant: Toast_Vairant.DANGER,
+                msg: 'Please select a status'
             }
+            dispatch(addToast(newToast))
+
         }
     }
 
     useEffect(() => {
-        console.log(newStatus);
+        // console.log(newStatus);
     }, [newStatus])
 
     const statusHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
@@ -54,6 +60,14 @@ const OrderTile = ({ order }: Props) => {
         setModalContent({ ...render })
     }
 
+    
+    const detailsHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.stopPropagation();
+
+        setModalContent(<OrderDetails order={order} />)
+    }
+    
+
     const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         setShowModal(false)
@@ -62,7 +76,6 @@ const OrderTile = ({ order }: Props) => {
 
     useEffect(() => {
         if (modalContent) {
-            console.log(modalContent);
             setShowModal(true)
         }
 
@@ -90,7 +103,7 @@ const OrderTile = ({ order }: Props) => {
                 {order.status}
             </span>
 
-            <button className='text-sm text-slate-500 border-[1px] p-2  border-slate-600'>
+            <button onClick={e=>detailsHandler(e, order.id)} className='text-sm text-slate-600 border-[1px] p-2  border-slate-600 font-medium w-[130px] rounded'>
                 View Details
             </button>
 
@@ -106,7 +119,6 @@ const OrderTile = ({ order }: Props) => {
                         <button onClick={e => statusHandler(e, order.id)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>Change Status</button>
                     </div>
                 }
-
             </div>
 
             {

@@ -1,10 +1,9 @@
-import { Link, Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom"
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import DashBoard from "./pages/admin/DashBoard"
 import Products from "./pages/admin/Products"
 import SignIn from "./pages/admin/SignIn"
-import { Provider } from "react-redux"
+import { Provider, useSelector } from "react-redux"
 import { AdminStore } from "./store"
-import Sidebar from "./components/ui/Sidebar"
 import PageNotFound from "./pages/admin/PageNotFound"
 import Private from "./pages/admin/Private"
 import AddProduct from "./components/ui/admin/AddProduct"
@@ -14,8 +13,11 @@ import Orders from "./pages/admin/Orders"
 function App() {
 
   return (
+
     <>
       <Provider store={AdminStore}>
+        
+
         <Router>
           <Routes>
             <Route path="/admin" element={<Private />}>
@@ -33,7 +35,7 @@ function App() {
                 path="products/:slug"
                 element={<EditProduct />} />
 
-            <Route
+              <Route
                 path="orders/"
                 element={<Orders />} />
             </Route>

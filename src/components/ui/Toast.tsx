@@ -1,29 +1,23 @@
-import React, { Children, MouseEvent, ReactElement } from 'react'
-import { createPortal } from 'react-dom'
 import Close from './Close'
 import { Toast, Toast_Vairant } from '../../store/types'
+import { useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { removeToast } from '../../store/slices/toastSlice'
+import ToastCard from './ToastCard'
 
 type Props = {
     toasts: Toast[]
 }
 
-const Toast = ({toasts}: Props) => {
-    const portalRoot = document.getElementById('root')
+const ToastComponent = ({ toasts }: Props) => {
 
-    if (!portalRoot) return null
-
-    return createPortal(
-        <section className='bg-green-600 fixed top-0 left-0 bg-black/30 z-10 flex items-center justify-center'>
-                {
-                    toasts.map(toast=>
-                        <div key={toast.id} className={`text-${toast.variant === Toast_Vairant.DANGER?'red':toast.variant === Toast_Vairant.SUCCESS?'green':'black'}`}>
-                            {toast.msg}
-                        </div>
-                    )
-                    
-                }
-        </section>, portalRoot
+    return (
+        <section className=' fixed top-10 right-0 bg-black/30 z-10 flex flex-col gap-4 items-center justify-center z-20'>
+            {
+                toasts.map(toast => <ToastCard key={toast.id as string} toast={toast} />)
+            }
+        </section>
     )
 }
 
-export default Toast
+export default ToastComponent

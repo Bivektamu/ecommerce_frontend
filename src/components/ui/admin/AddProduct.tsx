@@ -1,21 +1,17 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { Product, ProductColor, ProductSize, ProductImage, ValidateSchema, FormError } from '../../../store/types'
+import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError } from '../../../store/types'
 import validateForm from '../../../utils/validate';
 import Close from '../Close';
 
-interface Form extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
-    quantity: number | null,
-    price: number | null,
-    stockStatus: boolean | null
-}
+
 
 interface PrviewImage {
     id: string,
     src: string
 }
 
-const initial: Form = {
+const initial: ProductInput = {
     title: '',
     id: 'pro123',
     sku: '',
@@ -109,10 +105,9 @@ const AddProduct = () => {
         }
         else if (e.target.name === 'title') {
             let newSlug: string = val as string
-            newSlug = newSlug.replaceAll(' ', '-')
+            newSlug = newSlug.replace(/\s+/g, "-");
             updateData.slug = newSlug.toLowerCase()
         }
-
 
         setFormData(prev => ({
             ...prev,
@@ -215,7 +210,7 @@ const AddProduct = () => {
                         }
                     }
                 };
-                reader.readAsDataURL(productImg.img);
+                reader.readAsDataURL(productImg.img as File);
             })
         }
         else {
@@ -297,25 +292,25 @@ const AddProduct = () => {
                     <fieldset className=''>
                         <legend className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>colors</legend>
                         <div className="flex gap-4 items-center">
-                            <input type="checkbox" id="black" name="colors" onChange={changeHandler} value={ProductColor.BLACK} className='hidden appearance-none' />
-                            <label htmlFor="black" className={`w-8 h-8 rounded-full bg-black  cursor-pointer relative ${colors.indexOf(ProductColor.BLACK) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-slate-800 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}  `}></label>
+                            <input type="checkbox" id="black" name="colors" onChange={changeHandler} value={Colour.BLACK} className='hidden appearance-none' />
+                            <label htmlFor="black" className={`w-8 h-8 rounded-full bg-black  cursor-pointer relative ${colors.indexOf(Colour.BLACK) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-slate-800 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}  `}></label>
 
-                            <label htmlFor="red" className={`w-8 h-8 rounded-full bg-red-600  cursor-pointer relative ${colors.indexOf(ProductColor.RED) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-red-600 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
+                            <label htmlFor="red" className={`w-8 h-8 rounded-full bg-red-600  cursor-pointer relative ${colors.indexOf(Colour.RED) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-red-600 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
 
-                            <input type="checkbox" id="red" name="colors" onChange={changeHandler} value={ProductColor.RED} className='appearance-none hidden ' />
+                            <input type="checkbox" id="red" name="colors" onChange={changeHandler} value={Colour.RED} className='appearance-none hidden ' />
 
-                            <label htmlFor="gray" className={`w-8 h-8 rounded-full bg-gray-600  cursor-pointer relative ${colors.indexOf(ProductColor.GRAY) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-gray-600 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
+                            <label htmlFor="gray" className={`w-8 h-8 rounded-full bg-gray-600  cursor-pointer relative ${colors.indexOf(Colour.GRAY) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-gray-600 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
 
-                            <input type="checkbox" id="gray" name="colors" onChange={changeHandler} value={ProductColor.GRAY} className='appearance-none hidden ' />
+                            <input type="checkbox" id="gray" name="colors" onChange={changeHandler} value={Colour.GRAY} className='appearance-none hidden ' />
 
-                            <label htmlFor="white" className={`w-8 h-8 rounded-full bg-regal-white  cursor-pointer relative ${colors.indexOf(ProductColor.WHITE) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-regal-white after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
+                            <label htmlFor="white" className={`w-8 h-8 rounded-full bg-regal-white  cursor-pointer relative ${colors.indexOf(Colour.WHITE) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-regal-white after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
 
-                            <input type="checkbox" id="white" name="colors" onChange={changeHandler} value={ProductColor.WHITE} className='appearance-none hidden ' />
+                            <input type="checkbox" id="white" name="colors" onChange={changeHandler} value={Colour.WHITE} className='appearance-none hidden ' />
 
 
-                            <label htmlFor="amber" className={`w-8 h-8 rounded-full bg-amber-300  cursor-pointer relative ${colors.indexOf(ProductColor.AMBER) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-amber-300 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
+                            <label htmlFor="amber" className={`w-8 h-8 rounded-full bg-amber-300  cursor-pointer relative ${colors.indexOf(Colour.AMBER) > -1 ? 'after:content-[""] after:w-10 after:h-10 after:rounded-full after:border-2 after:border-amber-300 after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto after:-translate-x-1' : ''}`}></label>
 
-                            <input type="checkbox" id="amber" name="colors" onChange={changeHandler} value={ProductColor.AMBER} className='appearance-none hidden ' />
+                            <input type="checkbox" id="amber" name="colors" onChange={changeHandler} value={Colour.AMBER} className='appearance-none hidden ' />
                         </div>
                         {formErrors.colors && <span className='text-red-500 text-xs'>{formErrors.colors}</span>}
 
@@ -339,19 +334,19 @@ const AddProduct = () => {
 
                         <div className="flex gap-4">
 
-                            <input type="checkbox" onChange={changeHandler} name="sizes" id="small" value={ProductSize.SMALL} className='appearance-none hidden' />
-                            <label htmlFor="small" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(ProductSize.SMALL) > -1 ? 'bg-slate-200' : ''}`}>S</label>
+                            <input type="checkbox" onChange={changeHandler} name="sizes" id="small" value={Size.SMALL} className='appearance-none hidden' />
+                            <label htmlFor="small" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(Size.SMALL) > -1 ? 'bg-slate-200' : ''}`}>S</label>
 
 
-                            <input type="checkbox" onChange={changeHandler} name="sizes" id="medium" value={ProductSize.MEDIUM} className='appearance-none hidden' />
-                            <label htmlFor="medium" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(ProductSize.MEDIUM) > -1 ? 'bg-slate-200' : ''}`}>M</label>
+                            <input type="checkbox" onChange={changeHandler} name="sizes" id="medium" value={Size.MEDIUM} className='appearance-none hidden' />
+                            <label htmlFor="medium" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(Size.MEDIUM) > -1 ? 'bg-slate-200' : ''}`}>M</label>
 
 
-                            <input type="checkbox" onChange={changeHandler} name="sizes" id="large" value={ProductSize.LARGE} className='appearance-none hidden' />
-                            <label htmlFor="large" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(ProductSize.LARGE) > -1 ? 'bg-slate-200' : ''}`}>L</label>
+                            <input type="checkbox" onChange={changeHandler} name="sizes" id="large" value={Size.LARGE} className='appearance-none hidden' />
+                            <label htmlFor="large" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(Size.LARGE) > -1 ? 'bg-slate-200' : ''}`}>L</label>
 
-                            <input type="checkbox" onChange={changeHandler} name="sizes" id="extraLarge" value={ProductSize.EXTRA_LARGE} className='appearance-none hidden' />
-                            <label htmlFor="extraLarge" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(ProductSize.EXTRA_LARGE) > -1 ? 'bg-slate-200' : ''}`}>XL</label>
+                            <input type="checkbox" onChange={changeHandler} name="sizes" id="extraLarge" value={Size.EXTRA_LARGE} className='appearance-none hidden' />
+                            <label htmlFor="extraLarge" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${sizes.indexOf(Size.EXTRA_LARGE) > -1 ? 'bg-slate-200' : ''}`}>XL</label>
                         </div>
                         {formErrors.sizes && <span className='text-red-500 text-xs'>{formErrors.sizes}</span>}
 

@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { auth } from '../../store/slices/adminAuth'
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
+import { toasts } from "../../store/slices/toastSlice"
+import ToastComponent from "../../components/ui/Toast"
+
 type Props = {}
 
 const Private = (props: Props) => {
+
+    const allToasts = useSelector(toasts)
+
     const useAuth = useSelector(auth)
     // const { isLoggedIn } = useAuth
     const isLoggedIn = true
@@ -24,6 +30,10 @@ const Private = (props: Props) => {
     }
     return (
         <>
+            {
+                allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
+            }
+
             <Sidebar />
             <section className="w-full pl-[340px] pb-12 pr-12 pt-8">
                 <div className="h-[72px] flex items-center mb-12 justify-between">
