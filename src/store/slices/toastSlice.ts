@@ -14,8 +14,9 @@ const toastSlice = createSlice({
             state.toasts.push(action.payload)
         },
         removeToast: (state: ToastSlice, action) => {
-            console.log(action.payload);
-            state.toasts.splice(0,1)
+            console.log();
+            state.toasts = state.toasts.filter(toast=>toast.id !== action.payload)
+            // state.toasts.splice(0,1)
             // state.toasts = state.toasts.filter(toast => toast !== action.payload)
         }
     }

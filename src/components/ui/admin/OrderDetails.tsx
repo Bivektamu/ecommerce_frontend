@@ -3,6 +3,7 @@ import { Customer, Order, Product, OrderedProduct, Colour } from '../../../store
 import getMonth from '../../../utils/getMonth'
 import data from '../../../data'
 import gravatar from 'gravatar'
+import Tooltip from '../Tooltip'
 
 type Props = {
     order: Order
@@ -38,6 +39,7 @@ const OrderDetails = ({ order }: Props) => {
                 if (productExists) {
                     productExists.colors = [pr.color]
                     productExists.sizes = [pr.size]
+                    productExists.quantity = pr.quantity
                     productArray.push(productExists)
                 }
             }
@@ -89,18 +91,36 @@ const OrderDetails = ({ order }: Props) => {
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">{item.title}</span>
                                 <div className='flex items-center gap-2'>
-                                    <span className={`w-3 h-3 rounded-full relative bg-${item.colors[0].toLowerCase()}${item.colors[0] === Colour.BLACK ? '' : '-600'} block`}></span>
+                                    <span className={`w-3 h-3 rounded-full relative group bg-${item.colors[0].toLowerCase()}${item.colors[0] === Colour.BLACK ? '' : '-600'} block`}>
+                                        <Tooltip title='color' />
+                                    </span>
                                     <span className='w-3 h-[1px] bg-black text-sm'></span>
-                                    <span className='text-xs'>{item.sizes[0]}</span>
+                                    <span className='text-xs relative group'>
+                                        {item.sizes[0]}
+                                        <Tooltip title='size' />
+                                    </span>
                                 </div>
                             </div>
-                            <br />
-                            <span className="text-xs text-slate-500 font-medium">{customer?.email}</span>
+                            <div className='flex items-center gap-2'>
+                                <span className="text-xs text-slate-500 font-medium">$ {item.price}</span>
+                                <span className='w-3 h-[1px] bg-black text-sm'></span>
+                                <span className='text-xs relative group'>Quantity: {item.quantity}
+                                </span>
+                            </div>
+
+
                         </div>
                     </div>
 
                 )
             }
+
+            <div className='border-t-[1px] pt-4  w-full flex justify-between'>
+                <span className="text-sm text-slate-500 font-medium">Total</span>
+                <span className="text-sm text-slate-800 font-medium">$ {order.total}</span>
+            </div>
+
+
 
         </section>
     )

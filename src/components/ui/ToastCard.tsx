@@ -1,8 +1,9 @@
 import Close from './Close'
 import { Toast, Toast_Vairant } from '../../store/types'
-import { useEffect, useRef } from 'react'
+import { MouseEvent, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { removeToast } from '../../store/slices/toastSlice'
+import DangerSvg from './DangerSvg'
 
 type Props = {
     toast: Toast
@@ -14,30 +15,42 @@ const ToastCard = ({ toast }: Props) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            dispatch(removeToast(toast))
+            // dispatch(removeToast(toast.id))
         }, 2000)
 
-        return(()=>clearTimeout(timer))
+        return (() => clearTimeout(timer))
 
     }, [])
+    const clickHandler = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        dispatch(removeToast(toast.id))
+    }
 
-    let csName = ''
+    let csName = '', spanC = '', logo
     switch (toast.variant) {
         case Toast_Vairant.SUCCESS:
             csName = 'text-green-600 bg-green-100'
+            spanC = 'bg-green-600'
             break;
         case Toast_Vairant.INFO:
             csName = 'text-blue-600 bg-blue-100'
+            spanC = 'bg-blue-600'
             break;
         default:
             csName = 'text-red-600 bg-red-100';
+            spanC = 'bg-red-600'
+            logo = <DangerSvg />
             break;
     }
 
     return (
-        <div  className={csName + ' px-4 py-2 flex items-center gap-4'}>
+        <div className={csName + ' relative px-4 py-2 flex items-center gap-4'}>
+            <div className='w-5 h-5'>
+                <DangerSvg />
+            </div>
             {toast.msg}
-            <button className='w-4 h-4 relative'>
+            <span className={`w-full absolute h-[2px] bottom-0 left-0 animate-toast-bar ${spanC}`}></span>
+            <button className='w-4 h-4 relative' onClick={clickHandler} >
                 <Close classN='bg-red-600' />
             </button>
         </div>)

@@ -3,6 +3,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      animation: {
+        'toast-bar': 'bar linear 2s'
+      },
+      keyframes: {
+        bar: {
+          '0%': {width:'100%'},
+          '100%': {width:'0'}
+        }
+      },
       colors: {
         'black': '#0E1422',
         'regal-white': 'rgb(226, 226, 226)'
