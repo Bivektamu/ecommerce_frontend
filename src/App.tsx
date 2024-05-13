@@ -10,6 +10,7 @@ import AddProduct from "./components/ui/admin/AddProduct"
 import EditProduct from "./components/ui/admin/EditProduct"
 import Orders from "./pages/admin/Orders"
 import Customers from "./pages/admin/Customers"
+import Reviews from "./pages/admin/Reviews"
 
 function App() {
 
@@ -43,12 +44,17 @@ function App() {
               <Route
                 path="customers/"
                 element={<Customers />} />
-                
+
+              <Route
+                path="reviews/"
+                element={<Reviews />} />
+
             </Route>
 
             <Route
               path="/admin/login"
               element={<SignIn />} />
+
             <Route
               path="*"
               element={<PageNotFound />} />

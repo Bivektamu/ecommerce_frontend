@@ -8,6 +8,7 @@ export interface Customer {
     isActive: boolean,
     isVerified: boolean
 }
+type CustomerId = Customer['id']
 
 export interface CustomerInput {
     id: string,
@@ -85,6 +86,7 @@ export interface Product {
     category: string[],
     featured: boolean
 }
+type ProductId = Product['id']
 
 export interface ProductInput extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
     quantity: number | null,
@@ -93,7 +95,7 @@ export interface ProductInput extends Omit<Product, 'userId' | 'quantity' | 'pri
 }
 
 export interface OrderedProduct {
-    productId: string,
+    productId: ProductId,
     color: Colour,
     quantity: number,
     size: Size
@@ -122,7 +124,7 @@ export enum Order_Status {
 export interface Order {
     id: string,
     total: number,
-    customerId: string,
+    customerId: CustomerId,
     timeStamp: Date,
     products: OrderedProduct[],
     status: Order_Status
@@ -141,4 +143,14 @@ export type Toast = {
 
 export type ToastSlice = {
     toasts: Toast[]
+}
+
+
+export interface Review {
+    id:string,
+    customerId:CustomerId,
+    productId: ProductId,
+    text:string,
+    timeStamp: Date,
+    rating:number,
 }

@@ -24,20 +24,22 @@ const CustomerTile = ({ customer }: Props) => {
     const [gravatarUrl, setGravatarUrl] = useState('')
 
     useEffect(() => {
-        if(customer.email) {
-            setGravatarUrl(gravatar.url(customer.email, { s: '200', r: 'pg', d: '404' }))
+
+        if (customer.email) {
+            const link = gravatar.url(customer.email, { s: '200', r: 'pg', d: 'mp' });
+            setGravatarUrl(link)
         }
     }, [customer.email])
 
     const updateStatus = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        const updatedCustomer:CustomerInput = {...customer, isActive: !customer.isActive}
+        const updatedCustomer: CustomerInput = { ...customer, isActive: !customer.isActive }
         console.log(updatedCustomer);
     }
 
     const updateVerification = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        const updatedCustomer:CustomerInput = {...customer, isVerified: !customer.isVerified}
+        const updatedCustomer: CustomerInput = { ...customer, isVerified: !customer.isVerified }
         console.log(updatedCustomer);
     }
     const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
@@ -60,11 +62,10 @@ const CustomerTile = ({ customer }: Props) => {
 
 
     return (
-        <div className='grid grid-cols-table-customers px-8 py-4 border-b-[1px] items-center gap-x-8'>
+        <div className='grid grid-cols-table-customers px-8 py-4 border-b-[1px] items-start gap-x-8'>
             <img src={gravatarUrl} className='rounded w-16 h-16' />
-
             <span className='text-sm text-slate-500 '>
-                {customer.firstName+' '+customer.lastName}
+                {customer.firstName + ' ' + customer.lastName}
             </span>
 
             <span className='text-sm text-slate-500'>
@@ -72,7 +73,7 @@ const CustomerTile = ({ customer }: Props) => {
             </span>
 
             <span className='text-sm text-slate-500 capitalize'>
-                 {customer.address.street}, {customer.address.suburb}, {customer.address.city}, {customer.address.state.toUpperCase()}, {customer.address.postcode}
+                {customer.address.street}, {customer.address.suburb}, {customer.address.city}, {customer.address.state.toUpperCase()}, {customer.address.postcode}
             </span>
 
             <span className='text-sm text-slate-500'>
@@ -80,11 +81,11 @@ const CustomerTile = ({ customer }: Props) => {
             </span>
 
             <span className='relative text-center'>
-                {customer.isActive?<Check classN='w-2 h-4 border-w-2' />:<Close clasN='bg-slate-600 relative w-4' />}
+                {customer.isActive ? <Check classN='w-2 h-4 border-w-2' /> : <Close clasN='bg-slate-600 relative w-4' />}
             </span>
 
-            <span className='relative'>
-                {customer.isVerified?<Check classN='w-2 h-4 border-w-2' />:<Close clasN='bg-slate-600 relative w-4' />}
+            <span className='relative pt-3'>
+                {customer.isVerified ? <Check classN='w-2 h-4 border-w-2' /> : <Close clasN='bg-slate-600 relative w-4' />}
             </span>
 
             {/* <span className='text-sm text-slate-500 flex items-center'>
@@ -95,8 +96,8 @@ const CustomerTile = ({ customer }: Props) => {
                 <button onClick={() => setActionId('id1')} >...</button>
                 {actionId === 'id1' &&
                     <div className='absolute  bg-white border-[1px] rounded-lg shadow w-[140px]  -translate-x-[75px] translate-y-[85px] after:content-[""] after:w-7 after:h-7  after:absolute after:z-10 after:-right-5 after:-top-4' onMouseLeave={() => setActionId('')}>
-                        <button onClick={e => updateVerification(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{customer.isVerified?'Unverify':'Verified'}</button>
-                        <button onClick={e => updateStatus(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{customer.isActive?'Deactivate':'Activate'}</button>
+                        <button onClick={e => updateVerification(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{customer.isVerified ? 'Unverify' : 'Verifiy'}</button>
+                        <button onClick={e => updateStatus(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{customer.isActive ? 'Deactivate' : 'Activate'}</button>
                         <button onClick={e => deleteHandler(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>Delete</button>
                     </div>
                 }

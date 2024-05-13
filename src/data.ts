@@ -1,9 +1,10 @@
-import { Colour, Customer, Order, Order_Status, Product, Size } from './store/types'
+import { Colour, Customer, Order, Order_Status, Product, Review, Size } from './store/types'
 
 type Data = {
     products: Product[],
     orders: Order[],
-    customers: Customer[]
+    customers: Customer[],
+    reviews: Review[]
 }
 
 const data:Data = 
@@ -67,6 +68,17 @@ const data:Data =
             isVerified: false,
             timeStamp: new Date,
         },
-    ] 
+    ],
+    reviews: [
+        {
+            id:'review1',
+            customerId: 'user1',
+            productId: 'product1',
+            text: 'Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product!',
+            timeStamp: new Date,
+            rating: 2
+        }
+    ]
+
 }
 export default data
