@@ -1,10 +1,30 @@
 export interface Customer {
-    id:string,
+    id: string,
     firstName: string,
     lastName: string,
     email: string,
+    timeStamp: Date,
+    address: Address,
+    isActive: boolean,
+    isVerified: boolean
 }
 
+export interface CustomerInput {
+    id: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    address?: Address,
+    isActive?: boolean,
+    isVerified?: boolean
+}
+export interface Address {
+    street: string,
+    suburb: string,
+    city: string,
+    postcode: string,
+    state: string
+}
 export interface FormData {
     firstName: string;
     lastName: string;
@@ -26,7 +46,7 @@ export interface Auth {
 
 export interface RootState {
     auth: Auth,
-    toasts:ToastSlice
+    toasts: ToastSlice
 }
 
 export enum Colour {
@@ -74,7 +94,7 @@ export interface ProductInput extends Omit<Product, 'userId' | 'quantity' | 'pri
 
 export interface OrderedProduct {
     productId: string,
-    color:Colour,
+    color: Colour,
     quantity: number,
     size: Size
 }
@@ -88,9 +108,6 @@ export interface FormError {
     [key: string]: string
 }
 
-export interface Customer {
-    id:string
-}
 
 export enum Order_Status {
     PENDING = 'PENDING',
@@ -116,12 +133,12 @@ export enum Toast_Vairant {
     SUCCESS = 'SUCCESS',
     INFO = 'INFO',
 }
-export type Toast =  {
+export type Toast = {
     id: String,
     variant: Toast_Vairant,
-    msg:String
+    msg: String
 }
 
-export type ToastSlice =  {
+export type ToastSlice = {
     toasts: Toast[]
 }

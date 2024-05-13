@@ -46,11 +46,7 @@ const OrderDetails = ({ order }: Props) => {
             )
             setOrderedProducts([...productArray])
         }
-        const customerExists = customers.filter(cs => cs.id === order.customerId)[0]
-        if (customerExists) {
-            setCustomer({ ...customerExists })
-            setGravatarUrl(gravatar.url(customerExists.email, { s: '200', r: 'pg', d: '404' }))
-        }
+      
     }, [order.products])
 
     useEffect(() => {

@@ -56,6 +56,16 @@ const data:Data =
             firstName: 'Bivek',
             lastName: 'Gurung',
             email:'bivek.tamu@gmail.com',
+            address: {
+                street:'32b hinton loop',
+                suburb: 'oran park',
+                city: 'sydney',
+                postcode: '2570',
+                state:'nsw'
+            },
+            isActive: true,
+            isVerified: false,
+            timeStamp: new Date,
         },
     ] 
 }

@@ -9,6 +9,7 @@ import Private from "./pages/admin/Private"
 import AddProduct from "./components/ui/admin/AddProduct"
 import EditProduct from "./components/ui/admin/EditProduct"
 import Orders from "./pages/admin/Orders"
+import Customers from "./pages/admin/Customers"
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
 
     <>
       <Provider store={AdminStore}>
-        
+
 
         <Router>
           <Routes>
@@ -38,6 +39,11 @@ function App() {
               <Route
                 path="orders/"
                 element={<Orders />} />
+
+              <Route
+                path="customers/"
+                element={<Customers />} />
+                
             </Route>
 
             <Route

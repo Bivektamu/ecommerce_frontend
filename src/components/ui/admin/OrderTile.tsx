@@ -84,7 +84,7 @@ const OrderTile = ({ order }: Props) => {
 
 
     return (
-        <div className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-8'>
+        <div className='grid grid-cols-table-order px-8 py-4 border-b-[1px] items-center gap-x-8'>
             <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
 
             <span className='text-sm text-slate-500 '>
@@ -110,7 +110,6 @@ const OrderTile = ({ order }: Props) => {
             {/* <span className='text-sm text-slate-500 flex items-center'>
                 <Close classN='w-4 h-4' />
             </span> */}
-            <span></span>
 
             <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
                 <button onClick={() => setActionId('id1')} >...</button>
