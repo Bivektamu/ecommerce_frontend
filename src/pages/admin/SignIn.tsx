@@ -1,26 +1,40 @@
-import { FormEvent, useState } from 'react'
-import logo from '../../assets/Admin.svg'
-import { FormData } from '../../store/types'
-import { Navigate, redirect } from 'react-router-dom'
+import { FormEvent, useEffect, useState } from 'react'
+import { FormData, Status } from '../../store/types'
+import { Navigate } from 'react-router-dom'
 import { useAdminDispatch } from '../../store'
-import { auth, loginAdmin } from '../../store/slices/adminAuth'
+import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/adminAuth'
 import { useSelector } from 'react-redux'
 import Logo from '../../components/ui/Logo'
+import Preloader from '../../components/ui/Preloader'
 
 const SignIn = () => {
 
   const dispatch = useAdminDispatch()
-  const newAuth = useSelector(auth)
 
-  const { isLoggedIn } = newAuth
+  
+  const auth = useSelector(useAuth)
+
+  const { isLoggedIn, status } = auth
+
+ 
+useEffect(()=> {
+  console.log('signIn') 
+   dispatch(getAuthStatus())
+}, [])
+
+useEffect(()=> {
+  console.log(auth);
+  
+}, [auth])
 
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('admin@gmail.com')
+  const [password, setPassword] = useState('password123')
   const [errors, setErrors] = useState<Partial<Pick<FormData, 'email' | 'password'>>>({})
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
 
     const newErrors: typeof errors = {}
 
@@ -35,12 +49,21 @@ const SignIn = () => {
     if (Object.keys(newErrors).length > 0) {
       return setErrors({ ...newErrors })
     }
+    const data:Partial<Pick<FormData, 'email' | 'password'>> = {
+      email,
+      password
+    }
 
-    dispatch(loginAdmin({ email, password }))
+    dispatch(loginAdmin(data))
+
   }
 
-  if (isLoggedIn) {
-    return <Navigate to="/admin/dashboard" />
+  if(status == Status.IDLE || status === Status.PENDING) {
+    return <Preloader />
+}
+
+  if (status === Status.FULFILLED && isLoggedIn) {
+    return <Navigate to="/admin" />
   }
 
   return (
@@ -62,13 +85,13 @@ const SignIn = () => {
         <form onSubmit={handleSubmit}>
           <fieldset className='mb-6'>
             <label htmlFor="email" className='font-medium block mb-1 text-mblack'>Email</label>
-            <input type="text" id="email" value={email} onChange={e => setEmail(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4 ' />
+            <input type="text" id="email" readOnly value={email} onChange={e => setEmail(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4 ' />
             {errors.email && <span className='text-sm text-red-500'>{errors.email}</span>}
           </fieldset>
 
           <fieldset className='mb-6'>
             <label htmlFor="password" className='font-medium block w-full mb-1'>Password</label>
-            <input type="text" id="password" value={password} onChange={e => setPassword(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4' />
+            <input type="password" id="password" readOnly value={password} onChange={e => setPassword(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4' />
             {errors.password && <span className='text-sm text-red-500'>{errors.password}</span>}
           </fieldset>
             <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer w-full'>Login</button>

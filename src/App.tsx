@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
+import { Route, BrowserRouter as Router, RouterProvider, Routes, createBrowserRouter } from "react-router-dom"
 import DashBoard from "./pages/admin/DashBoard"
 import Products from "./pages/admin/Products"
 import SignIn from "./pages/admin/SignIn"
@@ -12,58 +12,49 @@ import Orders from "./pages/admin/Orders"
 import Customers from "./pages/admin/Customers"
 import Reviews from "./pages/admin/Reviews"
 
+import PrivateRoute from "./pages/admin/Private"
+
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: '/admin',
+      element: <PrivateRoute />,
+
+      children: [{
+        path: 'products',
+        element: <Products />
+      },
+      {
+        path: 'dashboard',
+        element: <DashBoard />
+      },
+      
+      {
+        path: 'orders',
+        element: <Orders />
+      },
+      
+      {
+        path: 'customers',
+        element: <Customers />
+      },
+      
+      {
+        path: 'reviews',
+        element: <Reviews />
+      }
+      ]
+    },
+    
+    {
+      path: 'login',
+      element: <SignIn />
+    },
+
+  ])
 
   return (
-
-    <>
-      <Provider store={AdminStore}>
-
-
-        <Router>
-          <Routes>
-            <Route path="/admin" element={<Private />}>
-              <Route
-                path="dashboard" element={<DashBoard />}
-              />
-              <Route
-                path="products"
-                element={<Products />} />
-              <Route
-                path="products/add"
-                element={<AddProduct />} />
-
-              <Route
-                path="products/:slug"
-                element={<EditProduct />} />
-
-              <Route
-                path="orders/"
-                element={<Orders />} />
-
-              <Route
-                path="customers/"
-                element={<Customers />} />
-
-              <Route
-                path="reviews/"
-                element={<Reviews />} />
-
-            </Route>
-
-            <Route
-              path="/admin/login"
-              element={<SignIn />} />
-
-            <Route
-              path="*"
-              element={<PageNotFound />} />
-
-          </Routes>
-        </Router>
-      </Provider >
-
-    </>
+    <RouterProvider router={router} />
   )
 }
 
