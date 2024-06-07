@@ -9,3 +9,27 @@ export const GET_AUTH = gql`
 `;
 
 
+
+export const GET_PRODUCTS = gql`
+  query Query {
+  products {
+    id
+    title
+    slug
+    description
+    colors
+    sizes
+    price
+    quantity
+    imgs {
+      fileName
+      id
+      url
+    }
+    category
+    sku
+    stockStatus
+    featured
+  }
+}
+`

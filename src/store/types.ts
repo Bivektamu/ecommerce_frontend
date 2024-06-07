@@ -45,9 +45,23 @@ export interface Auth {
     error: string,
 }
 
+export enum Action {
+    FETCH = 'FETCH',
+    ADD = 'ADD',
+    DELETE = 'DELETE',
+}
+
+export interface ProductSlice {
+    status: Status,
+    error: string,
+    products: Product[],
+    action: Action | null
+}
+
 export interface RootState {
     auth: Auth,
-    toasts: ToastSlice
+    toasts: ToastSlice,
+    products: ProductSlice
 }
 
 export enum Colour {
@@ -65,11 +79,17 @@ export enum Size {
     EXTRA_LARGE = "XL",
 }
 
-export interface ProductImage {
-    id: string,
-    img: File | string
-}
+// export interface ProductImage {
+//     _id: string,
+//     img: File | string
+// }
 
+
+export interface ProductImage {
+    _id: string,
+    url:string,
+    fileName: string
+}
 
 export interface Product {
     id: string,
@@ -88,7 +108,7 @@ export interface Product {
 }
 type ProductId = Product['id']
 
-export interface ProductInput extends Omit<Product, 'userId' | 'quantity' | 'price' | 'stockStatus'> {
+export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' | 'stockStatus'> {
     quantity: number | null,
     price: number | null,
     stockStatus: boolean | null,
@@ -136,9 +156,9 @@ export enum Toast_Vairant {
     INFO = 'INFO',
 }
 export type Toast = {
-    id: String,
+    id: string,
     variant: Toast_Vairant,
-    msg: String
+    msg: string
 }
 
 export type ToastSlice = {

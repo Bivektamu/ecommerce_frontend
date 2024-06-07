@@ -1,17 +1,21 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError, Status } from '../../../store/types'
+import { v4 as uuidv4 } from 'uuid';
+import { useMutation, gql } from '@apollo/client';
+
+
+
+
+import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError } from '../../../store/types'
 import validateForm from '../../../utils/validate';
 import Close from '../Close';
 import { useAdminDispatch } from '../../../store';
-import { addProduct, resetStatus, useProduct } from '../../../store/slices/productSlice';
-import mongoose from 'mongoose';
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { addProduct } from '../../../store/slices/productSlice';
+import { UPLOAD_FILE } from '../../../data/mutation';
 
 
 
 interface PrviewImage {
-    _id: string,
+    id: string,
     src: string
 }
 
@@ -35,8 +39,7 @@ const AddProduct = () => {
 
     const dispatch = useAdminDispatch()
 
-    const {status, message} = useSelector(useProduct)
-
+    const [mutate] = useMutation(UPLOAD_FILE);
 
     const [formData, setFormData] = useState<typeof initial>(initial)
     const [formErrors, setFormErrors] = useState<FormError>({})
@@ -44,31 +47,14 @@ const AddProduct = () => {
 
     const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, featured, category } = formData
 
-    useEffect(()=> {
-        dispatch(resetStatus())
-    }, [])
-
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
 
-        let val: string | string[] | ProductImage[] | boolean | number
+        let val: string | string[] | ProductImage[] | boolean
 
-        if (e.target.type === 'file') {
 
-            const event = e.target as HTMLInputElement
-            const files: FileList = event.files as FileList
-            val = [...imgs] as ProductImage[]
-            for (let i = 0; i < files!.length; i++) {
-                const file: ProductImage = {
-                    _id: new mongoose.Types.ObjectId() as string,
-                    img: files![i]
-                }
-                val.push(file)
-            }
-
-        }
-        else if (e.target.type === 'checkbox') {
+        if (e.target.type === 'checkbox') {
             const event = e.target as HTMLInputElement
 
             if (event.checked) {
@@ -99,19 +85,6 @@ const AddProduct = () => {
         }
         else {
             val = e.target.value
-
-            if (val && !isNaN(val)) {
-                val = parseInt(val)
-            }
-
-
-            // if (isNaN(e.target.value)) {
-            //     val = e.target.value
-            // }
-            // else {
-            //     val = parseInt(e.target.value)
-
-            // }
         }
         let updateData = {
             [e.target.name]: val
@@ -140,6 +113,22 @@ const AddProduct = () => {
         }))
     }
 
+    const filChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+
+        e.preventDefault()
+        e.stopPropagation()
+        const file = e.target.files[0] 
+        if (!file) {
+            return
+        }
+
+        const status = mutate({    
+            variables:{file}
+        })
+      console.log(status);
+      
+
+    }
     const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         e.stopPropagation()
@@ -152,7 +141,6 @@ const AddProduct = () => {
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
-        console.log(typeof formData.quantity);
 
         const validateSchema: ValidateSchema<any>[] =
             [
@@ -214,13 +202,9 @@ const AddProduct = () => {
         dispatch(addProduct(formData))
     }
 
- 
-
     useEffect(() => {
 
         if (imgs.length > 0) {
-            console.log(imgs);
-
             let previews: PrviewImage[] = []
 
 
@@ -247,14 +231,6 @@ const AddProduct = () => {
         }
     }, [imgs])
 
-    console.log(status);
-    
-
-
-    if(status === Status.FULFILLED && message) {
-        
-        return <Navigate to="/admin/products" />
-    }
 
     return (
 
@@ -273,7 +249,7 @@ const AddProduct = () => {
 
                     <fieldset className=''>
                         <label htmlFor="sku" className='uppercase font-medium text-slate-600 text-sm block mb-2 w-full'>sku</label>
-                        <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku} className='border-[1px] uppercase outline-none block px-4 py-2 rounded w-full' />
+                        <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
                         {formErrors.sku && <span className='text-red-500 text-xs'>{formErrors.sku}</span>}
 
                     </fieldset>
@@ -300,7 +276,7 @@ const AddProduct = () => {
 
 
                         {/* /////////////////////////// */}
-                        <input type='file' multiple id="images" name="imgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={changeHandler} />
+                        <input type='file' id="images" name="imgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={filChangeHandler} />
                         {
                             imgPreviews.length > 0 &&
                             <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
@@ -309,7 +285,7 @@ const AddProduct = () => {
                                         <div key={img.id} className='relative'>
                                             <img className='w-14 h-14 object-cover' src={img.src} />
                                             <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
-                                                <Close classN='bg-black w-1/2' />
+                                                <Close classN='w-4 h-4' />
                                             </button>
                                         </div>
                                     )

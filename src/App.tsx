@@ -1,11 +1,7 @@
-import { Route, BrowserRouter as Router, RouterProvider, Routes, createBrowserRouter } from "react-router-dom"
+import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import DashBoard from "./pages/admin/DashBoard"
 import Products from "./pages/admin/Products"
 import SignIn from "./pages/admin/SignIn"
-import { Provider, useSelector } from "react-redux"
-import { AdminStore } from "./store"
-import PageNotFound from "./pages/admin/PageNotFound"
-import Private from "./pages/admin/Private"
 import AddProduct from "./components/ui/admin/AddProduct"
 import EditProduct from "./components/ui/admin/EditProduct"
 import Orders from "./pages/admin/Orders"
@@ -20,32 +16,42 @@ function App() {
       path: '/admin',
       element: <PrivateRoute />,
 
-      children: [{
-        path: 'products',
-        element: <Products />
-      },
-      {
-        path: 'dashboard',
-        element: <DashBoard />
-      },
-      
-      {
-        path: 'orders',
-        element: <Orders />
-      },
-      
-      {
-        path: 'customers',
-        element: <Customers />
-      },
-      
-      {
-        path: 'reviews',
-        element: <Reviews />
-      }
+      children: [
+        {
+          path: 'products',
+          element: <Products />,
+        },
+        {
+          path: 'products/:slug',
+          element: <EditProduct />,
+        },
+        
+        {
+          path: 'products/add',
+          element: <AddProduct />,
+        },
+        {
+          path: 'dashboard',
+          element: <DashBoard />
+        },
+
+        {
+          path: 'orders',
+          element: <Orders />
+        },
+
+        {
+          path: 'customers',
+          element: <Customers />
+        },
+
+        {
+          path: 'reviews',
+          element: <Reviews />
+        }
       ]
     },
-    
+
     {
       path: 'login',
       element: <SignIn />

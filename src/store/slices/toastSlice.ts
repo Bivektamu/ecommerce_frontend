@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState, ToastSlice } from "../types";
-import { log } from "console";
 
 const initialState: ToastSlice = {
     toasts: []

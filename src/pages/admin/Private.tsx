@@ -21,10 +21,11 @@ const PrivateRoute = () => {
     const location = useLocation()
 
     useEffect(()=> {
-        
-        console.log('preivate');
         dispatch(getAuthStatus())
     }, [])
+
+    useEffect(()=> {console.log(isLoggedIn);
+    }, [isLoggedIn])
 
     const logOut = (e:MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
@@ -36,6 +37,8 @@ const PrivateRoute = () => {
     }
 
     if (!isLoggedIn && status === Status.FULFILLED) {
+        console.log('asdf');
+        
         return <Navigate to="/login" />
     }
 
@@ -43,6 +46,7 @@ const PrivateRoute = () => {
     if (location.pathname === '/admin') {
         return <Navigate to="/admin/dashboard" />
     }
+
     return (
         <>
             {
@@ -60,9 +64,10 @@ const PrivateRoute = () => {
 
                     </button>
                 </div>
+            <Outlet />
+
             </section>
 
-            <Outlet />
         </>
     )
 }

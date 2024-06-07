@@ -24,7 +24,7 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
             
         }
     } catch (error) {
-        console.log('');
+        console.log(error.message);
         throw error
     }
 })
@@ -42,7 +42,7 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
 
         return isLoggedIn
     } catch (error) {
-        console.log(error);
+        console.log(error?.message);
         throw error
     }
 })

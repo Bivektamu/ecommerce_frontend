@@ -4,29 +4,22 @@ import Close from '../../components/ui/Close'
 import { useAdminDispatch } from '../../store'
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 import { useSelector } from 'react-redux'
-import Preloader from '../../components/ui/Preloader'
-import { Product, Status } from '../../store/types'
-import Check from '../../components/ui/Close'
 
 const Products = () => {
 
   const dispatch = useAdminDispatch()
 
-  const { products, status } = useSelector(useProduct)
-
-  const [actionId, setActionId] = useState('')
-
+  const {products} = useSelector(useProduct)
 
   useEffect(()=> {
     dispatch(getProducts())
   }, [])
+  
+  const [actionId, setActionId] = useState('')
 
-  console.log(status);
+  console.log(products);
   
 
-  if (status == Status.IDLE) {
-      return <Preloader />
-  }
 
   return (
 
@@ -74,7 +67,7 @@ const Products = () => {
           Categories
         </span>
 
-
+        
         <span className='text-sm text-slate-500 font-medium'>
           Featured
         </span>
@@ -84,59 +77,50 @@ const Products = () => {
         </span>
       </div>
 
-      {
-        products && products.length === 0 &&
-        <p className='px-8 py-8 text-slate-500'>There are no products. Please add new product.</p>
-      }
+      {/* <p className='px-8 py-8 text-slate-500'>There are no products. Please add new product.</p> */}
 
       <div className="w-full">
 
-        {products && products.length > 0 && products.map(product =>
-          <div key={product.id} className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
-            <Link to='/admin/products/sleek-and-cozy-black'>
-              <img src={product.imgs[0].url} alt="" />
-            </Link>
-            <Link to='/admin/products/sleek-and-cozy-black' className='text-sm text-slate-500'>{product.title}</Link>
-            <span className='text-sm text-slate-500 uppercase'>
-              {product.sku}
-            </span>
+        <div className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
+          <Link to='/admin/products/sleek-and-cozy-black'>
+            <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
+          </Link>
+          <Link to='/admin/products/sleek-and-cozy-black' className='text-sm text-slate-500'>Sleek and Cozy Black</Link>
+          <span className='text-sm text-slate-500'>
+            WVT002
+          </span>
 
-            <span className='text-sm text-slate-500'>
-              {product.price}
-            </span>
+          <span className='text-sm text-slate-500'>
+            $67.00
+          </span>
 
-            <span className='text-sm text-slate-500'>
-              {product.stockStatus ? 'In Stock' : 'Out of Stock'}
-            </span>
+          <span className='text-sm text-slate-500'>
+            In Stock
+          </span>
 
-            <span className='text-sm text-slate-500'>
-              {product.category}
-            </span>
+          <span className='text-sm text-slate-500'>
+            Hoodies
+          </span>
 
+          <span className='text-sm text-slate-500 flex items-center'>
+            <Close classN='w-4 h-4' />
+          </span>
 
-            <span className='text-sm text-slate-500 w-4 h-4 relative'>
-              {product.featured ? <Check classN='w-full bg-black' /> : <Close classN='w-full bg-black' />}
-            </span>
-
-
-            <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
-              <button onClick={() => setActionId(product.id)} >...</button>
-              {actionId === product.id &&
-                <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[55px] translate-y-[75px]' onMouseLeave={() => setActionId('')}>
-                  <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pt-4'>View</button>
-                  <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2'>Edit</button>
-                  <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pb-4' >Delete</button>
-                </div>
-              }
-
-            </div>
+          <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
+            <button onClick={() => setActionId('id1')} >...</button>
+            {actionId === 'id1' &&
+              <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[55px] translate-y-[75px]' onMouseLeave={() => setActionId('')}>
+                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pt-4'>View</button>
+                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2'>Edit</button>
+                <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pb-4'>Delete</button>
+              </div>
+            }
 
           </div>
-        )}
 
+        </div>
 
-
-
+      
       </div>
 
     </div>
