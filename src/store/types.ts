@@ -90,6 +90,10 @@ export interface ProductImage {
     url:string,
     fileName: string
 }
+export interface ProductImageInput {
+    _id:string,
+    img:File
+}
 
 export interface Product {
     id: string,
@@ -103,15 +107,20 @@ export interface Product {
     quantity: number,
     sku: string,
     stockStatus: boolean,
-    category: string[],
+    category: string,
     featured: boolean
 }
 type ProductId = Product['id']
 
-export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' | 'stockStatus'> {
+export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' | 'stockStatus' | 'imgs'> {
     quantity: number | null,
     price: number | null,
     stockStatus: boolean | null,
+    imgs: ProductImageInput[]
+}
+
+export interface ProductEditInput extends Omit<Product, 'imgs'> {
+    imgs: [ProductImage | ProductImageInput]
 }
 
 export interface OrderedProduct {
@@ -154,6 +163,7 @@ export enum Toast_Vairant {
     DANGER = 'DANGER',
     SUCCESS = 'SUCCESS',
     INFO = 'INFO',
+    WARNING = 'WARNING'
 }
 export type Toast = {
     id: string,

@@ -1,7 +1,7 @@
 import React, { Component, MouseEvent, ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getAuthStatus, logOutAdmin, useAuth } from '../../store/slices/adminAuth'
-import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Link, Navigate, Outlet, redirect, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
@@ -13,6 +13,9 @@ import { useAdminDispatch } from '../../store'
 
 const PrivateRoute = () => {
 
+
+    const navigate = useNavigate()
+
     const allToasts = useSelector(toasts)
 
     const auth = useSelector(useAuth)
@@ -20,31 +23,28 @@ const PrivateRoute = () => {
     const dispatch = useAdminDispatch()
     const location = useLocation()
 
-    useEffect(()=> {
+    useEffect(() => {
         dispatch(getAuthStatus())
     }, [])
 
-    useEffect(()=> {console.log(isLoggedIn);
-    }, [isLoggedIn])
 
-    const logOut = (e:MouseEvent<HTMLButtonElement>) => {
+    const logOut = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         dispatch(logOutAdmin())
-    } 
+    }
 
-    if(status == Status.IDLE) {
+    if (status == Status.IDLE) {
         return <Preloader />
     }
 
     if (!isLoggedIn && status === Status.FULFILLED) {
-        console.log('asdf');
-        
-        return <Navigate to="/login" />
+        // return <Navigate to="/login" />
+        return navigate('/login')
     }
 
 
     if (location.pathname === '/admin') {
-        return <Navigate to="/admin/dashboard" />
+        return navigate('/admin/dashboard')
     }
 
     return (
@@ -64,7 +64,7 @@ const PrivateRoute = () => {
 
                     </button>
                 </div>
-            <Outlet />
+                <Outlet />
 
             </section>
 

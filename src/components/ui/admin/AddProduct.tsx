@@ -1,13 +1,12 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError, Status } from '../../../store/types'
+import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError, Status, Action, ProductImageInput } from '../../../store/types'
 import validateForm from '../../../utils/validate';
 import Close from '../Close';
 import { useAdminDispatch } from '../../../store';
-import { addProduct, resetStatus, useProduct } from '../../../store/slices/productSlice';
+import { addProduct, useProduct } from '../../../store/slices/productSlice';
 import mongoose from 'mongoose';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-
 
 
 interface PrviewImage {
@@ -16,18 +15,18 @@ interface PrviewImage {
 }
 
 const initial: ProductInput = {
-    title: '',
-    sku: '',
-    price: null,
+    title: 'Test',
+    sku: 'TETS123',
+    price: 987,
     imgs: [],
-    slug: '',
-    colors: [],
-    stockStatus: null,
-    sizes: [],
-    quantity: null,
-    description: '',
+    slug: 'test',
+    colors: [Colour.BLACK],
+    stockStatus: true,
+    sizes: [Size.LARGE],
+    quantity: 980,
+    description: 'test',
     featured: false,
-    category: []
+    category: 'test'
 }
 
 
@@ -35,33 +34,29 @@ const AddProduct = () => {
 
     const dispatch = useAdminDispatch()
 
-    const {status, message} = useSelector(useProduct)
+    const {status, action} = useSelector(useProduct)
 
 
     const [formData, setFormData] = useState<typeof initial>(initial)
     const [formErrors, setFormErrors] = useState<FormError>({})
     const [imgPreviews, setImagePreviews] = useState<PrviewImage[]>([])
 
-    const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, featured, category } = formData
-
-    useEffect(()=> {
-        dispatch(resetStatus())
-    }, [])
+    const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, category } = formData
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
 
-        let val: string | string[] | ProductImage[] | boolean | number
+        let val: string | string[] | ProductImageInput[] | boolean | number
 
         if (e.target.type === 'file') {
 
             const event = e.target as HTMLInputElement
             const files: FileList = event.files as FileList
-            val = [...imgs] as ProductImage[]
+            val = [...imgs] as ProductImageInput[]
             for (let i = 0; i < files!.length; i++) {
-                const file: ProductImage = {
-                    _id: new mongoose.Types.ObjectId() as string,
+                const file: ProductImageInput = {
+                    _id: new mongoose.Types.ObjectId() as unknown as string,
                     img: files![i]
                 }
                 val.push(file)
@@ -99,19 +94,10 @@ const AddProduct = () => {
         }
         else {
             val = e.target.value
-
-            if (val && !isNaN(val)) {
+            if(parseInt(val)) {
                 val = parseInt(val)
             }
-
-
-            // if (isNaN(e.target.value)) {
-            //     val = e.target.value
-            // }
-            // else {
-            //     val = parseInt(e.target.value)
-
-            // }
+          
         }
         let updateData = {
             [e.target.name]: val
@@ -143,8 +129,8 @@ const AddProduct = () => {
     const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         e.stopPropagation()
-        let updateImgs = [...imgs]
-        const index = updateImgs.findIndex(img => img.id === id)
+        const updateImgs = [...imgs]
+        const index = updateImgs.findIndex(img => img._id === id)
         updateImgs.splice(index, 1)
 
         setFormData(prev => ({ ...prev, imgs: [...updateImgs] }))
@@ -214,8 +200,6 @@ const AddProduct = () => {
         dispatch(addProduct(formData))
     }
 
- 
-
     useEffect(() => {
 
         if (imgs.length > 0) {
@@ -247,12 +231,8 @@ const AddProduct = () => {
         }
     }, [imgs])
 
-    console.log(status);
-    
 
-
-    if(status === Status.FULFILLED && message) {
-        
+    if(status === Status.FULFILLED && action === Action.ADD) {
         return <Navigate to="/admin/products" />
     }
 
@@ -414,7 +394,7 @@ const AddProduct = () => {
                         <label htmlFor='featured' className='font-medium  text-slate-600'>Is Featured</label>
                     </fieldset>
 
-                    <button type="submit" className='w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer'>Add Product</button>
+                    <button type="submit" id='add_product' className='w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer'>Add Product</button>
 
                 </form>
             </div>

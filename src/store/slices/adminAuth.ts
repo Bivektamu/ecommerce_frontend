@@ -36,10 +36,7 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
         const response = await client.query({
             query: GET_AUTH,
         })
-        console.log(response.data);
-
         const isLoggedIn = response.data.getAuthStatus.isLoggedIn
-
         return isLoggedIn
     } catch (error) {
         console.log(error?.message);

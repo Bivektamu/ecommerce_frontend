@@ -52,6 +52,13 @@ mutation CreateProduct($input: CreateProduct) {
 }
 `
 
+export const DELETE_PRODUCT = gql`
+  mutation Mutation($deleteProductId: ID) {
+    deleteProduct(id: $deleteProductId) {
+      success
+    }
+  }
+`
 
 // export const CREATE_PRODUCT = gql`
 // mutation CreateProduct($input: CreateProduct) {

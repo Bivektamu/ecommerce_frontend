@@ -1,60 +1,88 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
-import DashBoard from "./pages/admin/DashBoard"
-import Products from "./pages/admin/Products"
-import SignIn from "./pages/admin/SignIn"
-import AddProduct from "./components/ui/admin/AddProduct"
-import EditProduct from "./components/ui/admin/EditProduct"
-import Orders from "./pages/admin/Orders"
-import Customers from "./pages/admin/Customers"
-import Reviews from "./pages/admin/Reviews"
+import { Suspense, lazy } from "react"
 
-import PrivateRoute from "./pages/admin/Private"
+import { RouterProvider, createBrowserRouter } from "react-router-dom"
+const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
+const Products = lazy(() => import("./pages/admin/Products"))
+const SignIn = lazy(() => import("./pages/admin/SignIn"))
+const AddProduct = lazy(() => import("./components/ui/admin/AddProduct"))
+const EditProduct = lazy(() => import("./components/ui/admin/EditProduct"))
+const Orders = lazy(() => import("./pages/admin/Orders"))
+const Customers = lazy(() => import("./pages/admin/Customers"))
+const Reviews = lazy(() => import("./pages/admin/Reviews"))
+const PrivateRoute = lazy(() => import("./pages/admin/Private"))
+import Preloader from "./components/ui/Preloader"
+import PageNotFound from "./pages/admin/PageNotFound"
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/admin',
-      element: <PrivateRoute />,
+      element: <Suspense fallback={<Preloader />}>
+        <PrivateRoute />
+      </Suspense>,
 
       children: [
         {
           path: 'products',
-          element: <Products />,
+          element: <Suspense fallback={<Preloader />}>
+            <Products />
+          </Suspense>,
         },
         {
           path: 'products/:slug',
-          element: <EditProduct />,
+          element: <Suspense fallback={<Preloader />}>
+            <EditProduct />
+          </Suspense>,
         },
-        
+
         {
           path: 'products/add',
-          element: <AddProduct />,
+          element: <Suspense fallback={<Preloader />}>
+            <AddProduct />
+          </Suspense>,
         },
         {
           path: 'dashboard',
-          element: <DashBoard />
+          element: <Suspense fallback={<Preloader />}>
+            <DashBoard />
+          </Suspense>
         },
 
         {
           path: 'orders',
-          element: <Orders />
+          element: <Suspense fallback={<Preloader />}>
+            <Orders />
+          </Suspense>
         },
 
         {
           path: 'customers',
-          element: <Customers />
+          element: <Suspense fallback={<Preloader />}>
+            <Customers />
+          </Suspense>
         },
 
         {
           path: 'reviews',
-          element: <Reviews />
+          element: <Suspense fallback={<Preloader />}>
+            <Reviews />
+          </Suspense>
         }
       ]
     },
 
     {
       path: 'login',
-      element: <SignIn />
+      element: <Suspense fallback={<Preloader />}>
+        <SignIn />
+      </Suspense>
+    },
+    
+    {
+      path: '*',
+      element: <Suspense fallback={<Preloader />}>
+        <PageNotFound />
+      </Suspense>
     },
 
   ])

@@ -1,58 +1,67 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { Colour, Size, ProductImage, ValidateSchema, FormError, ProductInput } from '../../../store/types'
+import { Colour, Size, ProductImage, ValidateSchema, FormError, ProductInput, Status, Action, Product, ProductEditInput, ProductImageInput } from '../../../store/types'
 import validateForm from '../../../utils/validate';
 import Close from '../Close';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import data from '../../../data'
-import PageNotFound from '../../../pages/admin/PageNotFound';
+// import data from '../../../data'
+// import PageNotFound from '../../../pages/admin/PageNotFound';
+import { useSelector } from 'react-redux';
+import { getProducts, useProduct } from '../../../store/slices/productSlice';
+import { useAdminDispatch } from '../../../store';
+import Preloader from '../Preloader';
 
 
 
-interface PrviewImage {
+interface PreviewImage {
     id: string,
     src: string
 }
 
-const initial: ProductInput = {
-    title: '',
-    id: 'pro123',
-    sku: '',
-    price: null,
-    imgs: [],
-    slug: '',
-    colors: [],
-    stockStatus: null,
-    sizes: [],
-    quantity: null,
-    description: '',
-    featured: false,
-    category: []
-}
-
-
 const EditProduct = () => {
 
+    const dispatch = useAdminDispatch()
+
+    const navigate = useNavigate()
+
     const params = useParams()
-    const { products } = data
 
-    const product = products.filter(pro => pro.slug === params.slug)
+    // const { products } = data
+
+    const { products, status, action } = useSelector(useProduct)
 
 
-    const [formData, setFormData] = useState<ProductInput>(initial)
+    const [formData, setFormData] = useState<ProductEditInput>({} as ProductEditInput)
+
 
     useEffect(() => {
-        if (product.length > 0) {
+        dispatch(getProducts())
+    }, [])
+
+    useEffect(() => {
+
+        if (products.length > 0) {
+
+            const product = products?.filter(pro => pro.slug === params.slug)
+            if (product.length < 1) {
+                navigate('/404')
+            }
+
+
             setFormData({ ...product[0] })
         }
-    }, [params])
+    }, [products])
+
+
 
     const [formErrors, setFormErrors] = useState<FormError>({})
-    const [imgPreviews, setImagePreviews] = useState<PrviewImage[]>([])
+    const [imgPreviews, setImagePreviews] = useState<PreviewImage[]>([])
 
     const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, featured, category } = formData
 
+    /* 
+       */
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
@@ -110,7 +119,7 @@ const EditProduct = () => {
         }
 
         if (e.target.name === 'stockStatus') {
-            if (val) {
+            if (val === 'true') {
                 val = true
             }
             else {
@@ -133,19 +142,59 @@ const EditProduct = () => {
         }))
     }
 
+    useEffect(() => {
+        if (imgs?.length > 0) {
+            console.log(imgs.length);
+
+            const imagesInFileFormat = imgs.filter(image => image.img)
+
+            if (imagesInFileFormat.length > 0) {
+
+                const previews: PreviewImage[] = []
+                imagesInFileFormat.map(img => {
+
+                    const reader = new FileReader()
+                    reader.onload = () => {
+                        if (reader.result) {
+                            const previewImg: PreviewImage = {
+                                id: img.id as keyof ProductImage,
+                                src: reader.result as string
+                            }
+                            previews.push(previewImg);
+                            if (previews.length === imagesInFileFormat.length) {
+                                setImagePreviews([...previews])
+                            }
+                        }
+                    }
+                    reader.readAsDataURL(img.img)
+
+
+                })
+            }
+            else {
+                setImagePreviews([])
+            }
+
+        }
+
+    }, [imgs])
+
     const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         e.stopPropagation()
-        let updateImgs = [...imgs]
+        const updateImgs = [...imgs]
         const index = updateImgs.findIndex(img => img.id === id)
         updateImgs.splice(index, 1)
         console.log(updateImgs);
-
         setFormData(prev => ({ ...prev, imgs: [...updateImgs] }))
     }
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
+
+        console.log(formData);
+        return
+        
 
         const validateSchema: ValidateSchema<any>[] =
             [
@@ -205,66 +254,17 @@ const EditProduct = () => {
         }
     }
 
-    useEffect(() => {
 
+    if (products.length < 1 || Object.keys(formData).length < 1) {
+        return <Preloader />
+    }
 
-        if (imgs.length > 0) {
-            let previews: PrviewImage[] = []
-            let previewsAsync: PrviewImage[] = []
+    if (status == Status.IDLE || status == Status.PENDING) {
+        return <Preloader />
+    }
 
-            const totalFiles = imgs.filter(img => typeof img.img !== 'string').length
-
-            imgs.forEach((productImg: ProductImage) => {
-
-                if (typeof productImg.img === 'string') {
-                    const newPreview: PrviewImage = {
-                        id: productImg.id,
-                        src: productImg.img
-                    }
-                    previews.push(newPreview)
-                    if (imgs.length - totalFiles === previews.length) {
-                        setImagePreviews([...previews])
-                    }
-                }
-
-                else {
-                    let reader = new FileReader();
-
-                    reader.onload = () => {
-
-                        if (reader.result) {
-
-                            const newPreview: PrviewImage = {
-                                id: productImg.id,
-                                src: reader.result as string
-                            }
-
-                            previewsAsync.push(newPreview)
-
-
-                            if (totalFiles === previewsAsync.length) {
-                                setImagePreviews([...previews, ...previewsAsync]);
-                            }
-                        }
-                    };
-                    reader.readAsDataURL(productImg.img as File);
-                }
-
-            })
-        }
-        else {
-            setImagePreviews([])
-        }
-    }, [imgs])
-
-    useEffect(() => {
-
-        imgs.length > 0 && console.log(imgs);
-    }, [imgs])
-
-
-    if (product.length < 1) {
-        return <PageNotFound />
+    if (status === Status.FULFILLED && action !== Action.FETCH) {
+        return <Preloader />
     }
 
 
@@ -299,10 +299,10 @@ const EditProduct = () => {
                             <label htmlFor="stock" className='font-medium text-slate-600 text-sm block mb-2 w-full'>Stock status</label>
 
 
-                            <select name="stockStatus" id="stock" className='border-[1px] outline-none block px-4 py-2 rounded w-full' onChange={changeHandler}>
+                            <select value={stockStatus ? 'true' : 'false'} name="stockStatus" id="stock" className='border-[1px] outline-none block px-4 py-2 rounded w-full' onChange={changeHandler}>
                                 <option value="" hidden>Select stock status</option>
                                 <option className='outline-none block px-4 py-2 rounded w-full' value='true'>In Stock</option>
-                                <option className='outline-none block px-4 py-2 rounded w-full' value='' >Out of Stock</option>
+                                <option value='false' className='outline-none block px-4 py-2 rounded w-full'>Out of Stock</option>
                             </select>
                             {formErrors.stockStatus && <span className='text-red-500 text-xs'>{formErrors.stockStatus}</span>}
 
@@ -344,10 +344,20 @@ const EditProduct = () => {
 
 
                             {
-                                imgPreviews.length > 0 &&
+                                imgs.length > 0 &&
                                 <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
                                     {
-                                        imgPreviews.map((img: PrviewImage) =>
+                                        imgs.filter(img => img.url).map((img: any) =>
+                                            <div key={img.id} className='relative'>
+                                                <img className='w-14 h-14 object-cover' src={img.url} />
+                                                <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
+                                                    <Close classN='w-4 h-4' />
+                                                </button>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        imgPreviews.map((img: any) =>
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.src} />
                                                 <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>

@@ -4,6 +4,8 @@ import { MouseEvent, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { removeToast } from '../../store/slices/toastSlice'
 import DangerSvg from './DangerSvg'
+import InfoSvg from './InfoSvg'
+import SuccessSvg from './SuccessSvg'
 
 type Props = {
     toast: Toast
@@ -15,7 +17,7 @@ const ToastCard = ({ toast }: Props) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            // dispatch(removeToast(toast.id))
+            dispatch(removeToast(toast.id))
         }, 2000)
 
         return (() => clearTimeout(timer))
@@ -31,10 +33,18 @@ const ToastCard = ({ toast }: Props) => {
         case Toast_Vairant.SUCCESS:
             csName = 'text-green-600 bg-green-100'
             spanC = 'bg-green-600'
+            logo = <SuccessSvg />
             break;
         case Toast_Vairant.INFO:
             csName = 'text-blue-600 bg-blue-100'
             spanC = 'bg-blue-600'
+            logo = <InfoSvg />
+            break;
+
+        case Toast_Vairant.WARNING:
+            csName = 'text-orange-600 bg-blue-100'
+            spanC = 'bg-orange-600'
+            logo = <InfoSvg />
             break;
         default:
             csName = 'text-red-600 bg-red-100';
@@ -46,7 +56,7 @@ const ToastCard = ({ toast }: Props) => {
     return (
         <div className={csName + ' relative px-4 py-2 flex items-center gap-4'}>
             <div className='w-5 h-5'>
-                <DangerSvg />
+                {logo}
             </div>
             {toast.msg}
             <span className={`w-full absolute h-[2px] bottom-0 left-0 animate-toast-bar ${spanC}`}></span>
