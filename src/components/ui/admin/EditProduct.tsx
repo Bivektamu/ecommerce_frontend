@@ -26,7 +26,6 @@ const EditProduct = () => {
     const navigate = useNavigate()
 
     const params = useParams()
-
     // const { products } = data
 
     const { products, status, action } = useSelector(useProduct)
@@ -48,8 +47,18 @@ const EditProduct = () => {
                 navigate('/404')
             }
 
+            let tempProduct: any = {}
 
-            setFormData({ ...product[0] })
+            tempProduct = { ...product[0], oldImgs: product[0].imgs, newImgs: [] }
+
+            if (tempProduct.imgs) {
+                const { imgs, ...rest } = tempProduct
+                setFormData(rest as ProductEditInput)
+            }
+            else {
+                setFormData(tempProduct as ProductEditInput)
+            }
+
         }
     }, [products])
 
@@ -58,24 +67,23 @@ const EditProduct = () => {
     const [formErrors, setFormErrors] = useState<FormError>({})
     const [imgPreviews, setImagePreviews] = useState<PreviewImage[]>([])
 
-    const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, featured, category } = formData
+    const { title, sku, price, oldImgs, newImgs, slug, colors, stockStatus, sizes, quantity, description, category } = formData
 
-    /* 
-       */
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
 
-        let val: string | string[] | ProductImage[] | boolean
+
+        let val: string | string[] | ProductImageInput[] | boolean
 
         if (e.target.type === 'file') {
 
             const event = e.target as HTMLInputElement
             const files: FileList = event.files as FileList
-            val = [...imgs] as ProductImage[]
+            val = [...newImgs] as ProductImageInput[]
             for (let i = 0; i < files!.length; i++) {
-                const file: ProductImage = {
-                    id: uuidv4(),
+                const file: ProductImageInput = {
+                    _id: uuidv4(),
                     img: files![i]
                 }
                 val.push(file)
@@ -114,6 +122,7 @@ const EditProduct = () => {
         else {
             val = e.target.value
         }
+
         let updateData = {
             [e.target.name]: val
         }
@@ -135,7 +144,7 @@ const EditProduct = () => {
             updateData.slug = newSlug.toLowerCase()
         }
 
-
+        
         setFormData(prev => ({
             ...prev,
             ...updateData
@@ -143,58 +152,72 @@ const EditProduct = () => {
     }
 
     useEffect(() => {
-        if (imgs?.length > 0) {
-            console.log(imgs.length);
+        if (newImgs?.length > 0) {
 
-            const imagesInFileFormat = imgs.filter(image => image.img)
+            const previews: PreviewImage[] = []
+            newImgs.map(img => {
 
-            if (imagesInFileFormat.length > 0) {
-
-                const previews: PreviewImage[] = []
-                imagesInFileFormat.map(img => {
-
-                    const reader = new FileReader()
-                    reader.onload = () => {
-                        if (reader.result) {
-                            const previewImg: PreviewImage = {
-                                id: img.id as keyof ProductImage,
-                                src: reader.result as string
-                            }
-                            previews.push(previewImg);
-                            if (previews.length === imagesInFileFormat.length) {
-                                setImagePreviews([...previews])
-                            }
+                const reader = new FileReader()
+                reader.onload = () => {
+                    if (reader.result) {
+                        const previewImg: PreviewImage = {
+                            id: img._id as keyof ProductImageInput,
+                            src: reader.result as string
+                        }
+                        previews.push(previewImg);
+                        if (previews.length === newImgs.length) {
+                            setImagePreviews([...previews])
                         }
                     }
-                    reader.readAsDataURL(img.img)
-
-
-                })
-            }
-            else {
-                setImagePreviews([])
-            }
-
+                }
+                reader.readAsDataURL(img.img)
+            })
         }
 
-    }, [imgs])
+        else {
+            setImagePreviews([])
+        }
+
+    }, [newImgs])
+
+    useEffect(()=> {
+
+       
+        if(Object.keys(formData).length > 0) {
+            Object.keys(formData).filter(key=>key !== '__typename').map(key=>{
+                if(formData[key]) {
+                   setFormErrors(prev=>({...prev, [key]: ''}))          
+                }
+                
+            })
+        }
+        
+        // setFormErrors(prev=>({...prev, [e.target.name]: ''}))
+
+    }, [formData])
 
     const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         e.stopPropagation()
-        const updateImgs = [...imgs]
-        const index = updateImgs.findIndex(img => img.id === id)
+        const updateImgs = [...newImgs]
+        const index = updateImgs.findIndex(img => img._id === id)
         updateImgs.splice(index, 1)
         console.log(updateImgs);
-        setFormData(prev => ({ ...prev, imgs: [...updateImgs] }))
+        setFormData(prev => ({ ...prev, newImgs: [...updateImgs] }))
+    }
+
+    const deleteHandlerForOldImgs = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log(id);
+
+        setFormData(prev => ({ ...prev, oldImgs: [...oldImgs.filter(img => img.id !== id)] }))
     }
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
 
         console.log(formData);
-        return
-        
 
         const validateSchema: ValidateSchema<any>[] =
             [
@@ -202,6 +225,11 @@ const EditProduct = () => {
                     name: 'title',
                     type: 'text',
                     value: title
+                },
+                {
+                    name: 'slug',
+                    type: 'text',
+                    value: slug
                 },
                 {
                     name: 'description',
@@ -226,7 +254,7 @@ const EditProduct = () => {
                 {
                     name: 'imgs',
                     type: 'file',
-                    value: imgs
+                    value: [...oldImgs, ...newImgs]
                 },
                 {
                     name: 'colors',
@@ -249,6 +277,7 @@ const EditProduct = () => {
 
         const errors: FormError = validateForm(validateSchema)
 
+
         if (Object.keys(errors).length > 0) {
             return setFormErrors({ ...errors })
         }
@@ -259,13 +288,13 @@ const EditProduct = () => {
         return <Preloader />
     }
 
-    if (status == Status.IDLE || status == Status.PENDING) {
-        return <Preloader />
-    }
+    // if (status == Status.IDLE || status == Status.PENDING) {
+    //     return <Preloader />
+    // }
 
-    if (status === Status.FULFILLED && action !== Action.FETCH) {
-        return <Preloader />
-    }
+    // if (status === Status.FULFILLED && action !== Action.FETCH) {
+    //     return <Preloader />
+    // }
 
 
     return (
@@ -293,6 +322,8 @@ const EditProduct = () => {
                         <fieldset className=''>
                             <label htmlFor="slug" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>slug</label>
                             <input type="text" id="slug" name="slug" value={slug} onChange={changeHandler} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            {formErrors.slug && <span className='text-red-500 text-xs'>{formErrors.slug}</span>}
+
                         </fieldset>
 
                         <fieldset>
@@ -340,22 +371,25 @@ const EditProduct = () => {
 
 
                             {/* /////////////////////////// */}
-                            <input type='file' multiple id="images" name="imgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={changeHandler} />
-
+                            <input type='file' multiple id="images" name="newImgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={changeHandler} />
 
                             {
-                                imgs.length > 0 &&
+                                (oldImgs.length > 0 || imgPreviews.length > 0) &&
                                 <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
+
                                     {
-                                        imgs.filter(img => img.url).map((img: any) =>
+                                        oldImgs.length > 0 &&
+
+                                        oldImgs.filter(img => img.url).map((img: any) =>
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.url} />
-                                                <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
+                                                <button onClick={(e) => deleteHandlerForOldImgs(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
                                                     <Close classN='w-4 h-4' />
                                                 </button>
                                             </div>
                                         )
                                     }
+
                                     {
                                         imgPreviews.map((img: any) =>
                                             <div key={img.id} className='relative'>
@@ -368,6 +402,7 @@ const EditProduct = () => {
                                     }
                                 </div>
                             }
+
                         </fieldset>
 
                         <fieldset>

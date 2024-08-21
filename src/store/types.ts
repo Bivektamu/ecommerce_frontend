@@ -86,7 +86,7 @@ export enum Size {
 
 
 export interface ProductImage {
-    _id: string,
+    id: string,
     url:string,
     fileName: string
 }
@@ -120,7 +120,8 @@ export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' 
 }
 
 export interface ProductEditInput extends Omit<Product, 'imgs'> {
-    imgs: [ProductImage | ProductImageInput]
+    oldImgs: ProductImage[],
+    newImgs: ProductImageInput[]
 }
 
 export interface OrderedProduct {

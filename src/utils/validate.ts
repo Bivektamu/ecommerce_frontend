@@ -54,7 +54,6 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
 
     })
 
-
     return errors
 }
 

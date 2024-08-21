@@ -63,7 +63,6 @@ const Products = () => {
     return <Preloader />
   }
 
-  console.log(products);
   
 
   return (

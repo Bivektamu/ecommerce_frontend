@@ -32,18 +32,19 @@ const PrivateRoute = () => {
         e.stopPropagation()
         dispatch(logOutAdmin())
     }
+    
 
-    if (status == Status.IDLE) {
+    if (status === Status.IDLE || status === Status.PENDING) {
         return <Preloader />
     }
 
-    if (!isLoggedIn && status === Status.FULFILLED) {
+    if (!isLoggedIn) {
         // return <Navigate to="/login" />
         return navigate('/login')
     }
 
 
-    if (location.pathname === '/admin') {
+    if (location.pathname === '/admin' || location.pathname === '/admin/') {
         return navigate('/admin/dashboard')
     }
 
