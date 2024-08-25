@@ -8,9 +8,11 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 // import data from '../../../data'
 // import PageNotFound from '../../../pages/admin/PageNotFound';
 import { useSelector } from 'react-redux';
-import { getProducts, useProduct } from '../../../store/slices/productSlice';
+import { editProduct, getProducts, useProduct } from '../../../store/slices/productSlice';
 import { useAdminDispatch } from '../../../store';
 import Preloader from '../Preloader';
+import { log } from 'util';
+import mongoose from 'mongoose';
 
 
 
@@ -47,18 +49,23 @@ const EditProduct = () => {
                 navigate('/404')
             }
 
+            console.log(products);
+
+
             let tempProduct: any = {}
 
-            tempProduct = { ...product[0], oldImgs: product[0].imgs, newImgs: [] }
+            tempProduct = { ...product[0],  newImgs: [] }
+            delete tempProduct.__typename
+            tempProduct.oldImgs = (
+                tempProduct.imgs.map(img => {
+                    const temp = {...img}
+                    delete temp.__typename
+                    return temp
+                })
+            )
+            delete tempProduct.imgs
 
-            if (tempProduct.imgs) {
-                const { imgs, ...rest } = tempProduct
-                setFormData(rest as ProductEditInput)
-            }
-            else {
-                setFormData(tempProduct as ProductEditInput)
-            }
-
+            setFormData(tempProduct as ProductEditInput)
         }
     }, [products])
 
@@ -74,7 +81,7 @@ const EditProduct = () => {
         e.stopPropagation()
 
 
-        let val: string | string[] | ProductImageInput[] | boolean
+        let val: string | string[] | ProductImageInput[] | boolean | number
 
         if (e.target.type === 'file') {
 
@@ -83,12 +90,11 @@ const EditProduct = () => {
             val = [...newImgs] as ProductImageInput[]
             for (let i = 0; i < files!.length; i++) {
                 const file: ProductImageInput = {
-                    _id: uuidv4(),
+                    _id: new mongoose.Types.ObjectId() as unknown as string,
                     img: files![i]
                 }
                 val.push(file)
             }
-
         }
         else if (e.target.type === 'checkbox') {
             const event = e.target as HTMLInputElement
@@ -121,6 +127,9 @@ const EditProduct = () => {
         }
         else {
             val = e.target.value
+            if(parseInt(val)) {
+                val = parseInt(val)
+            }
         }
 
         let updateData = {
@@ -144,7 +153,7 @@ const EditProduct = () => {
             updateData.slug = newSlug.toLowerCase()
         }
 
-        
+
         setFormData(prev => ({
             ...prev,
             ...updateData
@@ -180,18 +189,18 @@ const EditProduct = () => {
 
     }, [newImgs])
 
-    useEffect(()=> {
+    useEffect(() => {
 
-       
-        if(Object.keys(formData).length > 0) {
-            Object.keys(formData).filter(key=>key !== '__typename').map(key=>{
-                if(formData[key]) {
-                   setFormErrors(prev=>({...prev, [key]: ''}))          
+
+        if (Object.keys(formData).length > 0) {
+            Object.keys(formData).filter(key => key !== '__typename').map(key => {
+                if (formData[key]) {
+                    setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
-                
+
             })
         }
-        
+
         // setFormErrors(prev=>({...prev, [e.target.name]: ''}))
 
     }, [formData])
@@ -217,7 +226,6 @@ const EditProduct = () => {
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
 
-        console.log(formData);
 
         const validateSchema: ValidateSchema<any>[] =
             [
@@ -279,8 +287,19 @@ const EditProduct = () => {
 
 
         if (Object.keys(errors).length > 0) {
-            return setFormErrors({ ...errors })
+            setFormErrors({ ...errors })
         }
+        else {
+
+            console.log(formData);
+
+
+            dispatch(editProduct(formData))
+
+            // dispatch(editProduct(formData))
+        }
+
+
     }
 
 

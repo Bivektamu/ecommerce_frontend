@@ -29,7 +29,6 @@ const initial: ProductInput = {
     category: 'test'
 }
 
-
 const AddProduct = () => {
 
     const dispatch = useAdminDispatch()
@@ -192,7 +191,6 @@ const AddProduct = () => {
             ]
 
         const errors: FormError = validateForm(validateSchema)
-
         if (Object.keys(errors).length > 0) {
             return setFormErrors({ ...errors })
         }

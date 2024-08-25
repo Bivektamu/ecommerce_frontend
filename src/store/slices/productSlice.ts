@@ -1,6 +1,6 @@
-import { ProductInput, ProductSlice, Status, RootState, Action } from "../types";
+import { ProductInput, ProductSlice, Status, RootState, Action, ProductEditInput } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_PRODUCT, DELETE_PRODUCT } from "../../data/mutation";
+import { CREATE_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT } from "../../data/mutation";
 import client from "../../data/client";
 import { GET_PRODUCTS } from "../../data/query";
 
@@ -26,6 +26,27 @@ export const addProduct = createAsyncThunk('/admin/product/add', async (formData
         if (error instanceof Error) {
             console.log(error.message);
 
+            throw error
+        }
+    }
+})
+
+export const editProduct = createAsyncThunk('/admin/product/edit', async (formData: ProductEditInput[]) => {
+
+    try {
+        const response = await client.mutate({
+            mutation: EDIT_PRODUCT,
+            variables: { input: formData }
+        })
+        console.log(response.data);
+        
+
+        return response.data.editProduct
+
+    } catch (error) {
+
+        if (error instanceof Error) {
+            console.log(error.message);
             throw error
         }
     }
@@ -116,9 +137,22 @@ const productSlice = createSlice({
                 state.status = Status.REJECTED
                 state.error = action.error.message as string
             })
+            .addCase(editProduct.pending, (state: ProductSlice) => {
+                state.status = Status.PENDING
+            })
+            .addCase(editProduct.fulfilled, (state: ProductSlice, action) => {
+                client.resetStore()
+                state.status = Status.FULFILLED
+                // state.products.push(action.payload)
+                // state.action = Action.
+            })
+            .addCase(editProduct.rejected, (state: ProductSlice, action) => {
+                state.status = Status.REJECTED
+                state.error = action.error.message as string
+            })
     }
 })
 
 export default productSlice.reducer
-export const {resetStatus} = productSlice.actions
+// export const {resetStatus} = productSlice.actions
 export const useProduct = (state: RootState) => state.products

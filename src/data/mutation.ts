@@ -20,14 +20,6 @@ export const LOGIN_MUTATION = gql`
 
 
 
-export const UPLOAD_FILE = gql`
-mutation ($file: Upload!) {
-  uploadFile(file: $file) {
-    success
-  }
-}
-`
-  ;
 
 export const CREATE_PRODUCT = gql`
 mutation CreateProduct($input: CreateProduct) {
@@ -48,6 +40,39 @@ mutation CreateProduct($input: CreateProduct) {
     slug
     stockStatus
     title
+  }
+}
+`
+// export const EDIT_PRODUCT = gql`
+// mutation EditProduct($input: EditProduct) {
+//   editProduct(input: $input) {
+//     colors
+//     description
+//     featured
+//     id
+//     imgs {
+//       fileName
+//       id
+//       url
+//     }
+//     price
+//     quantity
+//     sizes
+//     sku
+//     slug
+//     stockStatus
+//     title
+//   }
+// }
+// `
+
+
+export const EDIT_PRODUCT = gql`
+mutation EditProduct($input: EditProduct) {
+  editProduct(input: $input) {
+    id
+    title
+    description
   }
 }
 `
