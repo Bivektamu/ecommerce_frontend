@@ -12,7 +12,7 @@ import { editProduct, getProducts, useProduct } from '../../../store/slices/prod
 import { useAdminDispatch } from '../../../store';
 import Preloader from '../Preloader';
 import { log } from 'util';
-import mongoose from 'mongoose';
+import mongoose, { STATES } from 'mongoose';
 
 
 
@@ -49,16 +49,13 @@ const EditProduct = () => {
                 navigate('/404')
             }
 
-            console.log(products);
-
-
             let tempProduct: any = {}
 
-            tempProduct = { ...product[0],  newImgs: [] }
+            tempProduct = { ...product[0], newImgs: [] }
             delete tempProduct.__typename
             tempProduct.oldImgs = (
                 tempProduct.imgs.map(img => {
-                    const temp = {...img}
+                    const temp = { ...img }
                     delete temp.__typename
                     return temp
                 })
@@ -74,7 +71,7 @@ const EditProduct = () => {
     const [formErrors, setFormErrors] = useState<FormError>({})
     const [imgPreviews, setImagePreviews] = useState<PreviewImage[]>([])
 
-    const { title, sku, price, oldImgs, newImgs, slug, colors, stockStatus, sizes, quantity, description, category } = formData
+    const { title, sku, price, oldImgs, newImgs, slug, colors, stockStatus, sizes, quantity, description, category, featured } = formData
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -127,7 +124,7 @@ const EditProduct = () => {
         }
         else {
             val = e.target.value
-            if(parseInt(val)) {
+            if (parseInt(val)) {
                 val = parseInt(val)
             }
         }
@@ -211,14 +208,12 @@ const EditProduct = () => {
         const updateImgs = [...newImgs]
         const index = updateImgs.findIndex(img => img._id === id)
         updateImgs.splice(index, 1)
-        console.log(updateImgs);
         setFormData(prev => ({ ...prev, newImgs: [...updateImgs] }))
     }
 
     const deleteHandlerForOldImgs = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         e.stopPropagation()
-        console.log(id);
 
         setFormData(prev => ({ ...prev, oldImgs: [...oldImgs.filter(img => img.id !== id)] }))
     }
@@ -246,7 +241,7 @@ const EditProduct = () => {
                 },
                 {
                     name: 'sku',
-                    type: 'text',
+                    type: 'aplhaNumeric',
                     value: sku
                 },
                 {
@@ -290,30 +285,20 @@ const EditProduct = () => {
             setFormErrors({ ...errors })
         }
         else {
-
-            console.log(formData);
-
-
             dispatch(editProduct(formData))
-
-            // dispatch(editProduct(formData))
         }
 
 
     }
 
 
-    if (products.length < 1 || Object.keys(formData).length < 1) {
+    if (Object.keys(formData).length < 1 || status === Status.PENDING) {
         return <Preloader />
     }
 
-    // if (status == Status.IDLE || status == Status.PENDING) {
-    //     return <Preloader />
-    // }
-
-    // if (status === Status.FULFILLED && action !== Action.FETCH) {
-    //     return <Preloader />
-    // }
+    if (status === Status.FULFILLED && action === Action.EDIT) {
+        return <Navigate to="/admin/products" />
+    }
 
 
     return (
@@ -403,7 +388,7 @@ const EditProduct = () => {
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.url} />
                                                 <button onClick={(e) => deleteHandlerForOldImgs(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
-                                                    <Close classN='w-4 h-4' />
+                                                    <Close classN='w-1/2 bg-black' />
                                                 </button>
                                             </div>
                                         )
@@ -414,7 +399,7 @@ const EditProduct = () => {
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.src} />
                                                 <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
-                                                    <Close classN='w-4 h-4' />
+                                                    <Close classN='w-1/2 bg-black' />
                                                 </button>
                                             </div>
                                         )
@@ -475,7 +460,9 @@ const EditProduct = () => {
                         </fieldset>
 
                         <fieldset className='flex items-center gap-4'>
-                            <input type="checkbox" name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' />
+                            {featured ? <input type="checkbox" checked name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' /> : <input type="checkbox" name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' />}
+
+
                             <label htmlFor='featured' className='font-medium  text-slate-600'>Is Featured</label>
                         </fieldset>
                     </div>

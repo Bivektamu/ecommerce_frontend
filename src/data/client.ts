@@ -10,6 +10,7 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 // Create an upload link for handling file uploads
 const uploadLink = createUploadLink({
     uri: 'http://localhost:3000/graphql',
+    // uri: 'https://ecommerce-backend-bivek.vercel.app/graphql',
 });
 
 

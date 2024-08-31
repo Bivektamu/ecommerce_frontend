@@ -128,7 +128,7 @@ const productSlice = createSlice({
             .addCase(deleteProduct.pending, (state: ProductSlice) => {
                 state.status = Status.PENDING
             })
-            .addCase(deleteProduct.fulfilled, (state: ProductSlice, action) => {
+            .addCase(deleteProduct.fulfilled, (state: ProductSlice) => {
                 client.resetStore()
                 state.status = Status.FULFILLED
                 state.action = Action.DELETE
@@ -144,11 +144,12 @@ const productSlice = createSlice({
                 client.resetStore()
                 state.status = Status.FULFILLED
                 // state.products.push(action.payload)
-                // state.action = Action.
+                state.action = Action.EDIT
             })
             .addCase(editProduct.rejected, (state: ProductSlice, action) => {
                 state.status = Status.REJECTED
                 state.error = action.error.message as string
+
             })
     }
 })

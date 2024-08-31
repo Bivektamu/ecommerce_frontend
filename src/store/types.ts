@@ -49,6 +49,7 @@ export enum Action {
     FETCH = 'FETCH',
     ADD = 'ADD',
     DELETE = 'DELETE',
+    EDIT = 'EDIT'
 }
 
 export interface ProductSlice {

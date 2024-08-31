@@ -1,14 +1,13 @@
-import React from 'react'
-
 type Props = {
-  classN?: string
+    classN?:string
 }
 
-const Close = ({ classN }: Props) => {
+const Check = ({classN='relative'}: Props) => {
+  
   return (
-    <span className={`rotate-45 border-b-2 border-r-2 border-slate-600 -translate-x-1 inline-block ${classN}`}>
+    <span className={`flex m-auto items-center justify-center w-2 h-4 relative rotate-45 border-b-2 border-r-2 border-black ${classN}`}>
     </span>
   )
 }
 
-export default Close
+export default Check

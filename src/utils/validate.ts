@@ -12,7 +12,7 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
             let error = {
                 [name]: `Please insert ${name}.`
             }
-            if(type === 'boolean') {
+            if (type === 'boolean') {
                 error = {
                     [name]: `Please select ${name}.`
                 }
@@ -36,6 +36,19 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
 
         else {
             switch (type) {
+                case 'alphaNumeric': {
+                    const regex: RegExp = /^[A-Za-z].*[0-9]$/
+                    
+                    if (!regex.test(value)) {
+                        const error = {
+                            [name]: `Please insert value in alpha numeric format.`
+                        }
+                        errors = { ...errors, ...error }
+                    }
+
+
+                    break;
+                }
                 case 'number':
                     if (value <= 0) {
                         const error = {

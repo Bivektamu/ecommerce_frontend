@@ -137,8 +137,6 @@ const AddProduct = () => {
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
-        console.log(typeof formData.quantity);
-
         const validateSchema: ValidateSchema<any>[] =
             [
                 {
@@ -153,7 +151,7 @@ const AddProduct = () => {
                 },
                 {
                     name: 'sku',
-                    type: 'text',
+                    type: 'alphaNumeric',
                     value: sku
                 },
                 {
@@ -229,6 +227,11 @@ const AddProduct = () => {
         }
     }, [imgs])
 
+    useEffect(()=> {
+        console.log(formErrors);
+        
+    }, [formErrors])
+
 
     if(status === Status.FULFILLED && action === Action.ADD) {
         return <Navigate to="/admin/products" />
@@ -284,9 +287,9 @@ const AddProduct = () => {
                             <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
                                 {
                                     imgPreviews.map((img: PrviewImage) =>
-                                        <div key={img.id} className='relative'>
+                                        <div key={img._id} className='relative'>
                                             <img className='w-14 h-14 object-cover' src={img.src} />
-                                            <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
+                                            <button onClick={(e) => previewHandler(e, img._id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
                                                 <Close classN='bg-black w-1/2' />
                                             </button>
                                         </div>

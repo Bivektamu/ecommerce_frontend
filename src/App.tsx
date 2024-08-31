@@ -77,7 +77,7 @@ function App() {
         <SignIn />
       </Suspense>
     },
-    
+
     {
       path: '*',
       element: <Suspense fallback={<Preloader />}>
