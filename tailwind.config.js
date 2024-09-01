@@ -21,7 +21,10 @@ export default {
         'table-order': '1fr 3fr 1.5fr 1.5fr 1.5fr 2fr  1fr',
         'table-customers': '1fr 1fr 2fr 3fr 2fr  1fr 1fr  1fr',
         'table-reviews': '1fr 2fr 6fr 1fr 1fr  1fr',
-      }
+      },
+      aspectRatio: {
+        '2/2.3': '2 / 2.3',
+      },
      
     },
   },

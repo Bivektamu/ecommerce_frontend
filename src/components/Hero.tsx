@@ -7,7 +7,7 @@ type Props = {}
 const Hero = (props: Props) => {
     return (
         <section id="hero">
-            <div className="container flex justify-between items-center bg-slate-400 mx-auto">
+            <div className="container flex justify-between items-center mx-auto">
                 <div className="flex flex-col items-start py-32 ">
                     <h1 className='mb-4 text-4xl font-semibold'>Fresh Arrivals Online</h1>
                     <span className='mb-14'>Discover Our Newest Collection Today.</span>

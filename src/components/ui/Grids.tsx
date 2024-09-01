@@ -1,12 +1,12 @@
 import React from 'react'
 type Props = {
-    children: React.ReactNode
+    children: React.ReactNode,
+    cssClass:string
 }
 
-const Grids = ({children}: Props) => {
+const Grids = ({children, cssClass}: Props) => {
     return (
-        <div>
-            Grids
+        <div className={cssClass}>
             {children}
         </div>
     )
