@@ -1,12 +1,12 @@
 import React, { MouseEvent, ReactElement, ReactNode, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-import { Order, Order_Status, Toast, Toast_Vairant } from '../../../store/types'
-import getMonth from '../../../utils/getMonth'
-import Modal from '../Modal'
+import { Order, Order_Status, Toast, Toast_Vairant } from '../../store/types'
+import getMonth from '../../utils/getMonth'
+import Modal from '../ui/Modal'
 import OrderDetails from './OrderDetails';
 import { useDispatch } from 'react-redux';
-import { addToast } from '../../../store/slices/toastSlice';
+import { addToast } from '../../store/slices/toastSlice';
 
 type Props = {
     order: Order

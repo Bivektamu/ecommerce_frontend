@@ -1,10 +1,10 @@
 import { MouseEvent, useEffect, useState } from 'react'
 
-import { Customer, Product, Review} from '../../../store/types'
-import getMonth from '../../../utils/getMonth'
+import { Customer, Product, Review} from '../../store/types'
+import getMonth from '../../utils/getMonth'
 import { useDispatch } from 'react-redux';
-import data from '../../../data';
-import getExcerpt from '../../../utils/getExcerpt';
+import data from '../../data';
+import getExcerpt from '../../utils/getExcerpt';
 
 type Props = {
     review: Review

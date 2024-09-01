@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import data from '../../data'
-import OrderTile from '../../components/ui/admin/OrderTile'
+import OrderTile from '../../components/admin/OrderTile'
 
 type Props = {}
 

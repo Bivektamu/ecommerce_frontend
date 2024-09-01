@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Customer, Order, Product, OrderedProduct, Colour } from '../../../store/types'
-import getMonth from '../../../utils/getMonth'
-import data from '../../../data'
+import { Customer, Order, Product, OrderedProduct, Colour } from '../../store/types'
+import getMonth from '../../utils/getMonth'
+import data from '../../data'
 import gravatar from 'gravatar'
-import Tooltip from '../Tooltip'
+import Tooltip from '../ui/Tooltip'
 
 type Props = {
     order: Order

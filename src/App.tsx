@@ -4,17 +4,54 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom"
 const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
 const Products = lazy(() => import("./pages/admin/Products"))
 const SignIn = lazy(() => import("./pages/admin/SignIn"))
-const AddProduct = lazy(() => import("./components/ui/admin/AddProduct"))
-const EditProduct = lazy(() => import("./components/ui/admin/EditProduct"))
+const AddProduct = lazy(() => import("./components/admin/AddProduct"))
+const EditProduct = lazy(() => import("./components/admin/EditProduct"))
 const Orders = lazy(() => import("./pages/admin/Orders"))
 const Customers = lazy(() => import("./pages/admin/Customers"))
 const Reviews = lazy(() => import("./pages/admin/Reviews"))
 const PrivateRoute = lazy(() => import("./pages/admin/Private"))
 import Preloader from "./components/ui/Preloader"
 import PageNotFound from "./pages/admin/PageNotFound"
+import Home from "./pages/Home"
+import Layout from "./components/ui/Layout"
+import Product from "./pages/Product"
+import ProductListing from "./pages/ProductListing"
+import Contact from "./pages/Contact"
 
 function App() {
   const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Suspense fallback={<Preloader />}>
+        <Layout />
+      </Suspense>,
+      children:[
+        {
+          path: '/',
+          element: <Suspense fallback={<Preloader />}>
+            <Home />
+          </Suspense>
+        },
+        {
+          path: '/collections',
+          element: <Suspense fallback={<Preloader />}>
+            <ProductListing />
+          </Suspense>
+        },
+        {
+          path: '/product/:slug',
+          element: <Suspense fallback={<Preloader />}>
+            <Product />
+          </Suspense>
+        },
+        {
+          path: '/contact',
+          element: <Suspense fallback={<Preloader />}>
+            <Contact />
+          </Suspense>
+        },
+      ]
+    },
     {
       path: '/admin',
       element: <Suspense fallback={<Preloader />}>

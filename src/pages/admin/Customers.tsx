@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import data from '../../data'
-import CustomerTile from '../../components/ui/admin/CustomerTile'
+import CustomerTile from '../../components/admin/CustomerTile'
 import SearchIcon from '../../components/ui/SearchIcons'
 
 type Props = {}

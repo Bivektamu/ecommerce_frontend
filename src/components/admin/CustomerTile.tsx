@@ -2,13 +2,13 @@ import React, { MouseEvent, ReactElement, ReactNode, useEffect, useState } from 
 import { v4 as uuidv4 } from 'uuid';
 import gravatar from 'gravatar'
 
-import { Customer, CustomerInput, Toast, Toast_Vairant } from '../../../store/types'
-import getMonth from '../../../utils/getMonth'
+import { Customer, CustomerInput, Toast, Toast_Vairant } from '../../store/types'
+import getMonth from '../../utils/getMonth'
 import Modal from '../Modal'
 import { useDispatch } from 'react-redux';
-import { addToast } from '../../../store/slices/toastSlice';
-import Check from '../Check';
-import Close from '../Close';
+import { addToast } from '../../store/slices/toastSlice';
+import Check from '../ui/Check';
+import Close from '../ui/Close';
 import { log } from 'console';
 
 type Props = {

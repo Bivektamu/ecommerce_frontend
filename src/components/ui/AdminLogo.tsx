@@ -1,75 +1,7 @@
-import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status } from '../../store/types'
-import { Navigate } from 'react-router-dom'
-import { useAdminDispatch } from '../../store'
-import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/adminAuth'
-import { useSelector } from 'react-redux'
-import Logo from '../../components/ui/AdminLogo'
-import Preloader from '../../components/ui/Preloader'
 
-const SignIn = () => {
-
-  const dispatch = useAdminDispatch()
-
-  
-  const auth = useSelector(useAuth)
-
-  const { isLoggedIn, status } = auth
-
- 
-useEffect(()=> {
-  console.log('signIn') 
-   dispatch(getAuthStatus())
-}, [])
-
-useEffect(()=> {
-  console.log(auth);
-  
-}, [auth])
-
-
-  const [email, setEmail] = useState('admin@gmail.com')
-  const [password, setPassword] = useState('password123')
-  const [errors, setErrors] = useState<Partial<Pick<FormData, 'email' | 'password'>>>({})
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-
-    const newErrors: typeof errors = {}
-
-    if (email === '') {
-      newErrors.email = 'Please insert your email'
-    }
-
-    if (password === '') {
-      newErrors.password = 'Please insert your password'
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      return setErrors({ ...newErrors })
-    }
-    const data:Partial<Pick<FormData, 'email' | 'password'>> = {
-      email,
-      password
-    }
-
-    dispatch(loginAdmin(data))
-
-  }
-
-  if(status == Status.IDLE || status === Status.PENDING) {
-    return <Preloader />
-}
-
-  if (status === Status.FULFILLED && isLoggedIn) {
-    return <Navigate to="/admin" />
-  }
-
-  return (
-    <section className='w-full h-screen flex justify-center items-center'>
-      <div className="w-[384px] max-w-full bg-white pt-8 pb-12 px-8 rounded-lg">
-      <svg id="logo" className='mx-auto mb-16' width="116" height="40" viewBox="0 0 116 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+const Logo = () => {
+    return (
+        <svg id="logo" className='mx-auto mb-16' width="116" height="40" viewBox="0 0 116 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_1524_896)">
                 <path d="M20.4768 11.3486L14.2039 7.5551C13.6118 7.19293 12.9387 7.00151 12.2531 7.00032C10.2093 7.00032 8.33463 8.71226 8.33463 11.105V25.3073L20.4768 17.9669C22.9081 16.4947 22.9081 12.82 20.4768 11.3486ZM11.8483 18.448V10.8679L18.1162 14.6567L11.8483 18.448Z" fill="#0E1422" />
                 <path d="M23.8488 32.9845C23.8488 33.0273 11.9907 32.966 11.9907 32.966L10.9432 32.8426C9.2466 32.644 7.94413 31.1233 8.00185 29.3346C8.00185 29.2918 8.00553 29.2519 8.00799 29.2103C8.05459 28.4365 8.32595 27.6961 8.7857 27.0885C8.9724 26.8461 9.20079 26.6426 9.45903 26.4883L18.478 21.0725C20.3413 19.9535 21.893 19.562 22.6998 17.5341C22.9973 16.7757 23.1258 15.9562 23.0756 15.1379L23.0444 14.5866L23.965 19.9205C24.0829 20.8264 23.9012 21.7537 23.421 22.5169C23.1325 22.9785 22.7474 23.3653 22.295 23.6479L11.8294 28.8943C11.819 28.9006 11.8088 28.9075 11.7991 28.9149C11.5126 29.1293 11.6894 29.6069 12.0402 29.5867L20.7514 29.6403C22.4431 29.5417 23.8524 31.2112 23.8488 32.9845Z" fill="#0E1422" />
@@ -81,24 +13,7 @@ useEffect(()=> {
                 </clipPath>
             </defs>
         </svg>
-
-        <form onSubmit={handleSubmit}>
-          <fieldset className='mb-6'>
-            <label htmlFor="email" className='font-medium block mb-1 text-mblack'>Email</label>
-            <input type="text" id="email" readOnly value={email} onChange={e => setEmail(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4 ' />
-            {errors.email && <span className='text-sm text-red-500'>{errors.email}</span>}
-          </fieldset>
-
-          <fieldset className='mb-6'>
-            <label htmlFor="password" className='font-medium block w-full mb-1'>Password</label>
-            <input type="password" id="password" readOnly value={password} onChange={e => setPassword(e.target.value)} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4' />
-            {errors.password && <span className='text-sm text-red-500'>{errors.password}</span>}
-          </fieldset>
-            <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer w-full'>Login</button>
-        </form>
-      </div>
-    </section>
-  )
+    )
 }
 
-export default SignIn
+export default Logo

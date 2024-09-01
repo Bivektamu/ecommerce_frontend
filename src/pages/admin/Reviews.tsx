@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import data from '../../data'
-import ReviewTile from '../../components/ui/admin/ReviewTile'
+import ReviewTile from '../../components/admin/ReviewTile'
 import SearchIcon from '../../components/ui/SearchIcons'
 
 type Props = {}
