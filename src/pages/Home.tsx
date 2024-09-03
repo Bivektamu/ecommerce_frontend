@@ -11,6 +11,7 @@ import HeroImg from '../assets/hero-2.png'
 
 import Arrow from "../components/ui/Arrow"
 import { Link } from "react-router-dom"
+import SearchIcon from "../components/ui/SearchIcons"
 
 const Home = (props: Props) => {
   const dispatch = useAdminDispatch()
