@@ -1,14 +1,17 @@
-import React from 'react'
-import Header from '../Header'
+import React, { lazy, Suspense } from 'react'
+// import Header from '../Header'
+const Header = lazy(() => import("../Header"))
+
 import Footer from '../Footer'
 import { Outlet } from 'react-router-dom'
+import Preloader from './Preloader'
 
 type Props = {}
 
 const Layout = (props: Props) => {
   return (
     <>
-      <Header />
+      <Header /> 
       <main id="main">
         <Outlet />
       </main>

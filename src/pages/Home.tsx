@@ -2,7 +2,7 @@ import { useSelector } from "react-redux"
 import Hero from "../components/Hero"
 import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { useAdminDispatch } from "../store"
 import { Status } from "../store/types"
 import Preloader from "../components/ui/Preloader"
@@ -12,6 +12,8 @@ import HeroImg from '../assets/hero-2.png'
 import Arrow from "../components/ui/Arrow"
 import { Link } from "react-router-dom"
 import SearchIcon from "../components/ui/SearchIcons"
+import CardLoader from "../components/ui/CardLoader"
+import GridLoader from "../components/ui/GridLoader"
 
 const Home = (props: Props) => {
   const dispatch = useAdminDispatch()
@@ -21,14 +23,12 @@ const Home = (props: Props) => {
     dispatch(getProducts())
   }, [])
 
-  console.log(products);
-
-  if (products.length < 1 || status !== Status.FULFILLED) {
-    return <Preloader />
-  }
+  // if (products.length < 1 || status !== Status.FULFILLED) {
+  //   return <Preloader />
+  // }
 
   return (
-    <>
+    <Suspense fallback={<h1>Load...</h1>}>
       <Hero />
       <section className="bg-white pt-24 pb-36">
         <Grids cssClass='container mx-auto grid-cols-3 grid gap-24 mb-36'>
@@ -61,25 +61,32 @@ const Home = (props: Props) => {
 
         <p className="text-slate-400 text-sm mb-4 text-center uppercase tracking-wide">Shop Now</p>
         <h2 className="font-bold text-2xl mb-24 text-center">Best Selling</h2>
-        <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
-          {new Array(2).fill('*').map((_, index) =>
-            products.map(product =>
-              <div key={product.id}>
-                <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                  <img src={product.imgs[0].url} alt="" className="w-3/5" />
+
+
+        {products.length < 1 ? <GridLoader col='4' /> :
+
+          <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
+
+            {new Array(2).fill('*').map((_, index) =>
+              products.map(product =>
+                <div key={product.id}>
+                  <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
+                    <img src={product.imgs[0].url} alt="" className="w-3/5" />
+                  </div>
+                  <p className="font-semibold mb-4">{product.title}</p>
+                  <div className="flex gap-x-4 items-center">
+                    {
+                      product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
+                    }
+                    <span className="text-slate-600 text-xs">${product.price}</span>
+                  </div>
                 </div>
-                <p className="font-semibold mb-4">{product.title}</p>
-                <div className="flex gap-x-4 items-center">
-                  {
-                    product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                  }
-                  <span className="text-slate-600 text-xs">${product.price}</span>
-                </div>
-              </div>
+              )
             )
-          )
-          }
-        </Grids>
+            }
+          </Grids>
+
+        }
       </section>
 
       <section id="">
@@ -99,28 +106,33 @@ const Home = (props: Props) => {
           <button className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">Latest</button>
         </div>
 
-        <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
-          {new Array(2).fill('*').map((_, index) =>
-            products.map(product =>
-              <div key={product.id}>
-                <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                  <img src={product.imgs[0].url} alt="" className="w-3/5" />
-                </div>
-                <p className="font-semibold mb-4">{product.title}</p>
-                <div className="flex gap-x-4 items-center">
-                  {
-                    product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                  }
-                  <span className="text-slate-600 text-xs">${product.price}</span>
-                </div>
-              </div>
-            )
-          )
-          }
-        </Grids>
+        {
+          products.length < 1 ? <GridLoader col='3' /> :
+
+            <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
+              {new Array(2).fill('*').map((_, index) =>
+                products.map(product =>
+                  <div key={product.id}>
+                    <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
+                      <img src={product.imgs[0].url} alt="" className="w-3/5" />
+                    </div>
+                    <p className="font-semibold mb-4">{product.title}</p>
+                    <div className="flex gap-x-4 items-center">
+                      {
+                        product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
+                      }
+                      <span className="text-slate-600 text-xs">${product.price}</span>
+                    </div>
+                  </div>
+                )
+              )
+              }
+            </Grids>
+        }
+
 
       </section>
-    </>
+    </Suspense>
   )
 }
 

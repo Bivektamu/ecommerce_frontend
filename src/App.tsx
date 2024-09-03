@@ -22,15 +22,11 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Suspense fallback={<Preloader />}>
-        <Layout />
-      </Suspense>,
+      element: <Layout />,
       children:[
         {
           path: '/',
-          element: <Suspense fallback={<Preloader />}>
-            <Home />
-          </Suspense>
+          element: <Home />
         },
         {
           path: '/collections',
