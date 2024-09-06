@@ -1,16 +1,16 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { Colour, Size, ProductImage, ValidateSchema, FormError, ProductInput, Status, Action, Product, ProductEditInput, ProductImageInput } from '../../../store/types'
-import validateForm from '../../../utils/validate';
-import Close from '../Close';
+import { Colour, Size, ProductImage, ValidateSchema, FormError, ProductInput, Status, Action, Product, ProductEditInput, ProductImageInput } from '../../store/types'
+import validateForm from '../../utils/validate';
+import Close from '../ui/Close';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-// import data from '../../../data'
-// import PageNotFound from '../../../pages/admin/PageNotFound';
+// import data from '../../data'
+// import PageNotFound from '../../pages/admin/PageNotFound';
 import { useSelector } from 'react-redux';
-import { editProduct, getProducts, useProduct } from '../../../store/slices/productSlice';
-import { useAdminDispatch } from '../../../store';
-import Preloader from '../Preloader';
+import { editProduct, getProducts, useProduct } from '../../store/slices/productSlice';
+import { useAdminDispatch } from '../../store';
+import Preloader from '../ui/Preloader';
 import { log } from 'util';
 import mongoose, { STATES } from 'mongoose';
 

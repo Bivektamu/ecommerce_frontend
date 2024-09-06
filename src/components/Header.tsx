@@ -11,7 +11,7 @@ const Header = () => {
         <Logo />
         <div className="flex gap-x-6">
           <NavLink className='flex items-center' to="/">Home</NavLink>
-          <NavLink className='flex items-center' to="/collections">Products</NavLink>
+          <NavLink className='flex items-center' to="/collections">Collections</NavLink>
           <NavLink className='flex items-center' to="/contact">Contact</NavLink>
         </div>
         <div className="flex gap-x-6">

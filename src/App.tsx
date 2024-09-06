@@ -15,14 +15,14 @@ import PageNotFound from "./pages/admin/PageNotFound"
 import Home from "./pages/Home"
 import Layout from "./components/ui/Layout"
 import Product from "./pages/Product"
-import ProductListing from "./pages/ProductListing"
 import Contact from "./pages/Contact"
+import Collections from "./pages/Collections"
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Layout />,
+      element: <Suspense fallback={<Preloader />}><Layout /></Suspense>,
       children:[
         {
           path: '/',
@@ -30,9 +30,7 @@ function App() {
         },
         {
           path: '/collections',
-          element: <Suspense fallback={<Preloader />}>
-            <ProductListing />
-          </Suspense>
+          element:<Collections />
         },
         {
           path: '/product/:slug',
