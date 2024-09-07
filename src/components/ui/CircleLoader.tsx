@@ -1,5 +1,5 @@
 
-const ColourLoader = () => {
+const CircleLoader = () => {
 
     return (
         <div className={`container mx-auto flex gap-4`}>
@@ -11,4 +11,4 @@ const ColourLoader = () => {
     )
 }
 
-export default ColourLoader
+export default CircleLoader
