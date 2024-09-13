@@ -64,7 +64,7 @@ const EditProduct = () => {
 
             setFormData(tempProduct as ProductEditInput)
         }
-    }, [products])
+    }, [products, params.slug])
 
 
 
@@ -73,6 +73,52 @@ const EditProduct = () => {
 
     const { title, sku, price, oldImgs, newImgs, slug, colors, stockStatus, sizes, quantity, description, category, featured } = formData
 
+
+
+    useEffect(() => {
+        if (newImgs?.length > 0) {
+
+            const previews: PreviewImage[] = []
+            newImgs.map(img => {
+
+                const reader = new FileReader()
+                reader.onload = () => {
+                    if (reader.result) {
+                        const previewImg: PreviewImage = {
+                            id: img._id as keyof ProductImageInput,
+                            src: reader.result as string
+                        }
+                        previews.push(previewImg);
+                        if (previews.length === newImgs.length) {
+                            setImagePreviews([...previews])
+                        }
+                    }
+                }
+                reader.readAsDataURL(img.img)
+            })
+        }
+
+        else {
+            setImagePreviews([])
+        }
+
+    }, [newImgs])
+
+    useEffect(() => {
+
+
+        if (Object.keys(formData).length > 0) {
+            Object.keys(formData).filter(key => key !== '__typename').map(key => {
+                if (formData[key]) {
+                    setFormErrors(prev => ({ ...prev, [key]: '' }))
+                }
+
+            })
+        }
+
+        // setFormErrors(prev=>({...prev, [e.target.name]: ''}))
+
+    }, [formData])
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
@@ -157,50 +203,6 @@ const EditProduct = () => {
         }))
     }
 
-    useEffect(() => {
-        if (newImgs?.length > 0) {
-
-            const previews: PreviewImage[] = []
-            newImgs.map(img => {
-
-                const reader = new FileReader()
-                reader.onload = () => {
-                    if (reader.result) {
-                        const previewImg: PreviewImage = {
-                            id: img._id as keyof ProductImageInput,
-                            src: reader.result as string
-                        }
-                        previews.push(previewImg);
-                        if (previews.length === newImgs.length) {
-                            setImagePreviews([...previews])
-                        }
-                    }
-                }
-                reader.readAsDataURL(img.img)
-            })
-        }
-
-        else {
-            setImagePreviews([])
-        }
-
-    }, [newImgs])
-
-    useEffect(() => {
-
-
-        if (Object.keys(formData).length > 0) {
-            Object.keys(formData).filter(key => key !== '__typename').map(key => {
-                if (formData[key]) {
-                    setFormErrors(prev => ({ ...prev, [key]: '' }))
-                }
-
-            })
-        }
-
-        // setFormErrors(prev=>({...prev, [e.target.name]: ''}))
-
-    }, [formData])
 
     const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
@@ -238,6 +240,11 @@ const EditProduct = () => {
                     name: 'description',
                     type: 'text',
                     value: description
+                },
+                {
+                    name: 'category',
+                    type: 'text',
+                    value: category
                 },
                 {
                     name: 'sku',
@@ -310,7 +317,7 @@ const EditProduct = () => {
             <div className=' px-8 py-12  max-w-[800px]'>
 
                 <form className='grid grid-cols-2 gap-x-20 gap-y-6' onSubmit={submitHandler}>
-                    <div className='flex flex-col gap-4'>
+                    <div className='flex flex-col gap-6'>
                         <fieldset className=''>
                             <label htmlFor="title" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>title</label>
                             <input type="text" id="title" name="title" onChange={changeHandler} value={title} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
@@ -350,13 +357,18 @@ const EditProduct = () => {
 
                         </fieldset>
 
+                        <fieldset className='flex items-center gap-4 pt-4'>
+                            {featured ? <input type="checkbox" checked name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' /> : <input type="checkbox" name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' />}
 
+
+                            <label htmlFor='featured' className='font-medium  text-slate-600'>Is Featured</label>
+                        </fieldset>
                     </div>
 
-                    <div className='flex flex-col gap-4'>
+                    <div className='flex flex-col gap-6'>
                         <fieldset className=''>
                             <label htmlFor="sku" className='uppercase font-medium text-slate-600 text-sm block mb-2 w-full'>sku</label>
-                            <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku.toUpperCase()} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
                             {formErrors.sku && <span className='text-red-500 text-xs'>{formErrors.sku}</span>}
 
                         </fieldset>
@@ -459,12 +471,17 @@ const EditProduct = () => {
 
                         </fieldset>
 
-                        <fieldset className='flex items-center gap-4'>
-                            {featured ? <input type="checkbox" checked name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' /> : <input type="checkbox" name="featured" id="featured" onChange={changeHandler} className=' w-6 h-6 border-[1px] rounded accent-slate-600' />}
+                        <fieldset className=''>
+                            <label htmlFor="category" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>Category</label>
+                            <input type="text" id="category" name="category" onChange={changeHandler} value={category ? category : ''} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            {formErrors.category && <span className='text-red-500 text-xs'>{formErrors.category}</span>}
 
-
-                            <label htmlFor='featured' className='font-medium  text-slate-600'>Is Featured</label>
                         </fieldset>
+
+
+
+
+
                     </div>
 
                     <fieldset className='col-span-2'>
@@ -473,6 +490,9 @@ const EditProduct = () => {
                         {formErrors.description && <span className='text-red-500 text-xs'>{formErrors.description}</span>}
 
                     </fieldset>
+
+
+
 
                     <button type="submit" className='w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer'>Edit Product</button>
 

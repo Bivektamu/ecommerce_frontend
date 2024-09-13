@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import toastSlice from "./slices/toastSlice";
 import productSlice from "./slices/productSlice";
 
-export const AdminStore = configureStore ({
+export const Store = configureStore ({
     reducer: {
         auth: adminAuth,
         toasts: toastSlice,
@@ -12,6 +12,6 @@ export const AdminStore = configureStore ({
     }
 })
 
-type AdminDisptach = typeof AdminStore.dispatch
-type AdminDisptachCallback = () => AdminDisptach
-export const useAdminDispatch:AdminDisptachCallback = useDispatch
+type StoreDisptach = typeof Store.dispatch
+type StoreDisptachCallback = () => StoreDisptach
+export const useStoreDispatch:StoreDisptachCallback = useDispatch

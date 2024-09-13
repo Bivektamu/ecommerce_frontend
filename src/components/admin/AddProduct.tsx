@@ -14,19 +14,34 @@ interface PrviewImage {
     src: string
 }
 
+// const initial: ProductInput = {
+//     title: 'Test',
+//     sku: 'TETS123',
+//     price: 987,
+//     imgs: [],
+//     slug: 'test',
+//     colors: [Colour.BLACK],
+//     stockStatus: true,
+//     sizes: [Size.LARGE],
+//     quantity: 980,
+//     description: 'test',
+//     featured: false,
+//     category: 'test'
+// }
+
 const initial: ProductInput = {
-    title: 'Test',
-    sku: 'TETS123',
-    price: 987,
+    title: '',
+    sku: '',
+    price: null,
     imgs: [],
-    slug: 'test',
-    colors: [Colour.BLACK],
-    stockStatus: true,
-    sizes: [Size.LARGE],
-    quantity: 980,
-    description: 'test',
+    slug: '',
+    colors: [],
+    stockStatus: false,
+    sizes: [],
+    quantity: null,
+    description: '',
     featured: false,
-    category: 'test'
+    category: ''
 }
 
 const AddProduct = () => {

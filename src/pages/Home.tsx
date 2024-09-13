@@ -3,7 +3,7 @@ import Hero from "../components/Hero"
 import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
 import { useEffect } from "react"
-import { useAdminDispatch } from "../store"
+import { useStoreDispatch } from "../store"
 import HeroImg from '../assets/hero-2.png'
 
 
@@ -13,7 +13,7 @@ import GridLoader from "../components/ui/GridLoader"
 import { Status } from "../store/types"
 
 const Home = (props: Props) => {
-  const dispatch = useAdminDispatch()
+  const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
 
   useEffect(() => {

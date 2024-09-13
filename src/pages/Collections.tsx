@@ -2,7 +2,7 @@
 import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
 import { useEffect, useState } from "react"
-import { useAdminDispatch } from "../store"
+import { useStoreDispatch } from "../store"
 import { useSelector } from "react-redux"
 import BreadCrumbs from "../components/ui/BreadCrumbs"
 import {  Status } from "../store/types"
@@ -13,7 +13,7 @@ import { Link } from "react-router-dom"
 
 
 const Collections = () => {
-  const dispatch = useAdminDispatch()
+  const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
 
   useEffect(() => {
