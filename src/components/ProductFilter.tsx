@@ -1,5 +1,5 @@
-import React from 'react'
-import { Colour, Product, Size, Status } from '../store/types'
+import React, { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from 'react'
+import { Colour, Filters, Product, Size, Status } from '../store/types'
 import TextLoader from './ui/TextLoader'
 import CircleLoader from './ui/CircleLoader'
 import SquareLoader from './ui/SquareLoader'
@@ -10,20 +10,43 @@ const SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 
 type Props = {
     products: Product[],
-    status: Status
+    status: Status,
+    updateFilters: Dispatch<SetStateAction<Filters>>
 }
 
 
-const ProductFilter = ({ products, status }: Props) => {
+const ProductFilter = ({ products, status, updateFilters }: Props) => {
+
+    const [cats, setCats] = useState([])
+
+    useEffect(() => {
+        if (products.length > 0) {
+            const categories = new Set(products.map((product: Product) => product.category))
+            setCats([...Array.from(categories)])
+        }
+    }, [products])
+
+
+    const categoryHandler = (e: MouseEvent<HTMLInputElement>) => {
+        e.stopPropagation()
+
+        if (e.target.checked) {
+            updateFilters((prev) => ({ ...prev, category: [...prev.category, e.target.name] }))
+        }
+        else {
+            updateFilters((prev)=>({...prev, category: prev.category.filter(cat=>cat!==e.target.name)}))
+        }
+    }
+
     return (
         <div id="filters" className="py-8 px-5 rounded-md border w-1/4 shadow-lg">
             <div id="catgory-filter" className="mb-10">
                 <p className="text-sm font-bold mb-4">Categories</p>
-                {(status === Status.PENDING) ? <TextLoader col='3' cssClass="flex-col gap-4 w-1/3 ml-0" /> : products.length < 1 ? <h2 className="text-sm text-slate-600 text-center">Sorry, there are no categories.</h2> :
+                {(status === Status.PENDING) ? <TextLoader col='3' cssClass="flex-col gap-4 w-1/3 ml-0" /> : cats.length < 1 ? <h2 className="text-sm text-slate-600 text-center">Sorry, there are no categories.</h2> :
 
-                    products.map((product: Product) =>
-                        <div key={product.id} className="flex gap-2 border-b py-4">
-                            <input type="checkbox" name={product.category} id={product.category} /><label htmlFor={product.category} className="capitalize text-sm text-slate-600 font-medium">{product.category}</label>
+                    cats.map((cat, i) =>
+                        <div key={i} className="flex gap-2 border-b py-4">
+                            <input type="checkbox" name={cat} id={cat} onClick={categoryHandler} /><label htmlFor={cat} className="capitalize text-sm text-slate-600 font-medium">{cat}</label>
                         </div>
                     )
                 }
@@ -41,10 +64,10 @@ const ProductFilter = ({ products, status }: Props) => {
 
 
                                 return (
-                                    <>
+                                    <fieldset key={i}>
                                         <label htmlFor="white" className={`w-8 h-8 rounded-full ${bgClass}  cursor-pointer relative after:content-[""] after:w-10 after:h-10 after:rounded-full  after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto '}`}></label>
                                         <input type="checkbox" id={color} name="colors" value={color} className='appearance-none hidden ' />
-                                    </>
+                                    </fieldset>
                                 )
                             })
                         }

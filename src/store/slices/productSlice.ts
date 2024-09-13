@@ -31,7 +31,7 @@ export const addProduct = createAsyncThunk('/admin/product/add', async (formData
     }
 })
 
-export const editProduct = createAsyncThunk('/admin/product/edit', async (formData: ProductEditInput[]) => {
+export const editProduct = createAsyncThunk('/admin/product/edit', async (formData: ProductEditInput) => {
 
     try {
         const response = await client.mutate({

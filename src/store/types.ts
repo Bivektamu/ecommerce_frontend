@@ -186,3 +186,8 @@ export interface Review {
     timeStamp: Date,
     rating:number,
 }
+
+
+export interface Filters {
+    category: string[],
+}

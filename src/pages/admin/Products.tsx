@@ -195,7 +195,7 @@ const Products = () => {
               {product.stockStatus ? 'In Stock' : 'Out of Stock'}
             </span>
 
-            <span className='text-sm text-slate-500'>
+            <span className='text-sm text-slate-500 capitalize'>
               {product.category}
             </span>
 

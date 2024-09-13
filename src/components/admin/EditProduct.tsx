@@ -104,21 +104,20 @@ const EditProduct = () => {
 
     }, [newImgs])
 
+
+    // code to remove error info when fields are typed
     useEffect(() => {
-
-
         if (Object.keys(formData).length > 0) {
-            Object.keys(formData).filter(key => key !== '__typename').map(key => {
+            Object.keys(formData).map(key => {
                 if (formData[key]) {
                     setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
 
             })
         }
-
-        // setFormErrors(prev=>({...prev, [e.target.name]: ''}))
-
     }, [formData])
+
+    // /////////////////////////////////
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
@@ -168,6 +167,15 @@ const EditProduct = () => {
 
 
         }
+        else if (e.target.name === 'stockStatus') {
+            if (val === 'true') {
+                val = true
+            }
+            else {
+                val = false
+            }
+
+        }
         else {
             val = e.target.value
             if (parseInt(val)) {
@@ -175,27 +183,20 @@ const EditProduct = () => {
             }
         }
 
+        if(e.target.name === 'category') {
+            val = e.target.value.toLowerCase()
+        }
+
         let updateData = {
             [e.target.name]: val
         }
 
-        if (e.target.name === 'stockStatus') {
-            if (val === 'true') {
-                val = true
-            }
-            else {
-                val = false
-            }
-            updateData = {
-                [e.target.name]: val
-            }
-        }
-        else if (e.target.name === 'title') {
+
+        if (e.target.name === 'title') {
             let newSlug: string = val as string
             newSlug = newSlug.replaceAll(' ', '-')
             updateData.slug = newSlug.toLowerCase()
         }
-
 
         setFormData(prev => ({
             ...prev,
@@ -292,6 +293,7 @@ const EditProduct = () => {
             setFormErrors({ ...errors })
         }
         else {
+
             dispatch(editProduct(formData))
         }
 
@@ -320,19 +322,19 @@ const EditProduct = () => {
                     <div className='flex flex-col gap-6'>
                         <fieldset className=''>
                             <label htmlFor="title" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>title</label>
-                            <input type="text" id="title" name="title" onChange={changeHandler} value={title} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="text" id="title" name="title" onChange={changeHandler} value={title} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' />
                             {formErrors.title && <span className='text-red-500 text-xs'>{formErrors.title}</span>}
                         </fieldset>
                         <fieldset className=''>
                             <label htmlFor="price" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>price</label>
-                            <input type="number" inputMode='numeric' id="price" name="price" onChange={changeHandler} value={price ? price : ''} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="number" inputMode='numeric' id="price" name="price" onChange={changeHandler} value={price ? price : ''} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' />
                             {formErrors.price && <span className='text-red-500 text-xs'>{formErrors.price}</span>}
 
                         </fieldset>
 
                         <fieldset className=''>
                             <label htmlFor="slug" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>slug</label>
-                            <input type="text" id="slug" name="slug" value={slug} onChange={changeHandler} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="text" id="slug" name="slug" value={slug} onChange={changeHandler} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' />
                             {formErrors.slug && <span className='text-red-500 text-xs'>{formErrors.slug}</span>}
 
                         </fieldset>
@@ -341,10 +343,10 @@ const EditProduct = () => {
                             <label htmlFor="stock" className='font-medium text-slate-600 text-sm block mb-2 w-full'>Stock status</label>
 
 
-                            <select value={stockStatus ? 'true' : 'false'} name="stockStatus" id="stock" className='border-[1px] outline-none block px-4 py-2 rounded w-full' onChange={changeHandler}>
+                            <select value={stockStatus ? 'true' : 'false'} name="stockStatus" id="stock" className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' onChange={changeHandler}>
                                 <option value="" hidden>Select stock status</option>
-                                <option className='outline-none block px-4 py-2 rounded w-full' value='true'>In Stock</option>
-                                <option value='false' className='outline-none block px-4 py-2 rounded w-full'>Out of Stock</option>
+                                <option className='outline-none text-sm block px-4 py-2 rounded w-full' value='true'>In Stock</option>
+                                <option value='false' className='outline-none text-sm block px-4 py-2 rounded w-full'>Out of Stock</option>
                             </select>
                             {formErrors.stockStatus && <span className='text-red-500 text-xs'>{formErrors.stockStatus}</span>}
 
@@ -352,7 +354,7 @@ const EditProduct = () => {
 
                         <fieldset className=''>
                             <label htmlFor="quantity" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>Available quantity</label>
-                            <input type="number" id="quantity" name="quantity" onChange={changeHandler} value={quantity ? quantity : ''} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="number" id="quantity" name="quantity" onChange={changeHandler} value={quantity ? quantity : ''} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' />
                             {formErrors.quantity && <span className='text-red-500 text-xs'>{formErrors.quantity}</span>}
 
                         </fieldset>
@@ -368,13 +370,13 @@ const EditProduct = () => {
                     <div className='flex flex-col gap-6'>
                         <fieldset className=''>
                             <label htmlFor="sku" className='uppercase font-medium text-slate-600 text-sm block mb-2 w-full'>sku</label>
-                            <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku.toUpperCase()} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="text" id="sku" name="sku" onChange={changeHandler} value={sku.toUpperCase()} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full' />
                             {formErrors.sku && <span className='text-red-500 text-xs'>{formErrors.sku}</span>}
 
                         </fieldset>
                         <fieldset className={imgPreviews.length > 0 ? 'row-span-2' : ''}>
                             <span className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>images</span>
-                            <label htmlFor="images" className='border-[1px] outline-none flex items-center gap-x-4 px-4 py-2 rounded w-full'>
+                            <label htmlFor="images" className='border-[1px] outline-none text-sm flex items-center gap-x-4 px-4 py-2 rounded w-full'>
                                 <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M4.80769 16.2857H2.41209C2.09441 16.2857 1.78975 16.1595 1.56511 15.9349C1.34048 15.7103 1.21429 15.4056 1.21429 15.0879V5.5055M1.21429 5.5055H16.7857M1.21429 5.5055L3.86143 1.31318C3.96387 1.13559 4.11017 0.987268 4.28634 0.882406C4.46251 0.777545 4.66264 0.719655 4.86758 0.714279H13.1324C13.3374 0.719655 13.5375 0.777545 13.7137 0.882406C13.8898 0.987268 14.0362 1.13559 14.1386 1.31318L16.7857 5.5055M16.7857 5.5055V15.0879C16.7857 15.4056 16.6595 15.7103 16.4349 15.9349C16.2103 16.1595 15.9056 16.2857 15.5879 16.2857H13.1923M6.00545 12.0934L8.99996 9.09889M8.99996 9.09889L11.9945 12.0934M8.99996 9.09889L9.00004 16.2857M9.00004 0.714279V5.50549" stroke="#5C5F6A" strokeWidth="1.42857" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
@@ -387,7 +389,7 @@ const EditProduct = () => {
 
 
                             {/* /////////////////////////// */}
-                            <input type='file' multiple id="images" name="newImgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={changeHandler} />
+                            <input type='file' multiple id="images" name="newImgs" accept="image/png, image/jpeg, image/bmp, image/webp" className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full hidden' placeholder='Choose product images' onChange={changeHandler} />
 
                             {
                                 (oldImgs.length > 0 || imgPreviews.length > 0) &&
@@ -473,22 +475,16 @@ const EditProduct = () => {
 
                         <fieldset className=''>
                             <label htmlFor="category" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>Category</label>
-                            <input type="text" id="category" name="category" onChange={changeHandler} value={category ? category : ''} className='border-[1px] outline-none block px-4 py-2 rounded w-full' />
+                            <input type="text" id="category" name="category" onChange={changeHandler} value={category ? category : ''} className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full capitalize' />
                             {formErrors.category && <span className='text-red-500 text-xs'>{formErrors.category}</span>}
-
                         </fieldset>
-
-
-
-
 
                     </div>
 
                     <fieldset className='col-span-2'>
                         <label htmlFor="description" className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>description</label>
-                        <textarea id="description" name="description" className='border-[1px] outline-none block px-4 py-2 rounded w-full max-w-full h-32' onChange={changeHandler} value={description} />
+                        <textarea id="description" name="description" className='border-[1px] outline-none text-sm block px-4 py-2 rounded w-full max-w-full h-52' onChange={changeHandler} value={description} />
                         {formErrors.description && <span className='text-red-500 text-xs'>{formErrors.description}</span>}
-
                     </fieldset>
 
 

@@ -1,33 +1,42 @@
 
 import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
-import { useEffect, useState } from "react"
+import { MouseEvent, useEffect, useState } from "react"
 import { useStoreDispatch } from "../store"
 import { useSelector } from "react-redux"
 import BreadCrumbs from "../components/ui/BreadCrumbs"
-import {  Status } from "../store/types"
+import { Filters, Status } from "../store/types"
 import ProductFilter from "../components/ProductFilter"
 import Close from "../components/ui/Close"
 import GridLoader from "../components/ui/GridLoader"
 import { Link } from "react-router-dom"
+import ProductCard from "../components/ui/ProductCard"
 
 
 const Collections = () => {
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
 
+  const [filters, setFilters] = useState<Filters>({
+    category: []
+  })
+
   useEffect(() => {
     dispatch(getProducts())
   }, [])
 
   useEffect(() => {
-    if (products.length > 0) {
-      console.log(products);
+    console.log(filters);
 
-    }
-  }, [products])
+  }, [filters])
+
+  const clickHandlerCat = (e: MouseEvent<HTMLButtonElement>, cat: string) => {
+    e.stopPropagation()
+    setFilters(prev => ({ ...prev, category: prev.category.filter(c => c !== cat) }))
+  }
 
 
+  const { category } = filters
 
   return (
     <>
@@ -39,11 +48,19 @@ const Collections = () => {
 
       <section className="bg-white">
         <div className="container mx-auto py-8 flex gap-16 items-start">
-          <ProductFilter products={products} status={status} />
+          <ProductFilter products={products} status={status} updateFilters={setFilters} />
           <div id="filtered-products" className="py-8 px-5  w-3/4 ">
             <p className="text-sm font-bold mb-4">Applied Filters:</p>
-            <div className="flex gap-4 mb-8">
-              <p className="text-xs font-semibold flex gap-2 items-center capitalize text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px] ">Perfume <button type="button"><Close classN="w-3 bg-slate-600" /></button></p>
+            <div className="flex gap-4 mb-8 flex-wrap">
+              {
+                category.map((cat, i) =>
+                  <p key={i} className="text-xs font-semibold flex gap-2 items-center capitalize text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px] ">
+                    {cat}
+                    <button type="button" onClick={(e) => clickHandlerCat(e, cat)}>
+                      <Close classN="w-3 bg-slate-600" />
+                    </button>
+                  </p>)
+              }
 
               <p className="text-xs font-semibold flex gap-2 items-center capitalize text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px] ">Size: M <button type="button"><Close classN="w-3 bg-slate-600" /></button></p>
             </div>
@@ -60,22 +77,10 @@ const Collections = () => {
               {(status === Status.PENDING) ? <GridLoader col='3' /> : products.length < 1 ? <h2 className="text-lg text-slate-600 text-center">Sorry, there are no products.</h2> :
 
                 <Grids cssClass='container mx-auto grid-cols-3 grid gap-x-12 gap-y-16'>
-                  {new Array(2).fill('*').map((_, index) =>
+                  {
                     products.map(product =>
-                      <div key={product.id}>
-                        <Link to={`/collections/${product.slug}`} className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                          <img src={product.imgs[0].url} alt="" className="w-3/5" />
-                        </Link>
-                        <p className="font-semibold mb-4 text-sm">{product.title}</p>
-                        <div className="flex gap-x-4 items-center">
-                          {
-                            product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                          }
-                          <span className="text-slate-600 text-xs">${product.price}</span>
-                        </div>
-                      </div>
+                      <ProductCard key={product.id} item={product} />
                     )
-                  )
                   }
                 </Grids>
               }
