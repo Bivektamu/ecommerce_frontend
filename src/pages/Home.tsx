@@ -11,6 +11,8 @@ import Arrow from "../components/ui/Arrow"
 import { Link } from "react-router-dom"
 import GridLoader from "../components/ui/GridLoader"
 import { Status } from "../store/types"
+import FeaturedLatest from "../components/FeaturedLatest"
+import ProductCard from "../components/ui/ProductCard"
 
 const Home = (props: Props) => {
   const dispatch = useStoreDispatch()
@@ -58,30 +60,19 @@ const Home = (props: Props) => {
           </div>
         </Grids>
 
+
+        {/* Best Selling Products */}
         <p className="text-slate-400 text-sm mb-4 text-center uppercase tracking-wide">Shop Now</p>
         <h2 className="font-bold text-2xl mb-24 text-center">Best Selling</h2>
-
 
         {(status === Status.PENDING) ? <GridLoader col='4' /> : products.length < 1 ? <h2 className="text-lg text-slate-600 text-center">Sorry, there are no products.</h2> :
 
           <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
 
-            {new Array(2).fill('*').map((_, index) =>
-              products.map(product =>
-                <div key={product.id}>
-                  <div className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                    <img src={product.imgs[0].url} alt="" className="w-3/5" />
-                  </div>
-                  <p className="font-semibold mb-4">{product.title}</p>
-                  <div className="flex gap-x-4 items-center">
-                    {
-                      product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                    }
-                    <span className="text-slate-600 text-xs">${product.price}</span>
-                  </div>
-                </div>
+            {
+              products.slice(0, 4).map(product =>
+                <ProductCard item={product} />
               )
-            )
             }
           </Grids>
 
@@ -89,7 +80,7 @@ const Home = (props: Props) => {
       </section>
 
       <section id="">
-        <div className="container flex justify-between items-center mx-auto">
+        <div className="container flex justify-between items-center mx-auto pb-12">
           <div className="flex flex-col items-start ">
             <h1 className='mb-4 text-4xl font-semibold'>Browse Our Fashion Paradise!</h1>
             <span className='mb-14'>Step into a world of style and explore our diverse collection of clothing categories.</span>
@@ -99,37 +90,9 @@ const Home = (props: Props) => {
         </div>
       </section>
 
-      <section id="featured-latest" className="bg-white py-32">
-        <div className="flex justify-center gap-8 mb-16">
-          <button className="text-xs font-semibold flex items-center uppercase bg-black text-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">Featured</button>
-          <button className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">Latest</button>
-        </div>
-
-        {(status === Status.PENDING) ? <GridLoader col='3' /> : products.length < 1 ? <h2 className="text-lg text-slate-600 text-center">Sorry, there are no products.</h2> :
-
-          <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
-            {new Array(2).fill('*').map((_, index) =>
-              products.map(product =>
-                <div key={product.id}>
-                  <div className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                    <img src={product.imgs[0].url} alt="" className="w-3/5" />
-                  </div>
-                  <p className="font-semibold mb-4">{product.title}</p>
-                  <div className="flex gap-x-4 items-center">
-                    {
-                      product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                    }
-                    <span className="text-slate-600 text-xs">${product.price}</span>
-                  </div>
-                </div>
-              )
-            )
-            }
-          </Grids>
-        }
+      <FeaturedLatest products={products} status={status} />
 
 
-      </section>
     </>
   )
 }

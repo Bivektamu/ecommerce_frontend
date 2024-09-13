@@ -9,7 +9,7 @@ import { toasts } from "../../store/slices/toastSlice"
 import ToastComponent from "../../components/ui/Toast"
 import { Status } from '../../store/types'
 import Preloader from '../../components/ui/Preloader'
-import { useAdminDispatch } from '../../store'
+import { useStoreDispatch } from '../../store'
 
 const PrivateRoute = () => {
 
@@ -20,7 +20,7 @@ const PrivateRoute = () => {
 
     const auth = useSelector(useAuth)
     const { isLoggedIn, status } = auth
-    const dispatch = useAdminDispatch()
+    const dispatch = useStoreDispatch()
     const location = useLocation()
 
     useEffect(() => {

@@ -9,7 +9,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 // import PageNotFound from '../../pages/admin/PageNotFound';
 import { useSelector } from 'react-redux';
 import { editProduct, getProducts, useProduct } from '../../store/slices/productSlice';
-import { useAdminDispatch } from '../../store';
+import { useStoreDispatch } from '../../store';
 import Preloader from '../ui/Preloader';
 import { log } from 'util';
 import mongoose, { STATES } from 'mongoose';
@@ -23,7 +23,7 @@ interface PreviewImage {
 
 const EditProduct = () => {
 
-    const dispatch = useAdminDispatch()
+    const dispatch = useStoreDispatch()
 
     const navigate = useNavigate()
 

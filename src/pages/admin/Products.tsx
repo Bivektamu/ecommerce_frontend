@@ -1,7 +1,7 @@
 import React, { MouseEvent, act, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Close from '../../components/ui/Close'
-import { useAdminDispatch } from '../../store'
+import { useStoreDispatch } from '../../store'
 import { deleteProduct, getProducts, useProduct } from '../../store/slices/productSlice'
 import { useSelector } from 'react-redux'
 import Preloader from '../../components/ui/Preloader'
@@ -15,7 +15,7 @@ import SearchIcon from '../../components/ui/SearchIcons'
 
 const Products = () => {
 
-  const dispatch = useAdminDispatch()
+  const dispatch = useStoreDispatch()
 
   const { products, status, action } = useSelector(useProduct)
 
