@@ -2,6 +2,9 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+   container: {
+    maxWidth: '1280px'
+   },
     extend: {
       animation: {
         'toast-bar': 'bar linear 2s'
@@ -14,6 +17,7 @@ export default {
       },
       colors: {
         'black': '#0E1422',
+        'cultured': '#F5F5F5',
         'regal-white': 'rgb(226, 226, 226)'
       },
       gridTemplateColumns: {

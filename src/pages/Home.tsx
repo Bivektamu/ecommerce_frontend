@@ -69,7 +69,7 @@ const Home = (props: Props) => {
             {new Array(2).fill('*').map((_, index) =>
               products.map(product =>
                 <div key={product.id}>
-                  <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
+                  <div className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
                     <img src={product.imgs[0].url} alt="" className="w-3/5" />
                   </div>
                   <p className="font-semibold mb-4">{product.title}</p>
@@ -111,7 +111,7 @@ const Home = (props: Props) => {
             {new Array(2).fill('*').map((_, index) =>
               products.map(product =>
                 <div key={product.id}>
-                  <div className="bg-gray-100 mb-8 justify-center flex items-center  aspect-[2/2.3]">
+                  <div className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
                     <img src={product.imgs[0].url} alt="" className="w-3/5" />
                   </div>
                   <p className="font-semibold mb-4">{product.title}</p>

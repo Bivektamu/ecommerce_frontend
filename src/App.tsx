@@ -33,7 +33,7 @@ function App() {
           element:<Collections />
         },
         {
-          path: '/product/:slug',
+          path: '/collections/:slug',
           element: <Suspense fallback={<Preloader />}>
             <Product />
           </Suspense>

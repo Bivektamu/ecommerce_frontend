@@ -3,43 +3,10 @@ import { Colour, Product, Size, Status } from '../store/types'
 import TextLoader from './ui/TextLoader'
 import CircleLoader from './ui/CircleLoader'
 import SquareLoader from './ui/SquareLoader'
+import getClasses from '../utils/getClasses'
 
 const COLORS = [Colour.BLACK, Colour.RED, Colour.AMBER, Colour.GRAY, Colour.WHITE]
 const SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
-
-const getClasses = (colour: Colour) => {
-    let bgClass = '', borderClass = ''
-    switch (colour) {
-        case Colour.BLACK:
-            bgClass = 'bg-black'
-            borderClass = 'border-black'
-            break;
-        case Colour.RED:
-            bgClass = 'bg-red-600'
-            borderClass = 'border-red-600'
-            break;
-        case Colour.AMBER:
-            bgClass = 'bg-amber-300'
-            borderClass = 'border-amber-300'
-            break;
-        case Colour.GRAY:
-            bgClass = 'bg-gray-600'
-            borderClass = 'border-gray-600'
-            break;
-        case Colour.WHITE:
-            bgClass = 'bg-regal-white'
-            borderClass = 'border-regal-white'
-            break;
-
-        default:
-            break;
-    }
-
-    return {
-        bgClass,
-        borderClass
-    }
-}
 
 type Props = {
     products: Product[],

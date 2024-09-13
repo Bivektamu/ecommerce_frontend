@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 
 type Props = {
-    rootLink?: string
+    rootLink?: string,
 }
 
 const BreadCrumbs = ({ rootLink }: Props) => {

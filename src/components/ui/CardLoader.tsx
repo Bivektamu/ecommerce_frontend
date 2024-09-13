@@ -6,7 +6,7 @@ type Props = {
 
 const CardLoader = ({ cssClass }: Props) => {
     return (
-        <div className={`border border-slate-300 shadow rounded-md p-4  mx-auto ${cssClass}`}>
+        <div className={`shadow rounded-md p-4  mx-auto ${cssClass}`}>
             <div className="animate-pulse">
                 <div className=" bg-slate-200  w-full aspect-[2/2.3]"></div>
                 <div className="flex-1 space-y-6 py-1">
