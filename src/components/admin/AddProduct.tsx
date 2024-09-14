@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError, Status, Action, ProductImageInput } from '../../store/types'
 import validateForm from '../../utils/validate';
 import Close from '../ui/Close';
-import { useAdminDispatch } from '../../store';
+import { useStoreDispatch } from '../../store';
 import { addProduct, useProduct } from '../../store/slices/productSlice';
 import mongoose from 'mongoose';
 import { useSelector } from 'react-redux';
@@ -46,7 +46,7 @@ const initial: ProductInput = {
 
 const AddProduct = () => {
 
-    const dispatch = useAdminDispatch()
+    const dispatch = useStoreDispatch()
 
     const {status, action} = useSelector(useProduct)
 

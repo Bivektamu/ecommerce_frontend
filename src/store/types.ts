@@ -190,4 +190,5 @@ export interface Review {
 
 export interface Filters {
     category: string[],
+    colors: Colour[]
 }

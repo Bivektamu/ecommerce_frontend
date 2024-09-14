@@ -5,7 +5,7 @@ import { MouseEvent, useEffect, useState } from "react"
 import { useStoreDispatch } from "../store"
 import { useSelector } from "react-redux"
 import BreadCrumbs from "../components/ui/BreadCrumbs"
-import { Filters, Status } from "../store/types"
+import { Colour, Filters, Product, Status } from "../store/types"
 import ProductFilter from "../components/ProductFilter"
 import Close from "../components/ui/Close"
 import GridLoader from "../components/ui/GridLoader"
@@ -18,17 +18,47 @@ const Collections = () => {
   const { products, status } = useSelector(useProduct)
 
   const [filters, setFilters] = useState<Filters>({
-    category: []
+    category: [],
+    colors: []
   })
+
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
   useEffect(() => {
     dispatch(getProducts())
   }, [])
 
-  useEffect(() => {
-    console.log(filters);
 
-  }, [filters])
+  useEffect(() => {
+
+
+    let temp: Product[] = []
+    if (products.length > 0) {
+      if (filters.category.length > 0) {
+        filters.category.map(cat => {
+          products.map(product => {
+            if (product.category.indexOf(cat)  === 0) temp.push(product)
+          })
+        })
+      }
+      else {
+        temp = [...products]
+      }
+
+      if (filters.colors.length > 0) {
+        const temp2 = []
+        filters.colors.map(col => {
+          temp.map(product => {
+            if (product.colors.indexOf(col) > -1) temp2.push(product)
+          })
+        })
+
+        temp = temp2
+      }
+    }
+    setFilteredProducts(Array.from(new Set([...temp])))
+
+  }, [filters, products])
 
   const clickHandlerCat = (e: MouseEvent<HTMLButtonElement>, cat: string) => {
     e.stopPropagation()
@@ -48,7 +78,7 @@ const Collections = () => {
 
       <section className="bg-white">
         <div className="container mx-auto py-8 flex gap-16 items-start">
-          <ProductFilter products={products} status={status} updateFilters={setFilters} />
+          <ProductFilter products={products} status={status} setFilters={setFilters} filters={filters} />
           <div id="filtered-products" className="py-8 px-5  w-3/4 ">
             <p className="text-sm font-bold mb-4">Applied Filters:</p>
             <div className="flex gap-4 mb-8 flex-wrap">
@@ -62,7 +92,9 @@ const Collections = () => {
                   </p>)
               }
 
-              <p className="text-xs font-semibold flex gap-2 items-center capitalize text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px] ">Size: M <button type="button"><Close classN="w-3 bg-slate-600" /></button></p>
+              <p className="text-xs font-semibold flex gap-2 items-center capitalize text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px] ">
+                Size: M <button type="button"><Close classN="w-3 bg-slate-600" /></button>
+              </p>
             </div>
 
             <div className="flex justify-between mb-8">
@@ -74,11 +106,11 @@ const Collections = () => {
 
             <div className="w-full mb-12">
 
-              {(status === Status.PENDING) ? <GridLoader col='3' /> : products.length < 1 ? <h2 className="text-lg text-slate-600 text-center">Sorry, there are no products.</h2> :
+              {(status === Status.PENDING) ? <GridLoader col='3' /> : filteredProducts.length < 1 ? <h2 className="text-lg text-slate-600 text-center">Sorry, there are no products.</h2> :
 
                 <Grids cssClass='container mx-auto grid-cols-3 grid gap-x-12 gap-y-16'>
                   {
-                    products.map(product =>
+                    filteredProducts.map(product =>
                       <ProductCard key={product.id} item={product} />
                     )
                   }
