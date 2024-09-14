@@ -187,8 +187,14 @@ export interface Review {
     rating:number,
 }
 
+export interface PriceRange {
+    min:number | '',
+    max:number | '',
+}
 
 export interface Filters {
     category: string[],
-    colors: Colour[]
+    colors: Colour[],
+    sizes: Size[],
+    price: PriceRange
 }
