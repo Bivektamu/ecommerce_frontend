@@ -11,6 +11,7 @@ import Close from "../components/ui/Close"
 import GridLoader from "../components/ui/GridLoader"
 import { Link } from "react-router-dom"
 import ProductCard from "../components/ui/ProductCard"
+import SortProducts from "../components/SortProducts"
 
 
 const Collections = () => {
@@ -159,10 +160,8 @@ const Collections = () => {
                 filteredProducts.length > 0 &&
                 <p className="text-xs text-slate-400 font-medium">Showing {filteredProducts.length} results.</p>
               }
+              <SortProducts products = {filteredProducts} sortProducts = {setFilteredProducts} />
 
-              <div className="">
-                <p className="text-xs text-slate-600 uppercase font-semibold tracking-wider flex gap-2 items-center">sort by <span className="w-2 h-2 border-b-2 border-r-2 rotate-45 border-slate-600 -translate-y-[2px]"></span></p>
-              </div>
             </div>
 
             <div className="w-full mb-12">

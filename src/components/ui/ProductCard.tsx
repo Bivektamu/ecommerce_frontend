@@ -9,8 +9,8 @@ type Props = {
 const ProductCard = ({ item }: Props) => {
     return (
         <div key={item.id}>
-            <Link to={`/collections/${item.slug}`} className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                <img src={item.imgs[0].url} alt="" className="w-3/5" />
+            <Link to={`/collections/${item.slug}`} className="bg-cultured mb-8 group justify-center flex items-center  aspect-[2/2.3]">
+                <img src={item.imgs[0].url} alt="" className="w-3/5 group-hover:scale-125 transition-all" />
             </Link>
             <p className="font-semibold mb-4">{item.title}</p>
             <div className="flex gap-x-4 items-center">

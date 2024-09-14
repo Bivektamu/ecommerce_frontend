@@ -92,7 +92,6 @@ const Home = (props: Props) => {
 
       <FeaturedLatest products={products} status={status} />
 
-
     </>
   )
 }

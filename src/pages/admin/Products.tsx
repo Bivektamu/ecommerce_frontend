@@ -133,8 +133,6 @@ const Products = () => {
         </div>
       </div>
 
-
-
       <div className='grid grid-cols-table gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
         <button>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
