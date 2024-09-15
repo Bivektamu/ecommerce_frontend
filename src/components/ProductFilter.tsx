@@ -97,9 +97,6 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
         setFilters((prev) => ({ ...prev, price: { ...tempPrice } }))
     }
 
-    console.log(filters.price);
-    
-
     return (
         <div id="filters" className="py-8 px-5 rounded-md border w-1/4 shadow-lg">
             <div id="catgory-filter" className="mb-10">
@@ -124,7 +121,6 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
                             Object.keys(colrs).map((color, i) => {
 
                                 const { bgClass, borderClass } = getClasses(color as Colour)
-
 
                                 return (
                                     <fieldset key={i}>

@@ -135,7 +135,8 @@ export interface OrderedProduct {
 export interface ValidateSchema<T> {
     name: string,
     type: string,
-    value: T
+    value: T,
+    msg?:string
 }
 export interface FormError {
     [key: string]: string

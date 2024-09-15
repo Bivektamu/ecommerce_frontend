@@ -150,7 +150,6 @@ const Collections = () => {
                     <Close classN="w-3 bg-slate-600" />
                   </button>
                 </p>
-
               }
 
             </div>

@@ -11,6 +11,7 @@ import getClasses from '../utils/getClasses'
 import Grids from '../components/ui/Grids'
 import GridLoader from '../components/ui/GridLoader'
 import Reviews from '../components/Reviews'
+import AddToCartForm from '../components/AddToCartForm'
 
 type Props = {}
 
@@ -37,14 +38,6 @@ const ProductComponent = (props: Props) => {
     }
   }, [products, params.slug])
 
-
-  const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    e.stopPropagation()
-    console.log('asdf');
-
-  }
-
-  console.log('asdf');
 
 
   return (
@@ -77,65 +70,7 @@ const ProductComponent = (props: Props) => {
               </div>
 
               <p className="text-xl font-semibold mb-8">${productItem?.price}</p>
-
-              <div className="mb-8">
-                <p className="text-sm mb-3 font-medium text-slate-500 uppercase text-wider">Availabe Colours</p>
-                {(status === Status.PENDING) ? <CircleLoader /> :
-                  <div className="flex gap-4 items-center">
-
-                    {
-                      productItem?.colors.map((color: Colour, i) => {
-
-                        const { bgClass } = getClasses(color)
-
-                        return (
-                          <>
-                            <label htmlFor={color} className={`w-8 h-8 rounded-full ${bgClass}  cursor-pointer relative after:content-[""] after:w-10 after:h-10 after:rounded-full  after:absolute after:top-0 after:bottom-0 after:left-0 after:right-0 after:m-auto '}`}></label>
-                            <input type="checkbox" id={color} name="colors" value={color} className='appearance-none hidden ' />
-                          </>
-                        )
-                      })
-                    }
-                  </div>
-                }
-              </div>
-
-
-              <fieldset className='mb-8'>
-                <legend className='font-medium text-slate-600 text-sm block mb-2 w-full uppercase'>Select Size</legend>
-
-                <div className="flex gap-4">
-                  <input type="checkbox" onChange={changeHandler} name="sizes" id="small" value={Size.SMALL} className='appearance-none hidden' />
-                  <label htmlFor="small" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${productItem?.sizes.indexOf(Size.SMALL) > -1 ? 'bg-slate-200' : ''}`}>S</label>
-
-
-                  <input type="checkbox" onChange={changeHandler} name="sizes" id="medium" value={Size.MEDIUM} className='appearance-none hidden' />
-                  <label htmlFor="medium" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${productItem?.sizes.indexOf(Size.MEDIUM) > -1 ? 'bg-slate-200' : ''}`}>M</label>
-
-
-                  <input type="checkbox" onChange={changeHandler} name="sizes" id="large" value={Size.LARGE} className='appearance-none hidden' />
-                  <label htmlFor="large" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${productItem?.sizes.indexOf(Size.LARGE) > -1 ? 'bg-slate-200' : ''}`}>L</label>
-
-                  <input type="checkbox" onChange={changeHandler} name="sizes" id="extraLarge" value={Size.EXTRA_LARGE} className='appearance-none hidden' />
-                  <label htmlFor="extraLarge" className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${productItem?.sizes.indexOf(Size.EXTRA_LARGE) > -1 ? 'bg-slate-200' : ''}`}>XL</label>
-                </div>
-              </fieldset>
-
-              <fieldset className='mb-8'>
-                <label htmlFor="quantity" className='font-medium text-slate-600 text-sm block mb-2 w-full uppercase'>Quantity</label>
-                <div className="flex items-center gap-4 w-min  justtify-start border-cultured border-[2px] rounded px-4 py-2">
-                  <button type="button" className='w-6 h-6 relative'><span className='w-4 h-[2px] bg-slate-600 absolute top-0 bottom-0 m-auto left-0 right-0'></span></button>
-                  <input type="number" value={4} className='w-[50px] text-center outline-none ' />
-                  <button type="button" className='w-6 h-6 relative'>
-                    <span className='w-4 h-[2px] bg-slate-600 absolute top-0 bottom-0 m-auto left-0 right-0'></span>
-                    <span className='h-4 w-[2px] bg-slate-600 absolute top-0 bottom-0 m-auto left-0 right-0'></span>
-                  </button>
-
-                </div>
-              </fieldset>
-
-              <button type="submit" className="w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm" >Add to Cart</button>
-
+              <AddToCartForm product={productItem} />
             </div>
           </div>
 

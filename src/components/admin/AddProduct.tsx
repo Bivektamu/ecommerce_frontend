@@ -48,7 +48,7 @@ const AddProduct = () => {
 
     const dispatch = useStoreDispatch()
 
-    const {status, action} = useSelector(useProduct)
+    const { status, action } = useSelector(useProduct)
 
 
     const [formData, setFormData] = useState<typeof initial>(initial)
@@ -57,6 +57,18 @@ const AddProduct = () => {
 
     const { title, sku, price, imgs, slug, colors, stockStatus, sizes, quantity, description, category } = formData
 
+
+    // code to remove error info when fields are typed
+    useEffect(() => {
+        if (Object.keys(formData).length > 0) {
+            Object.keys(formData).map(key => {
+                if (formData[key]) {
+                    setFormErrors(prev => ({ ...prev, [key]: '' }))
+                }
+
+            })
+        }
+    }, [formData])
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
@@ -108,10 +120,10 @@ const AddProduct = () => {
         }
         else {
             val = e.target.value
-            if(parseInt(val)) {
+            if (parseInt(val)) {
                 val = parseInt(val)
             }
-          
+
         }
         let updateData = {
             [e.target.name]: val
@@ -242,13 +254,8 @@ const AddProduct = () => {
         }
     }, [imgs])
 
-    useEffect(()=> {
-        console.log(formErrors);
-        
-    }, [formErrors])
 
-
-    if(status === Status.FULFILLED && action === Action.ADD) {
+    if (status === Status.FULFILLED && action === Action.ADD) {
         return <Navigate to="/admin/products" />
     }
 
