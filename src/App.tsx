@@ -17,20 +17,23 @@ import Layout from "./components/ui/Layout"
 import Product from "./pages/Product"
 import Contact from "./pages/Contact"
 import Collections from "./pages/Collections"
+import UnderWork from "./pages/UnderWork"
+import LogIn from "./pages/LogIn"
+import SignUp from "./pages/SignUp"
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
       element: <Suspense fallback={<Preloader />}><Layout /></Suspense>,
-      children:[
+      children: [
         {
           path: '/',
           element: <Home />
         },
         {
           path: '/collections',
-          element:<Collections />
+          element: <Collections />
         },
         {
           path: '/collections/:slug',
@@ -38,13 +41,32 @@ function App() {
             <Product />
           </Suspense>
         },
+        
         {
           path: '/contact',
           element: <Suspense fallback={<Preloader />}>
-            <Contact />
+            <UnderWork />
+          </Suspense>
+        },
+        {
+          path: '/login',
+          element: <Suspense fallback={<Preloader />}>
+            <LogIn />
+          </Suspense>
+        },
+        {
+          path: '/signup',
+          element: <Suspense fallback={<Preloader />}>
+            <SignUp />
           </Suspense>
         },
       ]
+    },
+    {
+      path: '/admin/login',
+      element: <Suspense fallback={<Preloader />}>
+        <SignIn />
+      </Suspense>
     },
     {
       path: '/admin',
@@ -102,18 +124,17 @@ function App() {
       ]
     },
 
-    {
-      path: 'login',
-      element: <Suspense fallback={<Preloader />}>
-        <SignIn />
-      </Suspense>
-    },
+    
 
     {
       path: '*',
-      element: <Suspense fallback={<Preloader />}>
-        <PageNotFound />
-      </Suspense>
+      element: <Suspense fallback={<Preloader />}><Layout /></Suspense>,
+      children: [
+        {
+          path: '*',
+          element: <PageNotFound />
+        }
+      ]
     },
 
   ])

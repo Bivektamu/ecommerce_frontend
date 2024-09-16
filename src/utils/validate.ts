@@ -1,6 +1,7 @@
 import { FormData, FormError, ValidateSchema } from "../store/types"
 
 const validEmail: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
 const validateForm = (validateSchema: ValidateSchema<any>[]) => {
 
@@ -46,6 +47,26 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
                         errors = { ...errors, ...error }
                     }
 
+                    break;
+                }
+                case 'email': {
+                    if (!validEmail.test(value)) {
+                        const error = {
+                            email: msg || `Please insert email in correct format.`
+                        }
+                        errors = { ...errors, ...error }
+                    }
+
+                    break;
+                }
+                case 'password': {
+                    if (!passwordRegex.test(value)) {
+                        const error = {
+                            password: msg || `Please insert password in correct format.
+                            Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character.`
+                        }
+                        errors = { ...errors, ...error }
+                    }
 
                     break;
                 }

@@ -39,7 +39,8 @@ const PrivateRoute = () => {
     }
 
     if (!isLoggedIn) {
-        return navigate('/admin/login')
+        // return <Navigate to="/login" />
+        return navigate('/login')
     }
 
 

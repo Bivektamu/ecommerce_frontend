@@ -1,58 +1,28 @@
-import React, { Component, MouseEvent, ReactElement, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { getAuthStatus, logOutAdmin, useAuth } from '../../store/slices/adminAuth'
-import { Link, Navigate, Outlet, redirect, useLocation, useNavigate } from 'react-router-dom'
-import Sidebar from '../../components/ui/Sidebar'
-import BreadCrumbs from '../../components/ui/BreadCrumbs'
-
-import { toasts } from "../../store/slices/toastSlice"
-import ToastComponent from "../../components/ui/Toast"
-import { Status } from '../../store/types'
-import Preloader from '../../components/ui/Preloader'
+import React, { MouseEvent, useEffect } from 'react'
+import Sidebar from '../ui/Sidebar'
+import BreadCrumbs from '../ui/BreadCrumbs'
 import { useStoreDispatch } from '../../store'
+import { getAuthStatus, logOutAdmin } from '../../store/slices/adminAuth'
+import { Outlet } from 'react-router-dom'
 
-const PrivateRoute = () => {
+type Props = {}
 
+const AdminLayout = (props: Props) => {
 
-    const navigate = useNavigate()
-
-    const allToasts = useSelector(toasts)
-
-    const auth = useSelector(useAuth)
-    const { isLoggedIn, status } = auth
     const dispatch = useStoreDispatch()
-    const location = useLocation()
+
 
     useEffect(() => {
         dispatch(getAuthStatus())
     }, [])
 
-
     const logOut = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         dispatch(logOutAdmin())
     }
-    
-
-    if (status === Status.IDLE || status === Status.PENDING) {
-        return <Preloader />
-    }
-
-    if (!isLoggedIn) {
-        return navigate('/admin/login')
-    }
-
-
-    if (location.pathname === '/admin' || location.pathname === '/admin/') {
-        return navigate('/admin/dashboard')
-    }
 
     return (
         <>
-            {
-                allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
-            }
-
             <Sidebar />
             <section className="w-full pl-[340px] pb-12 pr-12 pt-8">
                 <div className="h-[72px] flex items-center mb-12 justify-between">
@@ -67,9 +37,8 @@ const PrivateRoute = () => {
                 <Outlet />
 
             </section>
-
         </>
     )
 }
 
-export default PrivateRoute
+export default AdminLayout

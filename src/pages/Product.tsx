@@ -1,16 +1,13 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useStoreDispatch } from '../store'
 import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Colour, Product, Size, Status } from '../store/types'
+import { Product, Status } from '../store/types'
 import StarIcon from '../components/ui/StarIcon'
-import CircleLoader from '../components/ui/CircleLoader'
-import getClasses from '../utils/getClasses'
 import Grids from '../components/ui/Grids'
 import GridLoader from '../components/ui/GridLoader'
-import Reviews from '../components/Reviews'
 import AddToCartForm from '../components/AddToCartForm'
 import DetailsReviewsTab from '../components/DetailsReviewsTab'
 import TextLoader from '../components/ui/TextLoader'
@@ -25,7 +22,7 @@ const ProductComponent = (props: Props) => {
   const navigate = useNavigate()
 
   const [productItem, setProductItem] = useState<null | Product>(null)
-  const [similarProducts, setSimilarProducts] = useState<Product>([])
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
 
