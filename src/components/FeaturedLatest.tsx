@@ -36,11 +36,7 @@ const FeaturedLatest = ({ products, status }: Props) => {
                         )
                     }
                 </Grids>
-
-
             }
-
-
         </section>
     )
 }

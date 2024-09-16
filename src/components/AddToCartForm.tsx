@@ -3,9 +3,10 @@ import { Colour, FormError, Product, Size, Status, ValidateSchema } from '../sto
 import CircleLoader from './ui/CircleLoader'
 import getClasses from '../utils/getClasses'
 import validateForm from '../utils/validate'
+import SquareLoader from './ui/SquareLoader'
 
 type Props = {
-    product: Product
+    product: Product | null
 }
 
 
@@ -109,7 +110,7 @@ function AddToCartForm({ product }: Props) {
             return setFormErrors({ ...errors })
         }
 
-        console.log({...formData, total: formData.quantity * product?.price});
+        console.log({ ...formData, total: formData.quantity * product?.price });
 
 
     }
@@ -120,7 +121,7 @@ function AddToCartForm({ product }: Props) {
         <form onSubmit={submitHandler}>
             <div className="mb-8">
                 <p className="text-sm mb-3 font-medium text-slate-500 uppercase text-wider">Availabe Colours</p>
-                {(status === Status.PENDING) ? <CircleLoader /> :
+                {(!product) ? <CircleLoader /> :
                     <div className="flex gap-4 items-center">
 
                         {
@@ -144,21 +145,26 @@ function AddToCartForm({ product }: Props) {
 
             <fieldset className='mb-8'>
                 <legend className='font-medium text-slate-600 text-sm block mb-2 w-full uppercase'>Select Size</legend>
+                {
+                    (!product) ? <SquareLoader square={4} /> :
+                        <>
+                            <div className="flex gap-4">
 
-                <div className="flex gap-4">
+                                {
+                                    ALL_SIZES.map((item, i) =>
+                                        <fieldset key={i}>
+                                            <input type="radio" onChange={changeHandler} name="size" id={item} value={item} className='appearance-none hidden' />
+                                            <label htmlFor={item} className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${product?.sizes.indexOf(item) < 0 ? 'bg-cultured pointer-events-none text-slate-400' : size === item ? 'bg-slate-200' : ''}`}>{item}</label>
+                                        </fieldset>
 
-                    {
-                        ALL_SIZES.map((item, i) =>
-                            <fieldset key={i}>
-                                <input type="radio" onChange={changeHandler} name="size" id={item} value={item} className='appearance-none hidden' />
-                                <label htmlFor={item} className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer border-[1px] ${product?.sizes.indexOf(item) < 0 ? 'bg-cultured pointer-events-none text-slate-400' : size === item ? 'bg-slate-200' : ''}`}>{item}</label>
-                            </fieldset>
+                                    )
+                                }
 
-                        )
-                    }
-
-                </div>
-                {formErrors.size && <span className='text-red-500 text-xs'>{formErrors.size}</span>}
+                            </div>
+                            {formErrors.size && <span className='text-red-500 text-xs'>{formErrors.size}</span>
+                            }
+                        </>
+                }
 
             </fieldset>
 
@@ -181,7 +187,7 @@ function AddToCartForm({ product }: Props) {
 
             </fieldset>
 
-            <button type="submit" className="w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm" >Add to Cart</button>
+            <button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >Add to Cart</button>
 
         </form>
     )
