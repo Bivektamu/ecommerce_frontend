@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent, ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { getAuthStatus, logOutAdmin, useAuth } from '../../store/slices/adminAuth'
+import { getAuthStatus, logOutAdmin, useAuth } from '../../store/slices/authSlice'
 import { Link, Navigate, Outlet, redirect, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'

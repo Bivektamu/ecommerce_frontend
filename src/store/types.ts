@@ -11,10 +11,10 @@ export interface Customer {
 type CustomerId = Customer['id']
 
 export interface CustomerInput {
-    id: string,
     firstName: string,
     lastName: string,
     email: string,
+    password:string,
     address?: Address,
     isActive?: boolean,
     isVerified?: boolean
@@ -41,6 +41,7 @@ export enum Status {
 }
 export interface Auth {
     isLoggedIn: boolean,
+    userRole:string | null,
     status: Status,
     error: string,
 }
@@ -59,10 +60,19 @@ export interface ProductSlice {
     action: Action | null
 }
 
+export interface CustomerSlice {
+    status: Status,
+    error: string | null,
+    customers: Customer[],
+    customer: CustomerId | null,
+    action: Action | null
+}
+
 export interface RootState {
     auth: Auth,
     toasts: ToastSlice,
-    products: ProductSlice
+    products: ProductSlice,
+    customers: CustomerSlice
 }
 
 export enum Colour {

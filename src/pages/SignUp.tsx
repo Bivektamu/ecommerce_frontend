@@ -1,30 +1,64 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status } from '../../store/types'
-import { Link, Navigate } from 'react-router-dom'
-import { useStoreDispatch } from '../../store'
-import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/adminAuth'
+import { FormData, Status, Toast, Toast_Vairant } from '../store/types'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid';
+
+import { useStoreDispatch } from '../store'
+import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
-import Logo from '../../components/ui/AdminLogo'
-import Preloader from '../../components/ui/Preloader'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { ValidateSchema } from '../store/types'
 import validateForm from '../utils/validate'
+import { createCustomer, useCustomer } from '../store/slices/customerSlice'
+import { addToast } from '../store/slices/toastSlice';
 
 const SignUp = () => {
 
-  // const dispatch = useStoreDispatch()
-  // const auth = useSelector(useAuth)
-  // const { isLoggedIn, status } = auth
+  const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   dispatch(getAuthStatus())
-  // }, [])
+  const dispatch = useStoreDispatch()
+  const auth = useSelector(useAuth)
+  const { isLoggedIn, status, userRole } = auth
+
+  const { customer, status: customerStatus, error: customerError } = useSelector(useCustomer)
+
+
+  useEffect(() => {
+    dispatch(getAuthStatus())
+  }, [])
+
+  useEffect(() => {
+    if (customer) {
+      const newToast: Toast = {
+        id: uuidv4(),
+        variant: Toast_Vairant.SUCCESS,
+        msg: 'Your account has been created succesfully. Please login now.'
+      }
+      dispatch(addToast(newToast))
+
+      return navigate('/login')
+
+    }
+  }, [customer])
+
+  useEffect(() => {
+    if (customerError) {
+      console.log(customerError);
+
+      const newToast: Toast = {
+        id: uuidv4(),
+        variant: Toast_Vairant.DANGER,
+        msg: customerError
+      }
+      dispatch(addToast(newToast))
+    }
+  }, [customerError])
 
   const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: ''
+    firstName: 'test',
+    lastName: 'test',
+    email: 'test@test.com',
+    password: 'Test@123'
   })
   const [errors, setErrors] = useState<FormData>({})
 
@@ -88,7 +122,7 @@ const SignUp = () => {
       return setErrors({ ...newErrors })
     }
 
-    // dispatch(loginAdmin(data))
+    dispatch(createCustomer(formData))
 
   }
 
@@ -96,9 +130,12 @@ const SignUp = () => {
   //   return <Preloader />
   // }
 
-  // if (status === Status.FULFILLED && isLoggedIn) {
-  //   return <Navigate to="/admin" />
-  // }
+  if (status === Status.FULFILLED && isLoggedIn) {
+    if (userRole === 'ADMIN') {
+      return <Navigate to="/admin" />
+    }
+    return <Navigate to="/" />
+  }
 
   return (
     <>
@@ -143,7 +180,7 @@ const SignUp = () => {
             <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center text-sm cursor-pointer w-full'>Create Account</button>
           </form>
           <p className="text-sm mt-8 text-center text-slate-500">
-          Already have an account? <Link to='/login' className='font-semibold'>Log in</Link>
+            Already have an account? <Link to='/login' className='font-semibold'>Log in</Link>
           </p>
         </div>
       </section>

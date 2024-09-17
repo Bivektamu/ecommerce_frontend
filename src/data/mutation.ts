@@ -1,22 +1,30 @@
 import { gql } from "@apollo/client";
 
-export const LOGIN_MUTATION = gql`
-  mutation LogInAdmin($input: SignInInput!) {
+export const LOGIN_ADMIN = gql`
+  mutation LogInAdmin($input: LogInInput!) {
     logInAdmin(input: $input) {
       token
     }
   }
 `;
 
-// export const UPLOAD_FILE = gql`
-//   mutation UploadFile($file: Upload!) {
-//     uploadFile(file: $file) {
-//       filename
-//       mimetype
-//       encoding
-//     }
-//   }
-// `;
+
+export const LOGIN_CUSTOMER = gql`
+mutation LogInCustomer($input: LogInInput!) {
+  logInCustomer(input: $input) {
+    token
+  }
+}
+`
+
+export const CREATE_CUSTOMER = gql`
+  mutation Mutation($input: CustomerInput) {
+    createCustomer(input: $input) {
+      id
+    }
+  }
+`
+
 
 
 

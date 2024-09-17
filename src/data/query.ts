@@ -4,6 +4,7 @@ export const GET_AUTH = gql`
   query GetAuthStatus {
     getAuthStatus {
       isLoggedIn
+      userRole
     }
   }
 `;

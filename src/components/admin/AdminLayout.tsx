@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect } from 'react'
 import Sidebar from '../ui/Sidebar'
 import BreadCrumbs from '../ui/BreadCrumbs'
 import { useStoreDispatch } from '../../store'
-import { getAuthStatus, logOutAdmin } from '../../store/slices/adminAuth'
+import { getAuthStatus, logOutAdmin } from '../../store/slices/authSlice'
 import { Outlet } from 'react-router-dom'
 
 type Props = {}

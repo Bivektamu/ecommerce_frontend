@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Auth, Status, RootState, FormData } from "../types";
 import client from "../../data/client";
-import { LOGIN_MUTATION } from "../../data/mutation";
+import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
 
 const initialState: Auth = {
     isLoggedIn: false,
+    userRole: null,
     status: Status.IDLE,
     error: ''
 }
@@ -14,7 +15,7 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
 
     try {
         const response = await client.mutate({
-            mutation: LOGIN_MUTATION,
+            mutation: LOGIN_ADMIN,
             variables: { input: { email, password } }
         })
 
@@ -24,10 +25,31 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
             
         }
     } catch (error) {
-        console.log(error.message);
-        throw error
+        if(error instanceof Error)
+            throw error
     }
 })
+
+
+
+export const logInCustomer = createAsyncThunk('/customer/login', async ({ email, password }: Partial<Pick<FormData, 'email' | 'password'>>) => {
+
+    try {
+        const response = await client.mutate({
+            mutation: LOGIN_CUSTOMER,
+            variables: { input: { email, password } }
+        })
+
+        const token = response.data.logInCustomer.token
+        if (token) {
+            return token
+        }
+    } catch (error) {
+        if(error instanceof Error)
+            throw error
+    }
+})
+
 
 
 export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
@@ -37,10 +59,11 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
             query: GET_AUTH,
         })
         const isLoggedIn = response.data.getAuthStatus.isLoggedIn
-        return isLoggedIn
+        const userRole = response.data.getAuthStatus.userRole
+        return {isLoggedIn, userRole}
     } catch (error) {
-        console.log(error?.message);
-        throw error
+        if(error instanceof Error)
+            throw error
     }
 })
 
@@ -88,17 +111,35 @@ const authSlice = createSlice({
                 state.error = action.error.message as string
             })
 
+            .addCase(logInCustomer.pending, (state: Auth) => {
+                state.status = Status.PENDING
+            })
+            .addCase(logInCustomer.fulfilled, (state: Auth, action) => {
+                client.resetStore()
+                localStorage.setItem('token', action.payload)
+                state.status = Status.FULFILLED
+                state.isLoggedIn = true
+            })
+            .addCase(logInCustomer.rejected, (state: Auth, action) => {
+                localStorage.setItem('token', '')
+                state.status = Status.REJECTED
+                state.isLoggedIn = false
+                state.error = action.error.message as string
+            })
+
             .addCase(getAuthStatus.pending, (state: Auth) => {
                 state.status = Status.PENDING
             })
             .addCase(getAuthStatus.fulfilled, (state: Auth, action) => {
                 state.status = Status.FULFILLED
-                state.isLoggedIn = action.payload
+                state.isLoggedIn = action.payload?.isLoggedIn
+                state.userRole = action.payload?.userRole
 
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
+                state.userRole = null
                 state.error = action.error.message as string
             })
     }

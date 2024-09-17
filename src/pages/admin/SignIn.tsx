@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import { FormData, Status } from '../../store/types'
 import { Navigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
-import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/adminAuth'
+import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import Logo from '../../components/ui/AdminLogo'
 import Preloader from '../../components/ui/Preloader'
@@ -54,6 +54,7 @@ const SignIn = () => {
   if (status === Status.FULFILLED && isLoggedIn) {
     return <Navigate to="/admin" />
   }
+console.log(isLoggedIn);
 
   return (
     <section className='w-full h-screen flex justify-center items-center'>

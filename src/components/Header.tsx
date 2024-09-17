@@ -7,9 +7,14 @@ import { useSelector } from 'react-redux'
 import { useProduct } from '../store/slices/productSlice'
 import { Status } from '../store/types'
 import TextLoader from './ui/TextLoader'
+import { useAuth } from '../store/slices/authSlice'
 
 const Header = () => {
   const { products, status } = useSelector(useProduct)
+  const { isLoggedIn } = useSelector(useAuth)
+
+  console.log(isLoggedIn);
+  
 
   return (
     <header className=' bg-white py-4'>
@@ -31,10 +36,25 @@ const Header = () => {
             <button>
               <UserAvatar />
             </button>
-            <div className="absolute top-6 left-0 bg-white w-[60px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
-              <Link to='/login' className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
-                Log in
-              </Link>
+            <div className="absolute top-6 left-0 bg-white w-[70px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
+              {
+                !isLoggedIn ?
+                  <>
+                    <Link to='/login' className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                      Log in
+                    </Link>
+
+                    <Link to='/signup' className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                      Sign Up
+                    </Link>
+                  </>
+                  :
+                  <button className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                    Log out
+                  </button>
+              }
+
+
             </div>
           </div>
         </div>
