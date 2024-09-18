@@ -39,9 +39,19 @@ export enum Status {
     REJECTED = 'REJECTED',
     IDLE = 'IDLE'
 }
+
+export enum User {
+    ADMIN="ADMIN",
+    CUSTOMER="CUSTOMER"
+}
+export interface UserRole {
+    userRole:User,
+    id:string
+}
+
 export interface Auth {
     isLoggedIn: boolean,
-    userRole:string | null,
+    userRole:UserRole | null,
     status: Status,
     error: string,
 }
@@ -64,7 +74,7 @@ export interface CustomerSlice {
     status: Status,
     error: string | null,
     customers: Customer[],
-    customer: CustomerId | null,
+    customer: Customer | null,
     action: Action | null
 }
 

@@ -22,10 +22,10 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
         const token = response.data.logInAdmin.token
         if (token) {
             return token
-            
+
         }
     } catch (error) {
-        if(error instanceof Error)
+        if (error instanceof Error)
             throw error
     }
 })
@@ -45,11 +45,10 @@ export const logInCustomer = createAsyncThunk('/customer/login', async ({ email,
             return token
         }
     } catch (error) {
-        if(error instanceof Error)
+        if (error instanceof Error)
             throw error
     }
 })
-
 
 
 export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
@@ -59,10 +58,10 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
             query: GET_AUTH,
         })
         const isLoggedIn = response.data.getAuthStatus.isLoggedIn
-        const userRole = response.data.getAuthStatus.userRole
-        return {isLoggedIn, userRole}
+        const userRole = JSON.parse(response.data.getAuthStatus.userRole)
+        return { isLoggedIn, userRole }
     } catch (error) {
-        if(error instanceof Error)
+        if (error instanceof Error)
             throw error
     }
 })
@@ -72,29 +71,17 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logOutAdmin: (state) => {
+        logOut: (state) => {
             localStorage.setItem('token', '')
             client.resetStore()
             state.status = Status.FULFILLED
             state.isLoggedIn = false
+            state.userRole = null
         },
-        // getAuthStatus: (state:Auth) => {
-        //     const token = localStorage.getItem('token')
-
-        //     if (token) {
-        //         state.isLoggedIn = true
-        //     }
-        //     else {
-        //         state.isLoggedIn = false
-        //     }
-        //     state.status = Status.FULFILLED
-        // }
-
     },
     extraReducers: builder => {
         builder
             .addCase(loginAdmin.pending, (state: Auth) => {
-
                 state.status = Status.PENDING
             })
             .addCase(loginAdmin.fulfilled, (state: Auth, action) => {
@@ -146,6 +133,6 @@ const authSlice = createSlice({
 })
 
 export default authSlice.reducer
-export const { logOutAdmin } = authSlice.actions
+export const { logOut } = authSlice.actions
 
 export const useAuth = (state: RootState) => state.auth

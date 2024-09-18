@@ -9,7 +9,17 @@ export const GET_AUTH = gql`
   }
 `;
 
-
+export const GET_CUSTOMER = gql`
+  query Customer($customerId: ID) {
+  customer(id: $customerId) {
+    id
+    firstName
+    lastName
+    email
+    password
+  }
+}
+`;
 
 export const GET_PRODUCTS = gql`
   query Query {

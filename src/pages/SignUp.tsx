@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status, Toast, Toast_Vairant } from '../store/types'
+import { Action, FormData, Status, Toast, Toast_Vairant, User } from '../store/types'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,7 +20,7 @@ const SignUp = () => {
   const auth = useSelector(useAuth)
   const { isLoggedIn, status, userRole } = auth
 
-  const { customer, status: customerStatus, error: customerError } = useSelector(useCustomer)
+  const { customer, status: customerStatus, error: customerError,  action} = useSelector(useCustomer)
 
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const SignUp = () => {
   }, [])
 
   useEffect(() => {
-    if (customer) {
+    if (customer && action === Action.ADD) {
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.SUCCESS,
@@ -61,7 +61,6 @@ const SignUp = () => {
     password: 'Test@123'
   })
   const [errors, setErrors] = useState<FormData>({})
-
 
 
   // code to remove error info when fields are typed
@@ -126,14 +125,7 @@ const SignUp = () => {
 
   }
 
-  // if (status == Status.IDLE || status === Status.PENDING) {
-  //   return <Preloader />
-  // }
-
-  if (status === Status.FULFILLED && isLoggedIn) {
-    if (userRole === 'ADMIN') {
-      return <Navigate to="/admin" />
-    }
+  if ( isLoggedIn && userRole?.userRole === User.CUSTOMER) {
     return <Navigate to="/" />
   }
 
