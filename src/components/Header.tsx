@@ -66,12 +66,12 @@ const Header = () => {
         <div className="flex gap-x-6 items-center">
           {status === Status.PENDING ? <TextLoader col='1' cssClass='' /> : <Search data={products} />}
 
-          <button>
+          <Link to='/cart'>
             <CartIcon />
-          </button>
+          </Link>
           <div className='relative group'>
-            <button>
-              {gravatarUrl ? <img className='w-6 h-6 rounded-full' src={gravatarUrl} /> : <UserAvatar />}
+            <button className='block'>
+              {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <UserAvatar />}
 
             </button>
             <div className="absolute top-6 left-0 bg-white w-[70px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">

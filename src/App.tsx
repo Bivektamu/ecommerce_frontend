@@ -10,16 +10,20 @@ const Orders = lazy(() => import("./pages/admin/Orders"))
 const Customers = lazy(() => import("./pages/admin/Customers"))
 const Reviews = lazy(() => import("./pages/admin/Reviews"))
 const PrivateRoute = lazy(() => import("./pages/admin/Private"))
+
+const Cart = lazy(() => import("./pages/Cart"))
+
 import Preloader from "./components/ui/Preloader"
 import PageNotFound from "./pages/admin/PageNotFound"
-import Home from "./pages/Home"
-import Layout from "./components/ui/Layout"
-import Product from "./pages/Product"
-import Contact from "./pages/Contact"
-import Collections from "./pages/Collections"
-import UnderWork from "./pages/UnderWork"
-import LogIn from "./pages/LogIn"
-import SignUp from "./pages/SignUp"
+
+const Home = lazy(() => import("./pages/Home"))
+const Layout = lazy(() => import("./components/ui/Layout"))
+const Product = lazy(() => import("./pages/Product"))
+const Contact = lazy(() => import("./pages/Contact"))
+const Collections = lazy(() => import("./pages/Collections"))
+const UnderWork = lazy(() => import("./pages/UnderWork"))
+const LogIn = lazy(() => import("./pages/LogIn"))
+const SignUp = lazy(() => import("./pages/SignUp"))
 
 function App() {
   const router = createBrowserRouter([
@@ -41,11 +45,18 @@ function App() {
             <Product />
           </Suspense>
         },
-        
+
         {
           path: '/contact',
           element: <Suspense fallback={<Preloader />}>
             <UnderWork />
+          </Suspense>
+        },
+
+        {
+          path: '/cart',
+          element: <Suspense fallback={<Preloader />}>
+            <Cart />
           </Suspense>
         },
         {
@@ -123,8 +134,6 @@ function App() {
         }
       ]
     },
-
-    
 
     {
       path: '*',

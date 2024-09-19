@@ -22,8 +22,6 @@ export const createCustomer = createAsyncThunk('/customer/add', async (formData:
 
     } catch (error) {
         if (error instanceof Error) {
-            console.log(error.message);
-            
             throw error
         }
     }
@@ -36,13 +34,11 @@ export const getCustomer = createAsyncThunk(`/customer/:id`, async (id: string) 
             query: GET_CUSTOMER,
             variables: { customerId: id }
         })
-        console.log(response);
         
         return response.data.customer
 
     } catch (error) {
         if (error instanceof Error) {
-            console.log(error.message);
             
             throw error
         }

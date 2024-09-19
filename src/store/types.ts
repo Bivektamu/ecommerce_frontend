@@ -14,7 +14,7 @@ export interface CustomerInput {
     firstName: string,
     lastName: string,
     email: string,
-    password:string,
+    password: string,
     address?: Address,
     isActive?: boolean,
     isVerified?: boolean
@@ -41,17 +41,17 @@ export enum Status {
 }
 
 export enum User {
-    ADMIN="ADMIN",
-    CUSTOMER="CUSTOMER"
+    ADMIN = "ADMIN",
+    CUSTOMER = "CUSTOMER"
 }
 export interface UserRole {
-    userRole:User,
-    id:string
+    userRole: User,
+    id: string
 }
 
 export interface Auth {
     isLoggedIn: boolean,
-    userRole:UserRole | null,
+    userRole: UserRole | null,
     status: Status,
     error: string,
 }
@@ -82,7 +82,8 @@ export interface RootState {
     auth: Auth,
     toasts: ToastSlice,
     products: ProductSlice,
-    customers: CustomerSlice
+    customers: CustomerSlice,
+    cart: CartSlice
 }
 
 export enum Colour {
@@ -108,12 +109,12 @@ export enum Size {
 
 export interface ProductImage {
     id: string,
-    url:string,
+    url: string,
     fileName: string
 }
 export interface ProductImageInput {
-    _id:string,
-    img:File
+    _id: string,
+    img: File
 }
 
 export interface Product {
@@ -156,7 +157,7 @@ export interface ValidateSchema<T> {
     name: string,
     type: string,
     value: T,
-    msg?:string
+    msg?: string
 }
 export interface FormError {
     [key: string]: string
@@ -200,17 +201,17 @@ export type ToastSlice = {
 
 
 export interface Review {
-    id:string,
-    customerId:CustomerId,
+    id: string,
+    customerId: CustomerId,
     productId: ProductId,
-    text:string,
+    text: string,
     timeStamp: Date,
-    rating:number,
+    rating: number,
 }
 
 export interface PriceRange {
-    min:number | '',
-    max:number | '',
+    min: number | '',
+    max: number | '',
 }
 
 export interface Filters {
@@ -218,4 +219,18 @@ export interface Filters {
     colors: Colour[],
     sizes: Size[],
     price: PriceRange
+}
+
+export interface Cart {
+    id: string,
+    productId: ProductId,
+    customerId:string | null
+    color: Colour | null,
+    quantity: number,
+    size: Size | null,
+    price: number | null
+}
+
+export interface CartSlice {
+    cart: Cart[],
 }

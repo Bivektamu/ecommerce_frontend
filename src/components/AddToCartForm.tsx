@@ -1,35 +1,50 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { Colour, FormError, Product, Size, Status, ValidateSchema } from '../store/types'
+import { v4 as uuidv4 } from 'uuid';
+
+
+import { Cart, Colour, FormError, Product, Size, Status, User, ValidateSchema } from '../store/types'
 import CircleLoader from './ui/CircleLoader'
 import getClasses from '../utils/getClasses'
 import validateForm from '../utils/validate'
 import SquareLoader from './ui/SquareLoader'
+import { useSelector } from 'react-redux'
+import { useAuth } from '../store/slices/authSlice'
+import { addToCart } from '../store/slices/cartSlice';
+import { useStoreDispatch } from '../store';
 
 type Props = {
     product: Product | null
 }
 
-
 const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 
 function AddToCartForm({ product }: Props) {
+    const dispatch = useStoreDispatch()
+    const {userRole} = useSelector(useAuth)
 
-    const [formData, setFormData] = useState({
-        id: product?.id,
-        color: '',
-        size: '',
+    const [formData, setFormData] = useState<Cart>({
+        id: uuidv4(),
+        customerId:'v',
+        productId: product?.id || '',
+        color: null,
+        size: null,
         quantity: 0,
+        price: product?.price || null
     })
 
     const [formErrors, setFormErrors] = useState<FormError[]>([])
 
     useEffect(() => {
         if (product && Object.keys(product).length > 0) {
-            setFormData({ ...formData, id: product?.id })
-            console.log(product);
-
+            setFormData({ ...formData, productId: product?.id, price: product?.price })
         }
     }, [product])
+
+    useEffect(()=> {
+        if(userRole && userRole.userRole === User.CUSTOMER) {
+            setFormData({ ...formData, customerId: userRole.id })
+        }
+    }, [userRole])
 
     // code to remove error info when fields are typed
     useEffect(() => {
@@ -103,16 +118,11 @@ function AddToCartForm({ product }: Props) {
             ]
 
         const errors = validateForm(validateSchema)
-        console.log(errors);
-
 
         if (Object.keys(errors).length > 0) {
             return setFormErrors({ ...errors })
         }
-
-        console.log({ ...formData, total: formData.quantity * product?.price });
-
-
+        dispatch(addToCart(formData))
     }
 
     const { color, size, quantity } = formData
