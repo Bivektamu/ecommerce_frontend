@@ -6,13 +6,13 @@ import Footer from '../Footer'
 import { Outlet } from 'react-router-dom'
 import Preloader from './Preloader'
 import { useSelector } from 'react-redux'
-import { toasts } from '../../store/slices/toastSlice'
+import { useToasts } from '../../store/slices/toastSlice'
 import ToastComponent from './Toast'
 
 type Props = {}
 
 const Layout = (props: Props) => {
-  const allToasts = useSelector(toasts)
+  const allToasts = useSelector(useToasts)
 
   return (
     <>

@@ -7,18 +7,21 @@ import { useCart } from '../store/slices/cartSlice'
 import { Cart, Status } from '../store/types'
 import CartItem from '../components/CartItem'
 import SquareLoader from '../components/ui/SquareLoader'
+import { getProducts, useProduct } from '../store/slices/productSlice'
 
 const Cart = () => {
 
   const dispatch = useStoreDispatch()
-  const { userRole, status } = useSelector(useAuth)
+  const { userRole } = useSelector(useAuth)
   const { cart } = useSelector(useCart)
+  const {status} = useSelector(useProduct)
 
   const [cartState, setCartState] = useState<Cart[]>([])
-  const [total, setTotal] = useState<number | null>(null)
+  const [total, setTotal] = useState<number>(0)
 
   useEffect(() => {
     dispatch(getAuthStatus())
+    dispatch(getProducts())
   }, [])
 
   useEffect(() => {
@@ -36,9 +39,6 @@ const Cart = () => {
   }, [cart, userRole])
 
   useEffect(() => {
-
-    console.log(status);
-    
     if (cartState.length > 0 && status !== Status.REJECTED) {
       let tempTotal = 0
       cartState.forEach((cart: Cart) => {
@@ -67,14 +67,17 @@ const Cart = () => {
           <div className="basis-2/3">
             <p className="font-bold text-xl pb-4 border-b-[1px] border-slate-200 mb-12">Your Cart</p>
             {
-              cartState.length > 0 && cartState.map((cartItem: Cart) => (
+              cartState.length < 1 ?
+              <p className='text-sm'>
+                Ther are no items in your cart. Please add items to your shopping cart.</p>
+              : cartState.map((cartItem: Cart) => (
                 <CartItem key={cartItem.id} cartItem={cartItem} />
               ))
             }
           </div>
 
           {
-            !total?<SquareLoader square={1} squareClass='basis-1/3 h-[400px]' />:total > 0 && cartState.length > 0 &&
+            status !== Status.FULFILLED?<SquareLoader square={1} squareClass='basis-1/3 h-[400px]' />:total > 0  &&
             <div className="basis-1/3 border-slate-200 border-[1px] p-6">
               <p className="font-bold text-xl mb-12">Order Summary</p>
               <p className="flex justify-between">
@@ -84,10 +87,6 @@ const Cart = () => {
 
             </div>
           }
-
-
-
-
 
         </div>
       </section>

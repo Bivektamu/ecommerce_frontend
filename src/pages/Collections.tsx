@@ -12,11 +12,14 @@ import GridLoader from "../components/ui/GridLoader"
 import { Link } from "react-router-dom"
 import ProductCard from "../components/ui/ProductCard"
 import SortProducts from "../components/SortProducts"
+import { resetCartAction, useCart } from "../store/slices/cartSlice"
 
 
 const Collections = () => {
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
+  const { action } = useSelector(useCart)
+
 
   const [filters, setFilters] = useState<Filters>({
     category: [],
@@ -30,6 +33,12 @@ const Collections = () => {
   useEffect(() => {
     dispatch(getProducts())
   }, [])
+
+  useEffect(() => {
+    if (action) {
+        dispatch(resetCartAction())
+    }
+}, [action])
 
 
   useEffect(() => {

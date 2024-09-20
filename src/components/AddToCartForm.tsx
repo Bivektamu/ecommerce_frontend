@@ -1,16 +1,18 @@
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
+import { act, ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 
-import { Cart, Colour, FormError, Product, Size, Status, User, ValidateSchema } from '../store/types'
+import { Action, Cart, Colour, FormError, Product, Size, Status, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
 import CircleLoader from './ui/CircleLoader'
 import getClasses from '../utils/getClasses'
 import validateForm from '../utils/validate'
 import SquareLoader from './ui/SquareLoader'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../store/slices/authSlice'
-import { addToCart } from '../store/slices/cartSlice';
+import { addToCart, resetCartAction, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
+import  { addToast } from '../store/slices/toastSlice';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     product: Product | null
@@ -19,12 +21,14 @@ type Props = {
 const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 
 function AddToCartForm({ product }: Props) {
+    const navigate = useNavigate()
     const dispatch = useStoreDispatch()
-    const {userRole} = useSelector(useAuth)
+    const { userRole } = useSelector(useAuth)
+    const { action } = useSelector(useCart)
 
     const [formData, setFormData] = useState<Cart>({
         id: uuidv4(),
-        customerId:'v',
+        customerId: null,
         productId: product?.id || '',
         color: null,
         size: null,
@@ -40,8 +44,8 @@ function AddToCartForm({ product }: Props) {
         }
     }, [product])
 
-    useEffect(()=> {
-        if(userRole && userRole.userRole === User.CUSTOMER) {
+    useEffect(() => {
+        if (userRole && userRole.userRole === User.CUSTOMER) {
             setFormData({ ...formData, customerId: userRole.id })
         }
     }, [userRole])
@@ -57,6 +61,20 @@ function AddToCartForm({ product }: Props) {
             })
         }
     }, [formData])
+
+    useEffect(() => {
+        if (action && action === Action.ADD) {
+            {
+                const toast: Toast = {
+                    id: uuidv4(),
+                    variant: Toast_Vairant.SUCCESS,
+                    msg: 'Product added to cart'
+                }
+                dispatch(addToast(toast))
+                return navigate('/collections')
+            }
+        }
+    }, [action])
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

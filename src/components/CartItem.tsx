@@ -1,4 +1,4 @@
-import React, { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from 'react'
+import React, { ChangeEvent, ChangeEventHandler, Dispatch, MouseEvent, SetStateAction, useEffect, useState } from 'react'
 import { Cart, Colour, Product } from '../store/types'
 import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
@@ -7,12 +7,13 @@ import SquareLoader from './ui/SquareLoader'
 import TextLoader from './ui/TextLoader'
 import Close from './ui/Close'
 import getClasses from '../utils/getClasses'
+import { deleteCart, updateCart } from '../store/slices/cartSlice'
 
 type Props = {
     cartItem: Cart,
 }
 
-const CartItem = ({ cartItem}: Props) => {
+const CartItem = ({ cartItem }: Props) => {
 
     const dispatch = useStoreDispatch()
     const { products } = useSelector(useProduct)
@@ -30,11 +31,19 @@ const CartItem = ({ cartItem}: Props) => {
         }
     }, [products])
 
+    useEffect(() => {
+        dispatch(updateCart({
+            id: cartItem.id,
+            quantity: quantity || 0
+        }))
+
+    }, [quantity])
+
     const rangeHandler = (e: MouseEvent<HTMLButtonElement>, type: string) => {
         e.stopPropagation()
 
         if (type === '-') {
-            if (quantity > 0) {
+            if (quantity > 1) {
                 setQuantity(quantity - 1)
             }
         }
@@ -44,8 +53,23 @@ const CartItem = ({ cartItem}: Props) => {
             }
         }
     }
-    const changeHandler = () => {
 
+
+    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log(e.target.value);
+
+        if (parseInt(e.target.value) > product?.quantity) {
+            return
+        }
+        setQuantity(parseInt(e.target.value || '1'))
+    }
+
+    const deleteHandler = (e:MouseEvent<HTMLButtonElement>)=> {
+        e.preventDefault()
+        e.stopPropagation()
+        dispatch(deleteCart(cartItem.id))
     }
 
     return (
@@ -89,7 +113,7 @@ const CartItem = ({ cartItem}: Props) => {
                             </div>
                         </fieldset>
                 }
-                <button className='w-10 h-10 bg-cultured'>
+                <button className='w-10 h-10 bg-cultured' onClick={deleteHandler}>
                     <Close classN='bg-black w-4' />
                 </button>
 

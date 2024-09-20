@@ -199,7 +199,6 @@ export type ToastSlice = {
     toasts: Toast[]
 }
 
-
 export interface Review {
     id: string,
     customerId: CustomerId,
@@ -233,4 +232,5 @@ export interface Cart {
 
 export interface CartSlice {
     cart: Cart[],
+    action: Action | null
 }

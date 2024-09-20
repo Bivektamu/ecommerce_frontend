@@ -23,4 +23,4 @@ const toastSlice = createSlice({
 
 export default toastSlice.reducer
 export const { addToast, removeToast } = toastSlice.actions
-export const toasts = (state: RootState) => state.toasts.toasts
+export const useToasts = (state: RootState) => state.toasts.toasts
