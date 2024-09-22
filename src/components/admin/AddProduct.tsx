@@ -226,7 +226,6 @@ const AddProduct = () => {
     useEffect(() => {
 
         if (imgs.length > 0) {
-            console.log(imgs);
 
             let previews: PrviewImage[] = []
 

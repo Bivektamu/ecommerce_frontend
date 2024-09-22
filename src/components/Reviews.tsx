@@ -20,7 +20,7 @@ const Reviews = (props: Props) => {
             <div className="wrapper pb-8">
                 {new Array(3).fill('*').map((_, i) =>
 
-                    <div className="flex items-start justify-between mb-12 gap-10">
+                    <div key={i} className="flex items-start justify-between mb-12 gap-10">
                         <div className="flex items-start justify-between gap-4">
 
                             <div className="basis-1/12">

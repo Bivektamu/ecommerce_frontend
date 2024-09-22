@@ -18,11 +18,9 @@ const LogIn = () => {
   }, [isLoggedIn])
 
 
-
-
   const [formData, setFormData] = useState<Pick<FormData, 'email' | 'password'>>({
-    email: 'test@test.com',
-    password: 'Test@123'
+    email: '',
+    password: ''
   })
   const [errors, setErrors] = useState<Pick<FormData, 'email' | 'password'>>({} as typeof errors)
 

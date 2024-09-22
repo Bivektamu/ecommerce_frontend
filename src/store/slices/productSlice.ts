@@ -24,7 +24,6 @@ export const addProduct = createAsyncThunk('/admin/product/add', async (formData
     } catch (error) {
 
         if (error instanceof Error) {
-            console.log(error.message);
 
             throw error
         }
@@ -38,7 +37,6 @@ export const editProduct = createAsyncThunk('/admin/product/edit', async (formDa
             mutation: EDIT_PRODUCT,
             variables: { input: formData }
         })
-        console.log(response.data);
         
 
         return response.data.editProduct
@@ -46,7 +44,6 @@ export const editProduct = createAsyncThunk('/admin/product/edit', async (formDa
     } catch (error) {
 
         if (error instanceof Error) {
-            console.log(error.message);
             throw error
         }
     }
@@ -65,7 +62,6 @@ export const deleteProduct = createAsyncThunk('/admin/product/delete', async (id
     } catch (error) {
 
         if (error instanceof Error) {
-            console.log(error.message);
             throw error
         }
     }
@@ -85,8 +81,6 @@ export const getProducts = createAsyncThunk('/admin/products', async () => {
     } catch (error) {
 
         if (error instanceof Error) {
-            console.log(error.message);
-
             throw error
         }
     }

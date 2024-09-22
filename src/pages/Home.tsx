@@ -71,7 +71,7 @@ const Home = (props: Props) => {
 
             {
               products.slice(0, 4).map(product =>
-                <ProductCard item={product} />
+                <ProductCard key={product.id} item={product} />
               )
             }
           </Grids>

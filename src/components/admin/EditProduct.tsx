@@ -13,6 +13,7 @@ import { useStoreDispatch } from '../../store';
 import Preloader from '../ui/Preloader';
 import { log } from 'util';
 import mongoose, { STATES } from 'mongoose';
+import ProgressLoader from '../ui/ProgressLoader';
 
 
 
@@ -302,7 +303,7 @@ const EditProduct = () => {
 
 
     if (Object.keys(formData).length < 1 || status === Status.PENDING) {
-        return <Preloader />
+        return <ProgressLoader />
     }
 
     if (status === Status.FULFILLED && action === Action.EDIT) {

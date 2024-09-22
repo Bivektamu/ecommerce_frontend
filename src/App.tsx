@@ -14,6 +14,7 @@ const PrivateRoute = lazy(() => import("./pages/admin/Private"))
 const Cart = lazy(() => import("./pages/Cart"))
 
 import Preloader from "./components/ui/Preloader"
+import ProgressLoader from "./components/ui/ProgressLoader"
 import PageNotFound from "./pages/admin/PageNotFound"
 
 const Home = lazy(() => import("./pages/Home"))
@@ -79,6 +80,7 @@ function App() {
         <SignIn />
       </Suspense>
     },
+
     {
       path: '/admin',
       element: <Suspense fallback={<Preloader />}>
@@ -88,47 +90,49 @@ function App() {
       children: [
         {
           path: 'products',
-          element: <Suspense fallback={<Preloader />}>
+          element:
+          <Suspense fallback={<ProgressLoader />}>
             <Products />
-          </Suspense>,
+          </Suspense>
+          ,
         },
         {
           path: 'products/:slug',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <EditProduct />
           </Suspense>,
         },
 
         {
           path: 'products/add',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <AddProduct />
           </Suspense>,
         },
         {
           path: 'dashboard',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <DashBoard />
           </Suspense>
         },
 
         {
           path: 'orders',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <Orders />
           </Suspense>
         },
 
         {
           path: 'customers',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <Customers />
           </Suspense>
         },
 
         {
           path: 'reviews',
-          element: <Suspense fallback={<Preloader />}>
+          element: <Suspense fallback={<ProgressLoader />}>
             <Reviews />
           </Suspense>
         }
@@ -137,7 +141,7 @@ function App() {
 
     {
       path: '*',
-      element: <Suspense fallback={<Preloader />}><Layout /></Suspense>,
+      element: <Suspense fallback={<ProgressLoader />}><Layout /></Suspense>,
       children: [
         {
           path: '*',

@@ -32,7 +32,7 @@ const FeaturedLatest = ({ products, status }: Props) => {
                 <Grids cssClass='container mx-auto grid-cols-4 grid gap-12'>
                     {
                         sortProducts.map(product =>
-                            <ProductCard item={product} />
+                            <ProductCard key={product.id} item={product} />
                         )
                     }
                 </Grids>

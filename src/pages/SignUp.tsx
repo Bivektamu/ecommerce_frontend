@@ -43,8 +43,6 @@ const SignUp = () => {
 
   useEffect(() => {
     if (customerError) {
-      console.log(customerError);
-
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.DANGER,
@@ -55,10 +53,10 @@ const SignUp = () => {
   }, [customerError])
 
   const [formData, setFormData] = useState<FormData>({
-    firstName: 'test',
-    lastName: 'test',
-    email: 'test@test.com',
-    password: 'Test@123'
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: ''
   })
   const [errors, setErrors] = useState<FormData>({})
 

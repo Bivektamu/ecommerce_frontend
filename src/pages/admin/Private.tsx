@@ -5,18 +5,18 @@ import { Link, Navigate, Outlet, redirect, useLocation, useNavigate } from 'reac
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
-import { toasts } from "../../store/slices/toastSlice"
+import { useToasts } from "../../store/slices/toastSlice"
 import ToastComponent from "../../components/ui/Toast"
 import { Status } from '../../store/types'
-import Preloader from '../../components/ui/Preloader'
 import { useStoreDispatch } from '../../store'
+import ProgressLoader from '../../components/ui/ProgressLoader'
 
 const PrivateRoute = () => {
 
 
     const navigate = useNavigate()
 
-    const allToasts = useSelector(toasts)
+    const allToasts = useSelector(useToasts)
 
     const auth = useSelector(useAuth)
     const { isLoggedIn, status, userRole } = auth
@@ -27,30 +27,23 @@ const PrivateRoute = () => {
         dispatch(getAuthStatus())
     }, [])
 
-    console.log(userRole);
-    
+    useEffect(()=> {
+        if(status === Status.FULFILLED && !isLoggedIn) {
+            navigate('/admin/login')
+        }
+
+    }, [isLoggedIn])
+
+    useEffect(()=> {
+    if (location.pathname === '/admin' || location.pathname === '/admin/') {
+        return navigate('/admin/dashboard')
+    }
+    }, [location.pathname])
 
 
     const logOutHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         dispatch(logOut())
-    }
-    
-
-    if (status === Status.IDLE || status === Status.PENDING) {
-        return <Preloader />
-    }
-
-    if (!isLoggedIn) {
-        return navigate('/admin/login')
-    }
-    // if (isLoggedIn && userRole !== 'ADMIN') {
-    //     return navigate('/admin/login')
-    // }
-
-
-    if (location.pathname === '/admin' || location.pathname === '/admin/') {
-        return navigate('/admin/dashboard')
     }
 
     return (
@@ -70,7 +63,11 @@ const PrivateRoute = () => {
 
                     </button>
                 </div>
-                <Outlet />
+
+                {
+                    status !== Status.FULFILLED ? <ProgressLoader cssClass='mt-32' /> :<Outlet />
+                }
+
 
             </section>
 

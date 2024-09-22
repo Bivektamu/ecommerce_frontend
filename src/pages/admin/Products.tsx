@@ -4,13 +4,13 @@ import Close from '../../components/ui/Close'
 import { useStoreDispatch } from '../../store'
 import { deleteProduct, getProducts, useProduct } from '../../store/slices/productSlice'
 import { useSelector } from 'react-redux'
-import Preloader from '../../components/ui/Preloader'
 import { Action, Product, Status, Toast, Toast_Vairant } from '../../store/types'
 import Check from '../../components/ui/Check'
 import { v4 as uuidv4 } from 'uuid';
 import { addToast } from '../../store/slices/toastSlice'
 import Modal from '../../components/ui/Modal'
 import SearchIcon from '../../components/ui/SearchIcons'
+import ProgressLoader from '../../components/ui/ProgressLoader'
 
 
 const Products = () => {
@@ -32,7 +32,6 @@ const Products = () => {
 
   useEffect(() => {
     if (action) {
-      console.log(action);
 
       let variant = '', msg = ''
       switch (action) {
@@ -105,16 +104,12 @@ const Products = () => {
   }
 
   if (status == Status.IDLE || status == Status.PENDING) {
-    return <Preloader />
+    return <ProgressLoader />
   }
 
   if (status === Status.FULFILLED && action !== Action.FETCH) {
-    console.log('okokokok');
-
-    return <Preloader />
+    return <ProgressLoader />
   }
-
-
 
   return (
 
