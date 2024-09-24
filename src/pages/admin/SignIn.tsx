@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status } from '../../store/types'
-import { Navigate } from 'react-router-dom'
+import { FormData, Status, User } from '../../store/types'
+import { useNavigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -10,7 +10,9 @@ const SignIn = () => {
 
   const dispatch = useStoreDispatch()
   const auth = useSelector(useAuth)
-  const { isLoggedIn, status } = auth
+  const { isLoggedIn, status, user } = auth
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(getAuthStatus())
@@ -19,6 +21,12 @@ const SignIn = () => {
   const [email, setEmail] = useState('admin@gmail.com')
   const [password, setPassword] = useState('password123')
   const [errors, setErrors] = useState<Partial<Pick<FormData, 'email' | 'password'>>>({})
+
+  useEffect(() => {
+    if (status === Status.FULFILLED && isLoggedIn && user?.userRole === User.ADMIN) {
+      navigate('/admin/dashboard')
+    }
+  }, [status, isLoggedIn, user])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -46,14 +54,11 @@ const SignIn = () => {
 
   }
 
-  if (status == Status.IDLE || status === Status.PENDING) {
+  if (status === Status.PENDING || isLoggedIn || user) {
     return <Preloader />
   }
 
-  if (status === Status.FULFILLED && isLoggedIn) {
-    return <Navigate to="/admin" />
-  }
-console.log(isLoggedIn);
+
 
   return (
     <section className='w-full h-screen flex justify-center items-center'>

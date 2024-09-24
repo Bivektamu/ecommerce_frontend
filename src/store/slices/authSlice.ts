@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, FormData } from "../types";
+import { Auth, Status, RootState, FormData, User, UserRole } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
 
 const initialState: Auth = {
     isLoggedIn: false,
-    userRole: null,
+    user: null,
     status: Status.IDLE,
-    error: ''
+    error: '',
 }
 
 export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, password }: Partial<Pick<FormData, 'email' | 'password'>>) => {
@@ -74,9 +74,10 @@ const authSlice = createSlice({
         logOut: (state) => {
             client.resetStore()
             localStorage.setItem('token', '')
-            state.status = Status.FULFILLED
             state.isLoggedIn = false
-            state.userRole = null
+            state.user = null
+            state.status = Status.FULFILLED
+
         },
     },
     extraReducers: builder => {
@@ -88,13 +89,19 @@ const authSlice = createSlice({
                 client.resetStore()
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
+                const user:UserRole = {
+                    userRole: User.ADMIN,
+                    id:''
+                }
+                state.user = user
                 state.isLoggedIn = true
+                
             })
             .addCase(loginAdmin.rejected, (state: Auth, action) => {
                 localStorage.setItem('token', '')
-
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
+                state.user = null
                 state.error = action.error.message as string
             })
 
@@ -106,11 +113,18 @@ const authSlice = createSlice({
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
                 state.isLoggedIn = true
+                const user:UserRole = {
+                    userRole: User.CUSTOMER,
+                    id:''
+                }
+                state.user = user
+
             })
             .addCase(logInCustomer.rejected, (state: Auth, action) => {
                 localStorage.setItem('token', '')
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
+                state.user = null
                 state.error = action.error.message as string
             })
 
@@ -120,14 +134,14 @@ const authSlice = createSlice({
             .addCase(getAuthStatus.fulfilled, (state: Auth, action) => {
                 state.status = Status.FULFILLED
                 state.isLoggedIn = action.payload?.isLoggedIn
-                state.userRole = action.payload?.userRole
-
+                state.user = action.payload?.userRole
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
-                state.userRole = null
+                state.user = null
                 state.error = action.error.message as string
+
             })
     }
 })

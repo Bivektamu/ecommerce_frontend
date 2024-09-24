@@ -63,7 +63,7 @@ export interface UserRole {
 
 export interface Auth {
     isLoggedIn: boolean,
-    userRole: UserRole | null,
+    user: UserRole | null,
     status: Status,
     error: string,
 }

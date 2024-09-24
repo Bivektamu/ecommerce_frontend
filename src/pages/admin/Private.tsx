@@ -1,15 +1,16 @@
 import  {  MouseEvent, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getAuthStatus, logOut, useAuth } from '../../store/slices/authSlice'
-import {  Outlet, useLocation, useNavigate } from 'react-router-dom'
+import {  Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
 import { useToasts } from "../../store/slices/toastSlice"
 import ToastComponent from "../../components/ui/Toast"
-import { Status } from '../../store/types'
+import { Status, User } from '../../store/types'
 import { useStoreDispatch } from '../../store'
 import ProgressLoader from '../../components/ui/ProgressLoader'
+import Preloader from '../../components/ui/Preloader'
 
 const PrivateRoute = () => {
 
@@ -19,7 +20,7 @@ const PrivateRoute = () => {
     const allToasts = useSelector(useToasts)
 
     const auth = useSelector(useAuth)
-    const { isLoggedIn, status } = auth
+    const { isLoggedIn, status, user } = auth
     const dispatch = useStoreDispatch()
     const location = useLocation()
 
@@ -31,11 +32,18 @@ const PrivateRoute = () => {
         if(status === Status.FULFILLED && !isLoggedIn) {
             navigate('/admin/login')
         }
-        else if(status === Status.REJECTED && !isLoggedIn) {
+        else if(status === Status.REJECTED) {
             navigate('/admin/login')
         }
 
-    }, [isLoggedIn])
+    }, [isLoggedIn, status])
+
+    useEffect(()=> {
+        
+        if(user && user.userRole !== User.ADMIN) {
+            navigate('/admin/login')
+        }
+    }, [user])
 
     useEffect(()=> {
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
@@ -49,8 +57,13 @@ const PrivateRoute = () => {
         dispatch(logOut())
     }
 
+    if(status === Status.PENDING || !isLoggedIn || user?.userRole !== User.ADMIN) {
+        return <Preloader />
+    }
+    
     return (
         <>
+       
             {
                 allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
             }
