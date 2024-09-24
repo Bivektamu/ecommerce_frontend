@@ -1,5 +1,4 @@
 import { Product } from '../../store/types'
-import { Link } from 'react-router-dom'
 import CustomNavLink from '../CustomNavLink'
 
 type Props = {

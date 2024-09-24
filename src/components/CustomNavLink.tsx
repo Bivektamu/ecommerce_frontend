@@ -1,7 +1,6 @@
 // import { SetStateAction } from 'react'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import Preloader from './ui/Preloader'
 
 type Props = {
   to: string,

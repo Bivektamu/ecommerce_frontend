@@ -1,5 +1,4 @@
 import Logo from './ui/Logo'
-import { Link } from 'react-router-dom'
 import gravatar from 'gravatar'
 
 import CartIcon from './ui/CartIcon'
