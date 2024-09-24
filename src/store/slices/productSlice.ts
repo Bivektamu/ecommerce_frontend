@@ -158,7 +158,7 @@ const productSlice = createSlice({
             .addCase(editProduct.fulfilled, (state: ProductSlice, action) => {
                 client.resetStore()
                 state.status = Status.FULFILLED
-                // state.products.push(action.payload)
+                state.products.push(action.payload)
                 state.action = Action.EDIT
             })
             .addCase(editProduct.rejected, (state: ProductSlice, action) => {

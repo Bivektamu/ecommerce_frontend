@@ -14,7 +14,7 @@ import { Status } from "../store/types"
 import FeaturedLatest from "../components/FeaturedLatest"
 import ProductCard from "../components/ui/ProductCard"
 
-const Home = (props: Props) => {
+const Home = () => {
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
 

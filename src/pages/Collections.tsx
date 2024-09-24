@@ -89,7 +89,7 @@ const Collections = () => {
 
   }, [filters, products])
 
-  const clickHandler = (e: MouseEvent<HTMLButtonElement>, type:keyof Filters, item: string) => {
+  const clickHandler = (e: MouseEvent<HTMLButtonElement>, type:keyof Omit<Filters,  'price'>, item: string) => {
     e.stopPropagation()
     setFilters(prev => ({ ...prev, [type]: prev[type].filter(c => c !== item) }))
   }

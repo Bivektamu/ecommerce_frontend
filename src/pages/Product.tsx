@@ -14,9 +14,7 @@ import TextLoader from '../components/ui/TextLoader'
 import ButtonLoader from '../components/ui/ButtonLoader'
 import SquareLoader from '../components/ui/SquareLoader'
 
-type Props = {}
-
-const ProductComponent = (props: Props) => {
+const ProductComponent = () => {
 
   const params = useParams()
   const navigate = useNavigate()

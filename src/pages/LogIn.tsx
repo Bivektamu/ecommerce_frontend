@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status, User, ValidateSchema } from '../store/types'
+import { FormData,  FormError,  User, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -10,7 +10,7 @@ import { Navigate } from 'react-router-dom'
 const LogIn = () => {
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn, status, userRole } = useSelector(useAuth)
+  const { isLoggedIn,  userRole } = useSelector(useAuth)
 
   useEffect(() => {
     if (isLoggedIn)
@@ -22,14 +22,14 @@ const LogIn = () => {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState<Pick<FormData, 'email' | 'password'>>({} as typeof errors)
+  const [errors, setErrors] = useState<FormError>({} as  FormError)
 
 
   // code to remove error info when fields are typed
   useEffect(() => {
     if (Object.keys(formData).length > 0) {
       Object.keys(formData).map(key => {
-        if (formData[key]) {
+        if (formData[key as keyof typeof formData ]) {
           setErrors(prev => ({ ...prev, [key]: '' }))
         }
 
@@ -52,7 +52,7 @@ const LogIn = () => {
     e.stopPropagation()
 
 
-    const validateSchema: ValidateSchema<any>[] =
+    const validateSchema: ValidateSchema<unknown>[] =
       [
         {
           name: 'email',

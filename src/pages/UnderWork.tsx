@@ -1,6 +1,4 @@
-type Props = {}
-
-const UnderWork = (props: Props) => {
+const UnderWork = () => {
   return (
     <h1 className='text-4xl text-center font-bold py-32'>This page is under development.</h1>
   )

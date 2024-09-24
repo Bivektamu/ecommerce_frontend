@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Action, FormData, Status, Toast, Toast_Vairant, User } from '../store/types'
+import { Action, FormData,  FormError,  Toast, Toast_Vairant, User } from '../store/types'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,9 +18,9 @@ const SignUp = () => {
 
   const dispatch = useStoreDispatch()
   const auth = useSelector(useAuth)
-  const { isLoggedIn, status, userRole } = auth
+  const { isLoggedIn,  userRole } = auth
 
-  const { customer, status: customerStatus, error: customerError,  action} = useSelector(useCustomer)
+  const { customer,  error: customerError,  action} = useSelector(useCustomer)
 
 
   useEffect(() => {
@@ -58,14 +58,14 @@ const SignUp = () => {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState<FormData>({})
+  const [errors, setErrors] = useState<FormError>({})
 
 
   // code to remove error info when fields are typed
   useEffect(() => {
     if (Object.keys(formData).length > 0) {
       Object.keys(formData).map(key => {
-        if (formData[key]) {
+        if (formData[key as keyof typeof formData]) {
           setErrors(prev => ({ ...prev, [key]: '' }))
         }
 
@@ -86,7 +86,7 @@ const SignUp = () => {
     e.stopPropagation()
 
 
-    const validateSchema: ValidateSchema<any>[] =
+    const validateSchema: ValidateSchema<unknown>[] =
       [
         {
           name: 'firstName',
@@ -113,7 +113,7 @@ const SignUp = () => {
       ]
 
 
-    const newErrors: typeof errors = validateForm(validateSchema)
+    const newErrors:FormError = validateForm(validateSchema)
 
     if (Object.keys(newErrors).length > 0) {
       return setErrors({ ...newErrors })
