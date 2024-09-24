@@ -72,8 +72,8 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logOut: (state) => {
-            localStorage.setItem('token', '')
             client.resetStore()
+            localStorage.setItem('token', '')
             state.status = Status.FULFILLED
             state.isLoggedIn = false
             state.userRole = null

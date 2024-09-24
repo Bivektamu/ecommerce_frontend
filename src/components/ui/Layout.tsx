@@ -1,17 +1,13 @@
-import React, { lazy, Suspense } from 'react'
-// import Header from '../Header'
+import  { lazy } from 'react'
 const Header = lazy(() => import("../Header"))
 
 import Footer from '../Footer'
 import { Outlet } from 'react-router-dom'
-import Preloader from './Preloader'
 import { useSelector } from 'react-redux'
 import { useToasts } from '../../store/slices/toastSlice'
 import ToastComponent from './Toast'
 
-type Props = {}
-
-const Layout = (props: Props) => {
+const Layout = () => {
   const allToasts = useSelector(useToasts)
 
   return (

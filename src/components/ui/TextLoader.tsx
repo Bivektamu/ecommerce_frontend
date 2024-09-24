@@ -1,6 +1,3 @@
-import React from 'react'
-import Grids from './Grids';
-
 type Props = {
     col: string,
     cssClass: string

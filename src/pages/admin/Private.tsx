@@ -1,7 +1,7 @@
-import React, { Component, MouseEvent, ReactElement, useEffect } from 'react'
+import  {  MouseEvent, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getAuthStatus, logOut, useAuth } from '../../store/slices/authSlice'
-import { Link, Navigate, Outlet, redirect, useLocation, useNavigate } from 'react-router-dom'
+import {  Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
@@ -19,7 +19,7 @@ const PrivateRoute = () => {
     const allToasts = useSelector(useToasts)
 
     const auth = useSelector(useAuth)
-    const { isLoggedIn, status, userRole } = auth
+    const { isLoggedIn, status } = auth
     const dispatch = useStoreDispatch()
     const location = useLocation()
 
@@ -29,6 +29,9 @@ const PrivateRoute = () => {
 
     useEffect(()=> {
         if(status === Status.FULFILLED && !isLoggedIn) {
+            navigate('/admin/login')
+        }
+        else if(status === Status.REJECTED && !isLoggedIn) {
             navigate('/admin/login')
         }
 

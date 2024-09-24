@@ -5,11 +5,10 @@ import { MouseEvent, useEffect, useState } from "react"
 import { useStoreDispatch } from "../store"
 import { useSelector } from "react-redux"
 import BreadCrumbs from "../components/ui/BreadCrumbs"
-import { Colour, Filters, Product, Status } from "../store/types"
+import { Filters, Product, Status } from "../store/types"
 import ProductFilter from "../components/ProductFilter"
 import Close from "../components/ui/Close"
 import GridLoader from "../components/ui/GridLoader"
-import { Link } from "react-router-dom"
 import ProductCard from "../components/ui/ProductCard"
 import SortProducts from "../components/SortProducts"
 import { resetCartAction, useCart } from "../store/slices/cartSlice"
@@ -36,9 +35,9 @@ const Collections = () => {
 
   useEffect(() => {
     if (action) {
-        dispatch(resetCartAction())
+      dispatch(resetCartAction())
     }
-}, [action])
+  }, [action])
 
 
   useEffect(() => {
@@ -76,18 +75,21 @@ const Collections = () => {
       }
 
       if (filters.price.min) {
-        tempProduct = tempProduct.filter(product => product.price >= filters.price.min)
+        tempProduct = tempProduct.filter(product => product.price >= parseInt(filters.price.min as string))
       }
 
       if (filters.price.max) {
-        tempProduct = tempProduct.filter(product => product.price <= filters.price.max)
+        tempProduct = tempProduct.filter(product => product.price <= parseInt(filters.price.max as string))
       }
     }
     setFilteredProducts(Array.from(new Set([...tempProduct])))
 
+    console.log(products);
+
+
   }, [filters, products])
 
-  const clickHandler = (e: MouseEvent<HTMLButtonElement>, type: string, item: string) => {
+  const clickHandler = (e: MouseEvent<HTMLButtonElement>, type:keyof Filters, item: string) => {
     e.stopPropagation()
     setFilters(prev => ({ ...prev, [type]: prev[type].filter(c => c !== item) }))
   }
@@ -168,7 +170,7 @@ const Collections = () => {
                 filteredProducts.length > 0 &&
                 <p className="text-xs text-slate-400 font-medium">Showing {filteredProducts.length} results.</p>
               }
-              <SortProducts products = {filteredProducts} sortProducts = {setFilteredProducts} />
+              <SortProducts products={filteredProducts} sortProducts={setFilteredProducts} />
 
             </div>
 

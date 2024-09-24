@@ -16,7 +16,7 @@ const data:Data =
             title: 'Sleek and Cozy Black',
             sku: 'WVT002',
             price: 67,
-            category: ['hoodies'],
+            category: 'hoodies',
             slug: 'sleek-and-cozy-black',
             colors: [Colour.BLACK, Colour.RED],
             stockStatus: true,
@@ -27,7 +27,8 @@ const data:Data =
             imgs: [
                 {
                     id: 'img1',
-                    img: 'https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png'
+                    fileName:'',
+                    url: 'https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png'
                 }
             ]
     

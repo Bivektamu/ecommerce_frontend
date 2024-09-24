@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
+// import React, { useState } from 'react'
 import data from '../../data'
 import OrderTile from '../../components/admin/OrderTile'
 
-type Props = {}
-
-const Orders = (props: Props) => {
+const Orders = () => {
 
     const { orders } = data
 
 
-    const [actionId, setActionId] = useState('')
+    // const [actionId, setActionId] = useState('')
 
     return (
 

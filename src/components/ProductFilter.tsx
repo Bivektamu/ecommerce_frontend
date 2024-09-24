@@ -79,14 +79,14 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
 
 
 
-    const categoryHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation()
-
+        const key = e.target.name as keyof Omit<Filters, 'price'>
         if (e.target.checked) {
-            setFilters((prev) => ({ ...prev, [e.target.name]: [...prev[e.target.name], e.target.value] }))
+            setFilters((prev) => ({ ...prev, [key]: [...prev[key], e.target.value] }))
         }
         else {
-            setFilters((prev) => ({ ...prev, [e.target.name]: prev[e.target.name].filter(cat => cat !== e.target.value) }))
+            setFilters((prev) => ({ ...prev, [key]: prev[key].filter(cat => cat !== e.target.value) }))
         }
     }
 
@@ -105,7 +105,7 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
 
                     Object.keys(cats).map((key, i) =>
                         <div key={i} className="flex gap-2 border-b py-4">
-                            <input type="checkbox" name='category' value={key} id={key} checked={cats[key]} onChange={categoryHandler} />
+                            <input type="checkbox" name='category' value={key} id={key} checked={cats[key]} onChange={changeHandler} />
                             <label htmlFor={key} className="capitalize text-sm text-slate-600 font-medium">{key}</label>
                         </div>
                     )
@@ -124,7 +124,7 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
 
                                 return (
                                     <fieldset key={i}>
-                                        <input type="checkbox" checked={colrs[color]} id={color} name="colors" value={color} onChange={categoryHandler} className='appearance-none hidden ' />
+                                        <input type="checkbox" checked={colrs[color]} id={color} name="colors" value={color} onChange={changeHandler} className='appearance-none hidden ' />
 
                                         <label htmlFor={color} className={`block w-8 h-8 rounded-full ${bgClass}  cursor-pointer relative after:content-[""] after:w-10 after:h-10 after:rounded-full  after:absolute after:top-0 after:bottom-0 after:-right-1  after:m-auto  ${colrs[color] ? `after:${borderClass} after:border-2` : ''}`}></label>
                                     </fieldset>
@@ -144,7 +144,7 @@ const ProductFilter = ({ products, status, setFilters, filters }: Props) => {
                             Object.keys(siz).map((size, i) => {
                                 return (
                                     <div key={i}>
-                                        <input type="checkbox" checked={siz[size]} name="sizes" id={size} value={size} onChange={categoryHandler} className='appearance-none hidden' />
+                                        <input type="checkbox" checked={siz[size]} name="sizes" id={size} value={size} onChange={changeHandler} className='appearance-none hidden' />
 
                                         <label htmlFor={size} className={`w-8 block flex items-center justify-center h-8 text-sm font-medium rounded cursor-pointer  ${siz[size] ? 'bg-cultured' : 'border-[1px]'} `}>{size}</label>
                                     </div>

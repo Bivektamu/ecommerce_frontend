@@ -8,7 +8,7 @@ export interface Customer {
     isActive: boolean,
     isVerified: boolean
 }
-type CustomerId = Customer['id']
+export type CustomerId = Customer['id']
 
 export interface CustomerInput {
     firstName: string,
@@ -19,6 +19,18 @@ export interface CustomerInput {
     isActive?: boolean,
     isVerified?: boolean
 }
+
+export interface CustomerEditInput {
+    id:CustomerId
+    firstName: string,
+    lastName: string,
+    email: string,
+    address?: Address,
+    isActive?: boolean,
+    isVerified?: boolean
+}
+
+
 export interface Address {
     street: string,
     suburb: string,
@@ -112,6 +124,9 @@ export interface ProductImage {
     url: string,
     fileName: string
 }
+export interface QueriedProductImage extends ProductImage {
+    __typename?: string
+}
 export interface ProductImageInput {
     _id: string,
     img: File
@@ -140,8 +155,12 @@ export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' 
     stockStatus: boolean | null,
     imgs: ProductImageInput[]
 }
-
+export interface QueriedProduct extends Omit<Product, 'imgs'> {
+    __typename: string,
+    imgs:QueriedProductImage[]
+}
 export interface ProductEditInput extends Omit<Product, 'imgs'> {
+    __typename?: string
     oldImgs: ProductImage[],
     newImgs: ProductImageInput[]
 }

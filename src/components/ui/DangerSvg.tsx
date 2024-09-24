@@ -1,8 +1,4 @@
-import React from 'react'
-
-type Props = {}
-
-const DangerSvg = (props: Props) => {
+const DangerSvg = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 25 25" fill="none" className="fill-red-500 aspect-square object-contain object-center w-[25px] fill-black fill-opacity-0 overflow-hidden shrink-0 max-w-full">
             <g clipPath="url(#clip0_7_12)">

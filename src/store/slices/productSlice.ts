@@ -1,4 +1,4 @@
-import { ProductInput, ProductSlice, Status, RootState, Action, ProductEditInput } from "../types";
+import { ProductInput, ProductSlice, Status, RootState, Action, ProductEditInput, QueriedProduct, QueriedProductImage, Product } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CREATE_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT } from "../../data/mutation";
 import client from "../../data/client";
@@ -19,6 +19,7 @@ export const addProduct = createAsyncThunk('/admin/product/add', async (formData
             variables: { input: formData }
         })
 
+
         return response.data.createProduct
 
     } catch (error) {
@@ -37,7 +38,7 @@ export const editProduct = createAsyncThunk('/admin/product/edit', async (formDa
             mutation: EDIT_PRODUCT,
             variables: { input: formData }
         })
-        
+
 
         return response.data.editProduct
 
@@ -54,7 +55,7 @@ export const deleteProduct = createAsyncThunk('/admin/product/delete', async (id
     try {
         const response = await client.mutate({
             mutation: DELETE_PRODUCT,
-            variables: { deleteProductId: id}
+            variables: { deleteProductId: id }
         })
 
         return response.data.deleteProduct
@@ -76,6 +77,7 @@ export const getProducts = createAsyncThunk('/admin/products', async () => {
             query: GET_PRODUCTS
         })
 
+
         return response.data.products
 
     } catch (error) {
@@ -90,21 +92,40 @@ const productSlice = createSlice({
     name: 'products',
     initialState,
     reducers: {
-       
+
     },
     extraReducers: builder => {
         builder
             .addCase(getProducts.pending, (state: ProductSlice) => {
                 state.status = Status.PENDING
+                console.log('pending')
             })
             .addCase(getProducts.fulfilled, (state: ProductSlice, action) => {
                 state.status = Status.FULFILLED
                 state.action = Action.FETCH
-                state.products = action.payload
+                // const products:Product[]  = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => ({ imgs: imgs.map(({__typename, ...imgRest}):QueriedProductImage=>imgRest), ...rest }))
+                const products: Product[] = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => {
+                    console.log(__typename);
+
+                    return {
+                        imgs: imgs.map(({ __typename, ...imgRest }): QueriedProductImage => {
+                            console.log(__typename);
+                            return imgRest
+                        }),
+                        ...rest
+                    }
+                })
+
+
+
+                state.products = products
+                console.log('fulfilled')
             })
             .addCase(getProducts.rejected, (state: ProductSlice, action) => {
                 state.status = Status.REJECTED
                 state.error = action.error.message as string
+                console.log('rejected')
+
             })
             .addCase(addProduct.pending, (state: ProductSlice) => {
                 state.status = Status.PENDING

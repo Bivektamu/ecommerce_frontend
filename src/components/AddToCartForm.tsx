@@ -1,15 +1,15 @@
-import { act, ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 
-import { Action, Cart, Colour, FormError, Product, Size, Status, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
+import { Action, Cart, Colour, FormError, Product, Size, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
 import CircleLoader from './ui/CircleLoader'
 import getClasses from '../utils/getClasses'
 import validateForm from '../utils/validate'
 import SquareLoader from './ui/SquareLoader'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../store/slices/authSlice'
-import { addToCart, resetCartAction, useCart } from '../store/slices/cartSlice';
+import { addToCart, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
 import  { addToast } from '../store/slices/toastSlice';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +36,7 @@ function AddToCartForm({ product }: Props) {
         price: product?.price || null
     })
 
-    const [formErrors, setFormErrors] = useState<FormError[]>([])
+    const [formErrors, setFormErrors] = useState<FormError>({})
 
     useEffect(() => {
         if (product && Object.keys(product).length > 0) {
@@ -54,7 +54,7 @@ function AddToCartForm({ product }: Props) {
     useEffect(() => {
         if (Object.keys(formData).length > 0) {
             Object.keys(formData).map(key => {
-                if (formData[key]) {
+                if (formData[key as keyof Cart]) {
                     setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
 
@@ -80,6 +80,7 @@ function AddToCartForm({ product }: Props) {
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
         const { name, value } = e.target
+        if(!product) return
         if (name === 'quantity') {
             if (parseInt(value) > product?.quantity) {
                 return
@@ -96,6 +97,7 @@ function AddToCartForm({ product }: Props) {
 
     const rangeHandler = (e: MouseEvent<HTMLButtonElement>, type: string) => {
         e.stopPropagation()
+        if(!product) return
 
         if (type === '-') {
             if (formData.quantity > 0) {
@@ -112,7 +114,7 @@ function AddToCartForm({ product }: Props) {
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
 
-        const validateSchema: ValidateSchema<any>[] =
+        const validateSchema: ValidateSchema<unknown>[] =
             [
                 {
                     name: 'color',
@@ -138,7 +140,7 @@ function AddToCartForm({ product }: Props) {
         const errors = validateForm(validateSchema)
 
         if (Object.keys(errors).length > 0) {
-            return setFormErrors({ ...errors })
+            return setFormErrors(prev=>({...prev,  ...errors }))
         }
         dispatch(addToCart(formData))
     }

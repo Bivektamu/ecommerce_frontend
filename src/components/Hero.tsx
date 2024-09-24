@@ -2,9 +2,7 @@ import { Link } from 'react-router-dom'
 import Arrow from './ui/Arrow'
 import HeroImg from '../assets/hero.png'
 
-type Props = {}
-
-const Hero = (props: Props) => {
+const Hero = () => {
     return (
         <section id="hero">
             <div className="container flex justify-between items-center mx-auto">

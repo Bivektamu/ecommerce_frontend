@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid';
-import { Colour, Size, ProductImage, ValidateSchema, FormError, ProductInput, Status, Action, Product, ProductEditInput, ProductImageInput } from '../../store/types'
+import { Colour, Size, ValidateSchema, FormError, Status, Action, ProductEditInput, ProductImageInput, ProductImage } from '../../store/types'
 import validateForm from '../../utils/validate';
 import Close from '../ui/Close';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
@@ -10,9 +9,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { editProduct, getProducts, useProduct } from '../../store/slices/productSlice';
 import { useStoreDispatch } from '../../store';
-import Preloader from '../ui/Preloader';
-import { log } from 'util';
-import mongoose, { STATES } from 'mongoose';
+import mongoose from 'mongoose';
 import ProgressLoader from '../ui/ProgressLoader';
 
 
@@ -50,18 +47,15 @@ const EditProduct = () => {
                 navigate('/404')
             }
 
-            let tempProduct: any = {}
+            
 
-            tempProduct = { ...product[0], newImgs: [] }
-            delete tempProduct.__typename
-            tempProduct.oldImgs = (
-                tempProduct.imgs.map(img => {
-                    const temp = { ...img }
-                    delete temp.__typename
-                    return temp
-                })
-            )
-            delete tempProduct.imgs
+            let tempProduct: ProductEditInput = {} as ProductEditInput
+
+            const {imgs, ...rest} = product[0]
+
+            tempProduct = { ...rest, newImgs: [], oldImgs: imgs,  }
+
+            console.log(tempProduct);
 
             setFormData(tempProduct as ProductEditInput)
         }
@@ -110,7 +104,7 @@ const EditProduct = () => {
     useEffect(() => {
         if (Object.keys(formData).length > 0) {
             Object.keys(formData).map(key => {
-                if (formData[key]) {
+                if (formData[key as keyof ProductEditInput]) {
                     setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
 
@@ -169,7 +163,7 @@ const EditProduct = () => {
 
         }
         else if (e.target.name === 'stockStatus') {
-            if (val === 'true') {
+            if (e.target.value === 'true') {
                 val = true
             }
             else {
@@ -184,14 +178,13 @@ const EditProduct = () => {
             }
         }
 
-        if(e.target.name === 'category') {
+        if (e.target.name === 'category') {
             val = e.target.value.toLowerCase()
         }
 
-        let updateData = {
+        const updateData = {
             [e.target.name]: val
         }
-
 
         if (e.target.name === 'title') {
             let newSlug: string = val as string
@@ -226,7 +219,7 @@ const EditProduct = () => {
         e.preventDefault()
 
 
-        const validateSchema: ValidateSchema<any>[] =
+        const validateSchema: ValidateSchema<unknown>[] =
             [
                 {
                     name: 'title',
@@ -399,7 +392,7 @@ const EditProduct = () => {
                                     {
                                         oldImgs.length > 0 &&
 
-                                        oldImgs.filter(img => img.url).map((img: any) =>
+                                        oldImgs.filter(img => img.url).map((img: ProductImage) =>
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.url} />
                                                 <button onClick={(e) => deleteHandlerForOldImgs(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
@@ -410,7 +403,7 @@ const EditProduct = () => {
                                     }
 
                                     {
-                                        imgPreviews.map((img: any) =>
+                                        imgPreviews.map((img: PreviewImage) =>
                                             <div key={img.id} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.src} />
                                                 <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>

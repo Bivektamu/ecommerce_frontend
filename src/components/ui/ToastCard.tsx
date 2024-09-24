@@ -1,6 +1,6 @@
 import Close from './Close'
 import { Toast, Toast_Vairant } from '../../store/types'
-import { MouseEvent, useEffect, useRef } from 'react'
+import { MouseEvent, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { removeToast } from '../../store/slices/toastSlice'
 import DangerSvg from './DangerSvg'

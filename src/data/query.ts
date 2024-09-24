@@ -22,7 +22,7 @@ export const GET_CUSTOMER = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-  query Query {
+  query Products {
   products {
     id
     title

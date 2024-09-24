@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
 import { useSelector } from 'react-redux'
-import Logo from '../../components/ui/AdminLogo'
 import Preloader from '../../components/ui/Preloader'
 
 const SignIn = () => {

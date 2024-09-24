@@ -1,5 +1,5 @@
-const getExcerpt = (text: String, max:number): String => {
-    let arr = text.split(' ')
+const getExcerpt = (text: string, max:number): string => {
+    const arr = text.split(' ')
     arr.length = max
     
     let excerpt = ''

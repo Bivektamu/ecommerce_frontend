@@ -2,7 +2,7 @@ import { MouseEvent, useEffect, useState } from 'react'
 
 import { Customer, Product, Review} from '../../store/types'
 import getMonth from '../../utils/getMonth'
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import data from '../../data';
 import getExcerpt from '../../utils/getExcerpt';
 
@@ -11,7 +11,7 @@ type Props = {
 }
 
 const ReviewTile = ({ review }: Props) => {
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
     const [product, setProduct] = useState<Product | null>(null)
     const [customer, setCustomer] = useState<Customer | null>(null)
@@ -40,7 +40,7 @@ const ReviewTile = ({ review }: Props) => {
 
     return (
         <div className='grid grid-cols-table-reviews px-8 py-4 border-b-[1px] items-center   gap-x-8'>
-            <img src={product?.imgs[0].img as string} className='rounded w-16 h-16' />
+            <img src={product?.imgs[0].url as string} className='rounded w-16 h-16' />
             <span className='text-sm text-slate-500 '>
                 {customer?.firstName + ' ' + customer?.lastName}
             </span>

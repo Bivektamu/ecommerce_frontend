@@ -1,4 +1,4 @@
-import React, { Children, MouseEvent, ReactElement } from 'react'
+import  { MouseEvent, ReactElement } from 'react'
 import { createPortal } from 'react-dom'
 import Close from './Close'
 

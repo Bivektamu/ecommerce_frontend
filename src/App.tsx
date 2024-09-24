@@ -20,7 +20,7 @@ import PageNotFound from "./pages/admin/PageNotFound"
 const Home = lazy(() => import("./pages/Home"))
 const Layout = lazy(() => import("./components/ui/Layout"))
 const Product = lazy(() => import("./pages/Product"))
-const Contact = lazy(() => import("./pages/Contact"))
+// const Contact = lazy(() => import("./pages/Contact"))
 const Collections = lazy(() => import("./pages/Collections"))
 const UnderWork = lazy(() => import("./pages/UnderWork"))
 const LogIn = lazy(() => import("./pages/LogIn"))
@@ -118,9 +118,7 @@ function App() {
 
         {
           path: 'orders',
-          element: <Suspense fallback={<ProgressLoader />}>
-            <Orders />
-          </Suspense>
+          element: <Orders />
         },
 
         {

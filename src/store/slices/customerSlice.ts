@@ -8,7 +8,7 @@ const initialState: CustomerSlice = {
     status: Status.IDLE,
     error: null,
     customers: [],
-    customer: '',
+    customer: null,
     action: null
 }
 

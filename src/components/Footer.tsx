@@ -1,13 +1,10 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import Logo from './ui/Logo'
 import GithubIcon from './ui/GithubIcon'
 import InstagramIcon from './ui/InstagramIcon'
 import YoutubeIcon from './ui/YoutubeIcon'
 
-type Props = {}
-
-const Footer = (props: Props) => {
+const Footer = () => {
   return (
     <footer>
       <section id="newsletter">

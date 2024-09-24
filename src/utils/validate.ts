@@ -1,9 +1,9 @@
-import { FormData, FormError, ValidateSchema } from "../store/types"
+import { FormError, ValidateSchema } from "../store/types"
 
 const validEmail: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
-const validateForm = (validateSchema: ValidateSchema<any>[]) => {
+const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
 
     let errors: FormError = {}
     validateSchema.map(schema => {
@@ -40,7 +40,7 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
                 case 'alphaNumeric': {
                     const regex: RegExp = /^[A-Za-z].*[0-9]$/
 
-                    if (!regex.test(value)) {
+                    if (!regex.test(value as string)) {
                         const error = {
                             [name]: msg || `Please insert value in alpha numeric format.`
                         }
@@ -50,7 +50,7 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
                     break;
                 }
                 case 'email': {
-                    if (!validEmail.test(value)) {
+                    if (!validEmail.test(value as string)) {
                         const error = {
                             email: msg || `Please insert email in correct format.`
                         }
@@ -60,7 +60,7 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
                     break;
                 }
                 case 'password': {
-                    if (!passwordRegex.test(value)) {
+                    if (!passwordRegex.test(value as string)) {
                         const error = {
                             password: msg || `Please insert password in correct format.
                             Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character.`
@@ -71,7 +71,7 @@ const validateForm = (validateSchema: ValidateSchema<any>[]) => {
                     break;
                 }
                 case 'number':
-                    if (value <= 0) {
+                    if (value as number <= 0) {
                         const error = {
                             [name]: msg || `Please insert valid ${name}.`
                         }

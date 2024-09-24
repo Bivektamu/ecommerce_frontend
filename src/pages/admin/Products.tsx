@@ -1,10 +1,10 @@
-import React, { MouseEvent, act, useEffect, useState } from 'react'
+import  { MouseEvent,  useEffect, useState, ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 import Close from '../../components/ui/Close'
 import { useStoreDispatch } from '../../store'
 import { deleteProduct, getProducts, useProduct } from '../../store/slices/productSlice'
 import { useSelector } from 'react-redux'
-import { Action, Product, Status, Toast, Toast_Vairant } from '../../store/types'
+import { Action, Status, Toast, Toast_Vairant } from '../../store/types'
 import Check from '../../components/ui/Check'
 import { v4 as uuidv4 } from 'uuid';
 import { addToast } from '../../store/slices/toastSlice'
@@ -33,7 +33,7 @@ const Products = () => {
   useEffect(() => {
     if (action) {
 
-      let variant = '', msg = ''
+      let variant:Toast_Vairant = '' as Toast_Vairant, msg = ''
       switch (action) {
         case Action.EDIT:
           msg = 'Product updated successfully.'

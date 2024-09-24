@@ -4,7 +4,7 @@ import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useCart } from '../store/slices/cartSlice'
-import { Cart, Status } from '../store/types'
+import { Cart as CartType, Status } from '../store/types'
 import CartItem from '../components/CartItem'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
@@ -14,10 +14,10 @@ const Cart = () => {
 
   const dispatch = useStoreDispatch()
   const { userRole } = useSelector(useAuth)
-  const { cart } = useSelector(useCart)
+  const { cart:carts } = useSelector(useCart)
   const { status } = useSelector(useProduct)
 
-  const [cartState, setCartState] = useState<Cart[]>([])
+  const [cartState, setCartState] = useState<CartType[]>([])
   const [total, setTotal] = useState<number>(0)
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Cart = () => {
   }, [])
 
   useEffect(() => {
-    let tempCart: Cart[] = cart
+    let tempCart: CartType[] = carts
 
     if (tempCart.length > 0 && userRole) {
       tempCart = [...tempCart.filter(cart => cart.customerId === userRole.id)]
@@ -38,12 +38,12 @@ const Cart = () => {
 
     setCartState([...tempCart])
 
-  }, [cart, userRole])
+  }, [carts, userRole])
 
   useEffect(() => {
     if (cartState.length > 0 && status !== Status.REJECTED) {
       let tempTotal = 0
-      cartState.forEach((cart: Cart) => {
+      cartState.forEach((cart: CartType) => {
         tempTotal += cart.price as number * cart.quantity
       })
       setTotal(tempTotal)
@@ -72,7 +72,7 @@ const Cart = () => {
               cartState.length < 1 ?
                 <p className='text-sm'>
                   Ther are no items in your cart. Please add items to your shopping cart.</p>
-                : cartState.map((cartItem: Cart) => (
+                : cartState.map((cartItem: CartType) => (
                   <CartItem key={cartItem.id} cartItem={cartItem} />
                 ))
             }

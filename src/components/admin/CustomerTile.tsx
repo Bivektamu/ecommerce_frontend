@@ -1,26 +1,16 @@
-import React, { MouseEvent, ReactElement, ReactNode, useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid';
+import  { MouseEvent, useEffect, useState } from 'react'
 import gravatar from 'gravatar'
 
-import { Customer, CustomerInput, Toast, Toast_Vairant } from '../../store/types'
+import { Customer, CustomerEditInput } from '../../store/types'
 import getMonth from '../../utils/getMonth'
-import Modal from '../Modal'
-import { useDispatch } from 'react-redux';
-import { addToast } from '../../store/slices/toastSlice';
 import Check from '../ui/Check';
 import Close from '../ui/Close';
-import { log } from 'console';
-
 type Props = {
     customer: Customer
 }
 
 const CustomerTile = ({ customer }: Props) => {
-    const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
-    const [newStatus, setNewStatus] = useState<boolean>(true)
-    const [modalContent, setModalContent] = useState<ReactElement | null>(null)
-    const [showToast, setShowToast] = useState(false)
     const [gravatarUrl, setGravatarUrl] = useState('')
 
     useEffect(() => {
@@ -33,31 +23,18 @@ const CustomerTile = ({ customer }: Props) => {
 
     const updateStatus = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        const updatedCustomer: CustomerInput = { ...customer, isActive: !customer.isActive }
+        const updatedCustomer: CustomerEditInput = { ...customer, isActive: !customer.isActive }
         console.log(updatedCustomer);
     }
 
     const updateVerification = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        const updatedCustomer: CustomerInput = { ...customer, isVerified: !customer.isVerified }
+        const updatedCustomer: CustomerEditInput = { ...customer, isVerified: !customer.isVerified }
         console.log(updatedCustomer);
     }
     const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         console.log(customer.id);
-    }
-
-    const saveHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
-        e.preventDefault()
-        if (!newStatus) {
-            const newToast: Toast = {
-                id: uuidv4(),
-                variant: Toast_Vairant.DANGER,
-                msg: 'Please select a status'
-            }
-            dispatch(addToast(newToast))
-
-        }
     }
 
 
@@ -81,16 +58,12 @@ const CustomerTile = ({ customer }: Props) => {
             </span>
 
             <span className='relative text-center'>
-                {customer.isActive ? <Check classN='w-2 h-4 border-w-2' /> : <Close clasN='bg-slate-600 relative w-4' />}
+                {customer.isActive ? <Check classN='w-2 h-4 border-w-2' /> : <Close classN='bg-slate-600 relative w-4' />}
             </span>
 
             <span className='relative pt-3'>
-                {customer.isVerified ? <Check classN='w-2 h-4 border-w-2' /> : <Close clasN='bg-slate-600 relative w-4' />}
+                {customer.isVerified ? <Check classN='w-2 h-4 border-w-2' /> : <Close classN='bg-slate-600 relative w-4' />}
             </span>
-
-            {/* <span className='text-sm text-slate-500 flex items-center'>
-                <Close classN='w-4 h-4' />
-            </span> */}
 
             <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
                 <button onClick={() => setActionId('id1')} >...</button>

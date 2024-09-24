@@ -1,4 +1,4 @@
-import React, { MouseEvent, ReactElement, ReactNode, useEffect, useState } from 'react'
+import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 import { Order, Order_Status, Toast, Toast_Vairant } from '../../store/types'
@@ -15,14 +15,16 @@ type Props = {
 const OrderTile = ({ order }: Props) => {
     const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
-    const [product, setProduct] = useState({})
+    // const [product, setProduct] = useState({})
     const [newStatus, setNewStatus] = useState<Order_Status | null>(null)
     const [modalContent, setModalContent] = useState<ReactElement | null>(null)
     const [showModal, setShowModal] = useState(false)
-    const [showToast, setShowToast] = useState(false)
+    // const [showToast, setShowToast] = useState(false)
 
     const saveHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
+        console.log(id);
+        
         if (!newStatus) {
             const newToast: Toast = {
                 id: uuidv4(),
@@ -31,11 +33,17 @@ const OrderTile = ({ order }: Props) => {
             }
             dispatch(addToast(newToast))
 
+            
         }
+        else {
+            setShowModal(false)
+        }
+
+
     }
 
     useEffect(() => {
-        // console.log(newStatus);
+        console.log(newStatus);
     }, [newStatus])
 
     const statusHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
@@ -45,7 +53,7 @@ const OrderTile = ({ order }: Props) => {
             <div className='text-left'>
                 <p className="mb-6 font-medium text-sm">Change the order status to:</p>
                 <div className="grid grid-cols-3 items-center justify-between  gap-6">
-                    <select name="status" id="status" className='py-2 col-span-2 px-4 border-[1px] border-slate-600 text-sm rounded outline-none appearance-none' onChange={e => setNewStatus(e.target.value as Order_Status)}>
+                    <select name="status" id="status" className='py-2 col-span-2 px-4 border-[1px] border-slate-600 text-sm rounded outline-none appearance-none' onChange={e => {e.preventDefault(), e.stopPropagation(), setNewStatus(e.target.value as Order_Status)}}>
                         <option value="" hidden>Choose a new status</option>
                         {
                             Object.keys(Order_Status).map(key =>
@@ -63,7 +71,8 @@ const OrderTile = ({ order }: Props) => {
     
     const detailsHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
-
+        console.log(id);
+        
         setModalContent(<OrderDetails order={order} />)
     }
     

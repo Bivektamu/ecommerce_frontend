@@ -1,4 +1,3 @@
-import React from 'react'
 import { Product } from '../../store/types'
 import { Link } from 'react-router-dom'
 

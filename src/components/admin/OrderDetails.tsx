@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Customer, Order, Product, OrderedProduct, Colour } from '../../store/types'
+import { useEffect, useState } from 'react'
+import { Customer, Order, Product, Colour } from '../../store/types'
 import getMonth from '../../utils/getMonth'
 import data from '../../data'
 import gravatar from 'gravatar'
@@ -82,7 +82,7 @@ const OrderDetails = ({ order }: Props) => {
             {
                 orderedProducts.map(item =>
                     <div key={item.id} className="flex items-center gap-4 mb-6">
-                        <img src={item.imgs[0].img as string} alt="" className='w-14 h-14' />
+                        <img src={item.imgs[0].url as string} alt="" className='w-14 h-14' />
                         <div className='grow'>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">{item.title}</span>

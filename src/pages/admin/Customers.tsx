@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+// import React, { useState } from 'react'
 import data from '../../data'
 import CustomerTile from '../../components/admin/CustomerTile'
 import SearchIcon from '../../components/ui/SearchIcons'
 
-type Props = {}
-
-const Customers = (props: Props) => {
+const Customers = () => {
 
     const { customers } = data
 
 
-    const [actionId, setActionId] = useState('')
+    // const [actionId, setActionId] = useState('')
     return (
 
         <div className='bg-white rounded-lg'>

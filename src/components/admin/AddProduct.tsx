@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { ProductInput, Colour, Size, ProductImage, ValidateSchema, FormError, Status, Action, ProductImageInput } from '../../store/types'
+import { ProductInput, Colour, Size, ValidateSchema, FormError, Status, Action, ProductImageInput } from '../../store/types'
 import validateForm from '../../utils/validate';
 import Close from '../ui/Close';
 import { useStoreDispatch } from '../../store';
@@ -10,7 +10,7 @@ import { Navigate } from 'react-router-dom';
 
 
 interface PrviewImage {
-    _id: string,
+    id: string,
     src: string
 }
 
@@ -51,7 +51,7 @@ const AddProduct = () => {
     const { status, action } = useSelector(useProduct)
 
 
-    const [formData, setFormData] = useState<typeof initial>(initial)
+    const [formData, setFormData] = useState<ProductInput>(initial)
     const [formErrors, setFormErrors] = useState<FormError>({})
     const [imgPreviews, setImagePreviews] = useState<PrviewImage[]>([])
 
@@ -62,7 +62,7 @@ const AddProduct = () => {
     useEffect(() => {
         if (Object.keys(formData).length > 0) {
             Object.keys(formData).map(key => {
-                if (formData[key]) {
+                if (formData[key as keyof ProductInput]) {
                     setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
 
@@ -164,7 +164,7 @@ const AddProduct = () => {
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
-        const validateSchema: ValidateSchema<any>[] =
+        const validateSchema: ValidateSchema<unknown>[] =
             [
                 {
                     name: 'title',
@@ -227,16 +227,19 @@ const AddProduct = () => {
 
         if (imgs.length > 0) {
 
-            let previews: PrviewImage[] = []
+            const previews: PrviewImage[] = []
+
+            console.log(imgs);
+            
 
 
-            imgs.forEach((productImg: ProductImage) => {
+            imgs.forEach((productImg: ProductImageInput) => {
                 const reader = new FileReader();
 
                 reader.onload = () => {
                     if (reader.result) {
-                        const newPreview = {
-                            id: productImg.id,
+                        const newPreview:PrviewImage = {
+                            id: productImg._id,
                             src: reader.result as string
                         }
                         previews.push(newPreview);
@@ -308,9 +311,9 @@ const AddProduct = () => {
                             <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
                                 {
                                     imgPreviews.map((img: PrviewImage) =>
-                                        <div key={img._id} className='relative'>
+                                        <div key={img.id} className='relative'>
                                             <img className='w-14 h-14 object-cover' src={img.src} />
-                                            <button onClick={(e) => previewHandler(e, img._id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
+                                            <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
                                                 <Close classN='bg-black w-1/2' />
                                             </button>
                                         </div>

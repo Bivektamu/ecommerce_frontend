@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import SearchIcon from './ui/SearchIcons'
 import { Link } from 'react-router-dom'
 
@@ -9,7 +9,7 @@ type Props = {
 const Search = ({ data }: Props) => {
 
     const [text, setText] = useState('')
-    const [filteredDataList, setFilteredList] = useState([])
+    const [filteredDataList, setFilteredList] = useState<any[]>([])
     const [isFocus, setIsFocus] = useState(false)
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const Search = ({ data }: Props) => {
         setText(e.target.value)
     }
 
-    const blurHandler = (e) => {
+    const blurHandler = (e:ChangeEvent<HTMLInputElement>) => {
         e.stopPropagation()
         e.preventDefault()
         setTimeout(()=>setIsFocus(false), 200)

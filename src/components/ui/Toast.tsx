@@ -1,8 +1,4 @@
-import Close from './Close'
-import { Toast, Toast_Vairant } from '../../store/types'
-import { useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
-import { removeToast } from '../../store/slices/toastSlice'
+import { Toast } from '../../store/types'
 import ToastCard from './ToastCard'
 
 type Props = {

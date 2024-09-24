@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, Dispatch, MouseEvent, SetStateAction, useEffect, useState } from 'react'
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
 import { Cart, Colour, Product } from '../store/types'
 import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
@@ -27,7 +27,8 @@ const CartItem = ({ cartItem }: Props) => {
 
     useEffect(() => {
         if (products.length > 0) {
-            setProduct(products.find(p => p.id === cartItem.productId))
+            const productExist:Product | undefined = products.find((p:Product) => p.id === cartItem.productId)
+                setProduct(productExist || null)
         }
     }, [products])
 
@@ -41,6 +42,8 @@ const CartItem = ({ cartItem }: Props) => {
 
     const rangeHandler = (e: MouseEvent<HTMLButtonElement>, type: string) => {
         e.stopPropagation()
+        e.preventDefault()
+        if(!product) return
 
         if (type === '-') {
             if (quantity > 1) {
@@ -58,7 +61,8 @@ const CartItem = ({ cartItem }: Props) => {
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        console.log(e.target.value);
+        if(!product) return
+        
 
         if (parseInt(e.target.value) > product?.quantity) {
             return

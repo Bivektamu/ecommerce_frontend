@@ -1,9 +1,6 @@
-import React from 'react'
 import StarIcon from './ui/StarIcon'
 
-type Props = {}
-
-const Reviews = (props: Props) => {
+const Reviews = () => {
     return (
         <div id='reviews-tab'>
             <p className="font-semibold mb-4">Reviews</p>

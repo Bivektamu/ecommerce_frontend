@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { Product } from '../store/types'
 import StarIcon from './ui/StarIcon'
-import TextLoader from './ui/TextLoader'
 import ParagraphLoader from './ui/ParagraphLoader'
 import Reviews from './Reviews'
 
