@@ -3,7 +3,7 @@ import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useStoreDispatch } from '../store'
 import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Product, Status } from '../store/types'
 import StarIcon from '../components/ui/StarIcon'
 import Grids from '../components/ui/Grids'
@@ -13,6 +13,7 @@ import DetailsReviewsTab from '../components/DetailsReviewsTab'
 import TextLoader from '../components/ui/TextLoader'
 import ButtonLoader from '../components/ui/ButtonLoader'
 import SquareLoader from '../components/ui/SquareLoader'
+import ProductCard from '../components/ui/ProductCard'
 
 const ProductComponent = () => {
 
@@ -109,18 +110,7 @@ const ProductComponent = () => {
                 {
 
                   similarProducts.map(product =>
-                    <div key={product.id}>
-                      <Link to={`/collections/${product.slug}`} className="bg-cultured mb-8 justify-center flex items-center  aspect-[2/2.3]">
-                        <img src={product.imgs[0].url} alt="" className="w-3/5" />
-                      </Link>
-                      <p className="font-semibold mb-4 text-sm">{product.title}</p>
-                      <div className="flex gap-x-4 items-center">
-                        {
-                          product.stockStatus ? <span className="text-xs font-semibold flex items-center uppercase text-black border-slate-300 border-[1px] py-[5px] px-6 rounded-[20px]">in stock</span> : <span>out of stock</span>
-                        }
-                        <span className="text-slate-600 text-xs">${product.price}</span>
-                      </div>
-                    </div>
+                    <ProductCard key={product.id} item={product} />
                   )
                 }
               </Grids>

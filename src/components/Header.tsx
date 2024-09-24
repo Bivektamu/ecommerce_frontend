@@ -1,5 +1,5 @@
 import Logo from './ui/Logo'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import gravatar from 'gravatar'
 
 import CartIcon from './ui/CartIcon'
@@ -7,15 +7,15 @@ import UserAvatar from './ui/UserAvatar'
 import Search from './Search'
 import { useSelector } from 'react-redux'
 import { useProduct } from '../store/slices/productSlice'
-import { Status, User } from '../store/types'
-import TextLoader from './ui/TextLoader'
+import { User } from '../store/types'
 import { getAuthStatus, logOut, useAuth } from '../store/slices/authSlice'
 import { MouseEvent, useEffect, useState } from 'react'
 import { useStoreDispatch } from '../store'
 import { getCustomer, useCustomer } from '../store/slices/customerSlice'
+import CustomNavLink from './CustomNavLink'
 
 const Header = () => {
-  const { products, status } = useSelector(useProduct)
+  const { products } = useSelector(useProduct)
   const { isLoggedIn, userRole } = useSelector(useAuth)
   const { customer } = useSelector(useCustomer)
 
@@ -59,16 +59,16 @@ const Header = () => {
         <Logo />
         <div className="flex gap-x-6">
           {/* dynamically add active class */}
-          <NavLink className={({ isActive }) => `${isActive ? 'font-bold' : ''} flex items-center hover:font-bold`} to="/">Home</NavLink>
-          <NavLink className={({ isActive }) => `${isActive ? 'font-bold' : ''} flex items-center hover:font-bold`} to="/collections">Collections</NavLink>
-          <NavLink className={({ isActive }) => `${isActive ? 'font-bold' : ''} flex items-center hover:font-bold`} to="/contact">Contact</NavLink>
+          <CustomNavLink isNavLink={true} cssClass='flex items-center hover:font-bold' to="/">Home</CustomNavLink>
+          <CustomNavLink isNavLink={true} cssClass='flex items-center hover:font-bold' to="/collections">Collections</CustomNavLink>
+          <CustomNavLink isNavLink={true} cssClass='flex items-center hover:font-bold' to="/contact">Contact</CustomNavLink>
         </div>
         <div className="flex gap-x-6 items-center">
-          {status === Status.PENDING ? <TextLoader col='1' cssClass='' /> : <Search data={products} />}
+          <Search data={products} />
 
-          <Link to='/cart'>
+          <CustomNavLink to='/cart'>
             <CartIcon />
-          </Link>
+          </CustomNavLink>
           <div className='relative group'>
             <button className='block'>
               {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <UserAvatar />}
@@ -82,17 +82,15 @@ const Header = () => {
                   </button>
                   :
                   <>
-                    <Link to='/login' className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                    <CustomNavLink to='/login' cssClass='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
                       Log in
-                    </Link>
+                    </CustomNavLink>
 
-                    <Link to='/signup' className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                    <CustomNavLink to='/signup' cssClass='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
                       Sign Up
-                    </Link>
+                    </CustomNavLink>
                   </>
-
               }
-
 
             </div>
           </div>

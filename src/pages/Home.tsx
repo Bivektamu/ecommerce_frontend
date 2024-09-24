@@ -22,12 +22,6 @@ const Home = () => {
     dispatch(getProducts())
   }, [])
 
-  // if (products.length < 1 || status !== Status.FULFILLED) {
-  //   return <Preloader />
-  // }
-
-
-
   return (
     <>
       <Hero />

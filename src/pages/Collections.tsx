@@ -99,6 +99,17 @@ const Collections = () => {
     setFilters(prev => ({ ...prev, price: { min: '', max: '' } }))
   }
 
+  const clearFiltersHandler = (e:MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    
+    setFilters({
+      category: [],
+      colors: [],
+      sizes: [],
+      price: { min: '', max: '' }
+    })
+  }
+
   const { category, colors, sizes } = filters
 
   return (
@@ -161,6 +172,12 @@ const Collections = () => {
                     <Close classN="w-3 bg-slate-600" />
                   </button>
                 </p>
+              }
+              {
+                (filters.price.min || filters.price.max || sizes.length > 0 || colors.length > 0 || category.length > 0) && 
+                <button type="button" className="text-xs font-bold" onClick={clearFiltersHandler}>
+                  Clear All Filters
+                  </button>
               }
 
             </div>

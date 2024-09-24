@@ -98,18 +98,17 @@ const productSlice = createSlice({
         builder
             .addCase(getProducts.pending, (state: ProductSlice) => {
                 state.status = Status.PENDING
-                console.log('pending')
             })
             .addCase(getProducts.fulfilled, (state: ProductSlice, action) => {
                 state.status = Status.FULFILLED
                 state.action = Action.FETCH
                 // const products:Product[]  = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => ({ imgs: imgs.map(({__typename, ...imgRest}):QueriedProductImage=>imgRest), ...rest }))
                 const products: Product[] = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => {
-                    console.log(__typename);
+                    // console.log(__typename);
 
                     return {
                         imgs: imgs.map(({ __typename, ...imgRest }): QueriedProductImage => {
-                            console.log(__typename);
+                            // console.log(__typename);
                             return imgRest
                         }),
                         ...rest
@@ -119,13 +118,10 @@ const productSlice = createSlice({
 
 
                 state.products = products
-                console.log('fulfilled')
             })
             .addCase(getProducts.rejected, (state: ProductSlice, action) => {
                 state.status = Status.REJECTED
                 state.error = action.error.message as string
-                console.log('rejected')
-
             })
             .addCase(addProduct.pending, (state: ProductSlice) => {
                 state.status = Status.PENDING
