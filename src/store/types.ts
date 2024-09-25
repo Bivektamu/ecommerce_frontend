@@ -45,6 +45,13 @@ export interface FormData {
     password: string;
 }
 
+export interface ShippingForm {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+}
+
 export enum Status {
     PENDING = 'PENDING',
     FULFILLED = 'FULFILLED',

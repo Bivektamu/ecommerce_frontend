@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Action, FormData,  FormError,  Toast, Toast_Vairant, User } from '../store/types'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate,  useNavigate,  useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 
 import { useStoreDispatch } from '../store'
@@ -16,6 +16,9 @@ const SignUp = () => {
 
   const navigate = useNavigate()
 
+  const [searchParams] = useSearchParams()
+
+
   const dispatch = useStoreDispatch()
   const auth = useSelector(useAuth)
   const { isLoggedIn,  user } = auth
@@ -29,13 +32,19 @@ const SignUp = () => {
 
   useEffect(() => {
     if (customer && action === Action.ADD) {
+      console.log(customer);
+      
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.SUCCESS,
         msg: 'Your account has been created succesfully. Please login now.'
       }
+
+      if(searchParams.get('cart')) newToast.msg = 'Your accound has been created.'
+
       dispatch(addToast(newToast))
 
+      if(searchParams.get('cart')) return navigate('/checkout')
       return navigate('/login')
 
     }
@@ -121,6 +130,10 @@ const SignUp = () => {
 
     dispatch(createCustomer(formData))
 
+  }
+
+  if(searchParams.get('cart') && isLoggedIn) {
+    return <Navigate to="/checkout" />
   }
 
   if ( isLoggedIn && user?.userRole === User.CUSTOMER) {
