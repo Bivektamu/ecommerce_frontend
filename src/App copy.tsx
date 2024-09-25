@@ -72,83 +72,81 @@ function App() {
             <SignUp />
           </Suspense>
         },
+      ]
+    },
+    {
+      path: '/admin/login',
+      element: <Suspense fallback={<Preloader />}>
+        <SignIn />
+      </Suspense>
+    },
+
+    {
+      path: '/admin',
+      element: <Suspense fallback={<Preloader />}>
+        <PrivateRoute />
+      </Suspense>,
+
+      children: [
         {
-          path: '/admin/login',
-          element: <Suspense fallback={<Preloader />}>
-            <SignIn />
+          path: 'products',
+          element:
+          <Suspense fallback={<ProgressLoader />}>
+            <Products />
+          </Suspense>
+          ,
+        },
+        {
+          path: 'products/:slug',
+          element: <Suspense fallback={<ProgressLoader />}>
+            <EditProduct />
+          </Suspense>,
+        },
+
+        {
+          path: 'products/add',
+          element: <Suspense fallback={<ProgressLoader />}>
+            <AddProduct />
+          </Suspense>,
+        },
+        {
+          path: 'dashboard',
+          element: <Suspense fallback={<ProgressLoader />}>
+            <DashBoard />
           </Suspense>
         },
+
         {
-          path: '/admin',
-          element: <Suspense fallback={<Preloader />}>
-            <PrivateRoute />
-          </Suspense>,
-
-          children: [
-            {
-              path: 'products',
-              element:
-                <Suspense fallback={<ProgressLoader />}>
-                  <Products />
-                </Suspense>
-              ,
-            },
-            {
-              path: 'products/:slug',
-              element: <Suspense fallback={<ProgressLoader />}>
-                <EditProduct />
-              </Suspense>,
-            },
-
-            {
-              path: 'products/add',
-              element: <Suspense fallback={<ProgressLoader />}>
-                <AddProduct />
-              </Suspense>,
-            },
-            {
-              path: 'dashboard',
-              element: <Suspense fallback={<ProgressLoader />}>
-                <DashBoard />
-              </Suspense>
-            },
-
-            {
-              path: 'orders',
-              element: <Orders />
-            },
-
-            {
-              path: 'customers',
-              element: <Suspense fallback={<ProgressLoader />}>
-                <Customers />
-              </Suspense>
-            },
-
-            {
-              path: 'reviews',
-              element: <Suspense fallback={<ProgressLoader />}>
-                <Reviews />
-              </Suspense>
-            }
-          ]
+          path: 'orders',
+          element: <Orders />
         },
 
         {
-          path: '*',
-          element: <Suspense fallback={<Preloader />}>
-            <PageNotFound />
-          </Suspense>,
-
+          path: 'customers',
+          element: <Suspense fallback={<ProgressLoader />}>
+            <Customers />
+          </Suspense>
         },
 
+        {
+          path: 'reviews',
+          element: <Suspense fallback={<ProgressLoader />}>
+            <Reviews />
+          </Suspense>
+        }
       ]
     },
 
-
-
-
-
+    {
+      path: '*',
+      element: <Suspense fallback={<ProgressLoader />}><Layout /></Suspense>,
+      children: [
+        {
+          path: '*',
+          element: <PageNotFound />
+        }
+      ]
+    },
 
   ])
 

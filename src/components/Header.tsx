@@ -15,7 +15,7 @@ import CustomNavLink from './CustomNavLink'
 
 const Header = () => {
   const { products } = useSelector(useProduct)
-  const { isLoggedIn, userRole } = useSelector(useAuth)
+  const { isLoggedIn, user } = useSelector(useAuth)
   const { customer } = useSelector(useCustomer)
 
   const [gravatarUrl, setGravatarUrl] = useState('')
@@ -27,13 +27,11 @@ const Header = () => {
   }, [])
 
   useEffect(() => {
-    if (userRole && userRole.userRole === User.CUSTOMER) {
-      console.log(userRole);
-
-      dispatch(getCustomer(userRole.id))
+    if (user && user.userRole === User.CUSTOMER) {
+      dispatch(getCustomer(user.id))
 
     }
-  }, [userRole])
+  }, [user])
 
 
   useEffect(() => {
@@ -75,7 +73,7 @@ const Header = () => {
             </button>
             <div className="absolute top-6 left-0 bg-white w-[70px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
               {
-                isLoggedIn && userRole?.userRole !== User.ADMIN ?
+                isLoggedIn && user?.userRole !== User.ADMIN ?
                   <button onClick={logOutHandler} className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
                     Log out
                   </button>

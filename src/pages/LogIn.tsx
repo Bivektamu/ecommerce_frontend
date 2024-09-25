@@ -10,7 +10,7 @@ import { Navigate } from 'react-router-dom'
 const LogIn = () => {
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn,  userRole } = useSelector(useAuth)
+  const { isLoggedIn,  user } = useSelector(useAuth)
 
   useEffect(() => {
     if (isLoggedIn)
@@ -78,7 +78,7 @@ const LogIn = () => {
 
   }
 
-  if (isLoggedIn && userRole?.userRole === User.CUSTOMER) {
+  if (isLoggedIn && user?.userRole === User.CUSTOMER) {
     return <Navigate to="/" />
   }
   return (

@@ -18,7 +18,7 @@ const SignUp = () => {
 
   const dispatch = useStoreDispatch()
   const auth = useSelector(useAuth)
-  const { isLoggedIn,  userRole } = auth
+  const { isLoggedIn,  user } = auth
 
   const { customer,  error: customerError,  action} = useSelector(useCustomer)
 
@@ -123,7 +123,7 @@ const SignUp = () => {
 
   }
 
-  if ( isLoggedIn && userRole?.userRole === User.CUSTOMER) {
+  if ( isLoggedIn && user?.userRole === User.CUSTOMER) {
     return <Navigate to="/" />
   }
 

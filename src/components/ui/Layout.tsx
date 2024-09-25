@@ -1,14 +1,20 @@
-import  { lazy } from 'react'
+import { lazy } from 'react'
 const Header = lazy(() => import("../Header"))
 
 import Footer from '../Footer'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useToasts } from '../../store/slices/toastSlice'
 import ToastComponent from './Toast'
 
 const Layout = () => {
   const allToasts = useSelector(useToasts)
+
+  const location = useLocation()
+
+  if (location.pathname.includes("admin")) {
+    return <Outlet />
+  }
 
   return (
     <>

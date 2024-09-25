@@ -1,7 +1,7 @@
 import  {  MouseEvent, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getAuthStatus, logOut, useAuth } from '../../store/slices/authSlice'
-import {  Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import {  Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 

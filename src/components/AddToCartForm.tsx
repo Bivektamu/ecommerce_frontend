@@ -23,7 +23,7 @@ const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 function AddToCartForm({ product }: Props) {
     const navigate = useNavigate()
     const dispatch = useStoreDispatch()
-    const { userRole } = useSelector(useAuth)
+    const { user } = useSelector(useAuth)
     const { action } = useSelector(useCart)
 
     const [formData, setFormData] = useState<Cart>({
@@ -45,10 +45,10 @@ function AddToCartForm({ product }: Props) {
     }, [product])
 
     useEffect(() => {
-        if (userRole && userRole.userRole === User.CUSTOMER) {
-            setFormData({ ...formData, customerId: userRole.id })
+        if (user && user.userRole === User.CUSTOMER) {
+            setFormData({ ...formData, customerId: user.id })
         }
-    }, [userRole])
+    }, [user])
 
     // code to remove error info when fields are typed
     useEffect(() => {

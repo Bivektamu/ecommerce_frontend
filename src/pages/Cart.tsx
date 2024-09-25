@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 const Cart = () => {
 
   const dispatch = useStoreDispatch()
-  const { userRole } = useSelector(useAuth)
+  const { user } = useSelector(useAuth)
   const { cart:carts } = useSelector(useCart)
   const { status } = useSelector(useProduct)
 
@@ -28,17 +28,17 @@ const Cart = () => {
   useEffect(() => {
     let tempCart: CartType[] = carts
 
-    if (tempCart.length > 0 && userRole) {
-      tempCart = [...tempCart.filter(cart => cart.customerId === userRole.id)]
+    if (tempCart.length > 0 && user) {
+      tempCart = [...tempCart.filter(cart => cart.customerId === user.id)]
     }
     
-    if(!userRole) {
+    if(!user) {
       tempCart = [...tempCart.filter(cart=>!cart.customerId)]
     }
 
     setCartState([...tempCart])
 
-  }, [carts, userRole])
+  }, [carts, user])
 
   useEffect(() => {
     if (cartState.length > 0 && status !== Status.REJECTED) {
