@@ -1,5 +1,6 @@
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
+import { act, ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
+import {Link} from 'react-router-dom'
 
 
 import { Action, Cart, Colour, FormError, Product, Size, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
@@ -9,10 +10,9 @@ import validateForm from '../utils/validate'
 import SquareLoader from './ui/SquareLoader'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../store/slices/authSlice'
-import { addToCart, useCart } from '../store/slices/cartSlice';
+import { addToCart, resetCartAction, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
-import  { addToast } from '../store/slices/toastSlice';
-import { useNavigate } from 'react-router-dom';
+import { addToast } from '../store/slices/toastSlice';
 
 type Props = {
     product: Product | null
@@ -21,7 +21,6 @@ type Props = {
 const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 
 function AddToCartForm({ product }: Props) {
-    const navigate = useNavigate()
     const dispatch = useStoreDispatch()
     const { user } = useSelector(useAuth)
     const { action } = useSelector(useCart)
@@ -71,7 +70,6 @@ function AddToCartForm({ product }: Props) {
                     msg: 'Product added to cart'
                 }
                 dispatch(addToast(toast))
-                return navigate('/collections')
             }
         }
     }, [action])
@@ -80,7 +78,9 @@ function AddToCartForm({ product }: Props) {
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
         const { name, value } = e.target
-        if(!product) return
+        if (!product) return
+        if (action === Action.ADD) dispatch(resetCartAction())
+
         if (name === 'quantity') {
             if (parseInt(value) > product?.quantity) {
                 return
@@ -97,8 +97,8 @@ function AddToCartForm({ product }: Props) {
 
     const rangeHandler = (e: MouseEvent<HTMLButtonElement>, type: string) => {
         e.stopPropagation()
-        if(!product) return
-
+        if (!product) return
+        if (action === Action.ADD) dispatch(resetCartAction())
         if (type === '-') {
             if (formData.quantity > 0) {
                 setFormData({ ...formData, quantity: formData.quantity - 1 })
@@ -140,9 +140,13 @@ function AddToCartForm({ product }: Props) {
         const errors = validateForm(validateSchema)
 
         if (Object.keys(errors).length > 0) {
-            return setFormErrors(prev=>({...prev,  ...errors }))
+            return setFormErrors(prev => ({ ...prev, ...errors }))
         }
-        dispatch(addToCart(formData))
+
+        const productToAdd = {...formData, id: uuidv4()}
+        
+
+        dispatch(addToCart(productToAdd))
     }
 
     const { color, size, quantity } = formData
@@ -214,10 +218,9 @@ function AddToCartForm({ product }: Props) {
 
                 </div>
                 {formErrors.quantity && <span className='text-red-500 text-xs'>{formErrors.quantity}</span>}
-
             </fieldset>
 
-            <button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >Add to Cart</button>
+            {action === Action.ADD ? (<Link to='/cart' className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm bg-black text-white`} >See In Cart</Link>) : (<button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >Add to Cart</button>)}
 
         </form>
     )

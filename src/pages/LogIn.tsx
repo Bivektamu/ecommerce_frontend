@@ -1,16 +1,20 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData,  FormError,  User, ValidateSchema } from '../store/types'
+import { Cart, FormData, FormError, User, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import validateForm from '../utils/validate'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
+import CustomNavLink from '../components/CustomNavLink'
+import { upDateCart, useCart } from '../store/slices/cartSlice'
 
 const LogIn = () => {
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn,  user } = useSelector(useAuth)
+  const { isLoggedIn, user } = useSelector(useAuth)
+  const [searchParams] = useSearchParams()
+  const { cart } = useSelector(useCart)
 
   useEffect(() => {
     if (isLoggedIn)
@@ -22,14 +26,14 @@ const LogIn = () => {
     email: '',
     password: ''
   })
-  const [errors, setErrors] = useState<FormError>({} as  FormError)
+  const [errors, setErrors] = useState<FormError>({} as FormError)
 
 
   // code to remove error info when fields are typed
   useEffect(() => {
     if (Object.keys(formData).length > 0) {
       Object.keys(formData).map(key => {
-        if (formData[key as keyof typeof formData ]) {
+        if (formData[key as keyof typeof formData]) {
           setErrors(prev => ({ ...prev, [key]: '' }))
         }
 
@@ -78,7 +82,17 @@ const LogIn = () => {
 
   }
 
-  if (isLoggedIn && user?.userRole === User.CUSTOMER) {
+
+  if (isLoggedIn && user?.userRole === User.CUSTOMER && searchParams.get('cart')) {
+
+    if (user.id) {
+      const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.customerId || user.id }))
+      dispatch(upDateCart(cartItems))
+    return <Navigate to="/checkout" />
+
+    }
+  }
+else if (isLoggedIn && user?.userRole === User.CUSTOMER) {
     return <Navigate to="/" />
   }
   return (
@@ -108,6 +122,9 @@ const LogIn = () => {
             </fieldset>
             <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer w-full'>Login</button>
           </form>
+          <p className="text-sm mt-8 text-center text-slate-500">
+            Don't have an account? <CustomNavLink to='/login' cssClass='font-semibold'>Sign up</CustomNavLink>
+          </p>
         </div>
       </section>
     </>

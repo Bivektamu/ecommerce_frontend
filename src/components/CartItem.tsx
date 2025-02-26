@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react'
+import { ChangeEvent, MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { Cart, Colour, Product } from '../store/types'
 import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
@@ -7,7 +7,8 @@ import SquareLoader from './ui/SquareLoader'
 import TextLoader from './ui/TextLoader'
 import Close from './ui/Close'
 import getClasses from '../utils/getClasses'
-import { deleteCart, updateCart } from '../store/slices/cartSlice'
+import { deleteCart, updateCartQuantity } from '../store/slices/cartSlice'
+import Modal from './ui/Modal'
 
 type Props = {
     cartItem: Cart,
@@ -20,6 +21,9 @@ const CartItem = ({ cartItem }: Props) => {
 
     const [product, setProduct] = useState<Product | null>(null)
     const [quantity, setQuantity] = useState<number>(cartItem.quantity)
+    const [showModal, setShowModal] = useState(false)
+    const [modalContent, setModalContent] = useState<ReactElement | null>(null)
+
 
     useEffect(() => {
         dispatch(getProducts())
@@ -27,23 +31,31 @@ const CartItem = ({ cartItem }: Props) => {
 
     useEffect(() => {
         if (products.length > 0) {
-            const productExist:Product | undefined = products.find((p:Product) => p.id === cartItem.productId)
-                setProduct(productExist || null)
+            const productExist: Product | undefined = products.find((p: Product) => p.id === cartItem.productId)
+            setProduct(productExist || null)
         }
     }, [products])
 
     useEffect(() => {
-        dispatch(updateCart({
+        dispatch(updateCartQuantity({
             id: cartItem.id,
             quantity: quantity || 0
         }))
 
     }, [quantity])
 
+    useEffect(() => {
+        if (modalContent) {
+            setShowModal(true)
+        }
+    }, [modalContent])
+
+
+
     const rangeHandler = (e: MouseEvent<HTMLButtonElement>, type: string) => {
         e.stopPropagation()
         e.preventDefault()
-        if(!product) return
+        if (!product) return
 
         if (type === '-') {
             if (quantity > 1) {
@@ -61,8 +73,8 @@ const CartItem = ({ cartItem }: Props) => {
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        if(!product) return
-        
+        if (!product) return
+
 
         if (parseInt(e.target.value) > product?.quantity) {
             return
@@ -70,10 +82,35 @@ const CartItem = ({ cartItem }: Props) => {
         setQuantity(parseInt(e.target.value || '1'))
     }
 
-    const deleteHandler = (e:MouseEvent<HTMLButtonElement>)=> {
+    const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        dispatch(deleteCart(cartItem.id))
+
+        const content = (
+            <div className='text-center'>
+                <p className="mb-6 font-medium text-sm">Are you sure you want to delete this product?</p>
+                <div className="flex gap-x-4 justify-center">
+                    <button className='bg-red-500 text-white px-4 py-2 rounded' onClick={e => closeModal(e)}>Cancel</button>
+                    <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={() => deleteCartItem(cartItem.id)}>Delete</button>
+                </div>
+            </div>
+        )
+        setModalContent(content)
+
+        // dispatch(deleteCart(cartItem.id))
+    }
+
+
+    const deleteCartItem = (id: string) => {
+        setShowModal(false)
+        setModalContent(null)
+        dispatch(deleteCart(id))
+    }
+
+    const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
+        setShowModal(false)
+        setModalContent(null)
     }
 
     return (
@@ -122,6 +159,13 @@ const CartItem = ({ cartItem }: Props) => {
                 </button>
 
             </div>
+
+            {
+                showModal && <Modal close={closeModal}>
+                    {modalContent!}
+                </Modal>
+            }
+
         </div >
     )
 }

@@ -38,7 +38,6 @@ const Cart = () => {
     }
 
     setCartState([...tempCart])
-
   }, [carts, user])
 
   useEffect(() => {
@@ -104,7 +103,12 @@ const Cart = () => {
                   user ?
                     <CustomNavLink to="/checkout" cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Checkout</CustomNavLink>
                     :
-                    <CustomNavLink to="/signup?cart=true" cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Sign up to checkout</CustomNavLink>
+                    <>
+                      <CustomNavLink to="/login?cart=true" cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-2 block'>Sign in to checkout</CustomNavLink>
+                      <p className="text-sm mb-8 text-center text-slate-500 italic">
+                        or <CustomNavLink to='/signup?cart=true' cssClass='font-semibold'>Sign up</CustomNavLink>
+                      </p>
+                    </>
                 }
                 <div className='block text-center'>
                   <Link to='/collections' className='text-sm font-semibold border-b-[1px] border-black'>Continue Shopping</Link>
