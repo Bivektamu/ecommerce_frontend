@@ -102,7 +102,8 @@ export interface RootState {
     toasts: ToastSlice,
     products: ProductSlice,
     customers: CustomerSlice,
-    cart: CartSlice
+    cart: CartSlice,
+    reviews: ReviewSlice
 }
 
 export enum Colour {
@@ -259,4 +260,16 @@ export interface Cart {
 export interface CartSlice {
     cart: Cart[],
     action: Action | null
+}
+
+export interface Review {
+    id: string,
+    productId: ProductId,
+    customerId: string,
+    stars: number | null,
+    review: string | null
+}
+
+export interface ReviewSlice {
+    reviews: Review[]
 }

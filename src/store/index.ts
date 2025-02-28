@@ -5,6 +5,7 @@ import toastSlice from "./slices/toastSlice";
 import productSlice from "./slices/productSlice";
 import customerSlice from "./slices/customerSlice";
 import cartSlice from "./slices/cartSlice";
+import reviewSlice from "./slices/reviewSlice";
 
 export const Store = configureStore ({
     reducer: {
@@ -12,7 +13,8 @@ export const Store = configureStore ({
         toasts: toastSlice,
         customers:customerSlice,
         products: productSlice,
-        cart: cartSlice
+        cart: cartSlice,
+        reviews: reviewSlice
     }
 })
 

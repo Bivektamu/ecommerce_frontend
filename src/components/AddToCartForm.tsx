@@ -110,7 +110,6 @@ function AddToCartForm({ product }: Props) {
     useEffect(() => {
 
         if (userCart.length > 0 && color && size) {
-            console.log(userCart);
 
             const itemExistsOrNot = (userCart.filter(item => item.color === color && item.size === size))
             if (itemExistsOrNot.length > 0) {
@@ -121,10 +120,6 @@ function AddToCartForm({ product }: Props) {
             }
         }
     }, [color, size, userCart])
-
-    useEffect(() => {
-        console.log(userCart);
-    }, [userCart])
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

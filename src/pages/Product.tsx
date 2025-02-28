@@ -41,6 +41,7 @@ const ProductComponent = () => {
 
   useEffect(() => {
     if (productItem) {
+      console.log(productItem)
       const tempProducts = products.filter(product => product.category === productItem.category && product.id !== productItem.id)
       if (tempProducts.length > 0) {
         setSimilarProducts(tempProducts)
