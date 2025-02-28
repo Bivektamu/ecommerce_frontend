@@ -84,8 +84,6 @@ const Collections = () => {
     }
     setFilteredProducts(Array.from(new Set([...tempProduct])))
 
-    console.log(products);
-
 
   }, [filters, products])
 

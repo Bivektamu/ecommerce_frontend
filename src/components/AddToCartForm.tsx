@@ -1,6 +1,6 @@
 import { act, ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 import { Action, Cart, Colour, FormError, Product, Size, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
@@ -10,7 +10,7 @@ import validateForm from '../utils/validate'
 import SquareLoader from './ui/SquareLoader'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../store/slices/authSlice'
-import { addToCart, resetCartAction, useCart } from '../store/slices/cartSlice';
+import { addToCart, resetCartAction, updateCartQuantity, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
 import { addToast } from '../store/slices/toastSlice';
 
@@ -23,7 +23,7 @@ const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 function AddToCartForm({ product }: Props) {
     const dispatch = useStoreDispatch()
     const { user } = useSelector(useAuth)
-    const { action } = useSelector(useCart)
+    const { action, cart } = useSelector(useCart)
 
     const [formData, setFormData] = useState<Cart>({
         id: uuidv4(),
@@ -35,6 +35,9 @@ function AddToCartForm({ product }: Props) {
         price: product?.price || null
     })
 
+    const [userCart, setUserCart] = useState<Cart[]>([])
+    const [itemExists, setItemExists] = useState<boolean>(false)
+
     const [formErrors, setFormErrors] = useState<FormError>({})
 
     useEffect(() => {
@@ -43,11 +46,25 @@ function AddToCartForm({ product }: Props) {
         }
     }, [product])
 
+    // code to set userId in cart items
     useEffect(() => {
         if (user && user.userRole === User.CUSTOMER) {
             setFormData({ ...formData, customerId: user.id })
         }
     }, [user])
+
+    //code to filter cart items specific to current user
+    useEffect(() => {
+        if (cart.length > 0) {
+            if (user) {
+                setUserCart(cart.filter(cartItem => cartItem.customerId === user.id && cartItem.productId === formData.productId))
+            }
+            else {
+                setUserCart(cart.filter(CartItem => !CartItem.customerId && CartItem.productId === formData.productId))
+            }
+
+        }
+    }, [user, cart])
 
     // code to remove error info when fields are typed
     useEffect(() => {
@@ -56,7 +73,6 @@ function AddToCartForm({ product }: Props) {
                 if (formData[key as keyof Cart]) {
                     setFormErrors(prev => ({ ...prev, [key]: '' }))
                 }
-
             })
         }
     }, [formData])
@@ -73,6 +89,24 @@ function AddToCartForm({ product }: Props) {
             }
         }
     }, [action])
+
+    const { color, size, quantity } = formData
+
+    useEffect(() => {
+        if (userCart.length > 0) {
+            const itemExistsOrNot = (userCart.filter(item => item.color === color && item.size === size))
+            if (itemExistsOrNot.length > 0) {
+                setItemExists(true)
+            }
+            else {
+                setItemExists(false)
+            }
+        }
+    }, [color, size])
+
+    useEffect(() => {
+        console.log(itemExists);
+    }, [itemExists])
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -91,6 +125,7 @@ function AddToCartForm({ product }: Props) {
         else {
             setFormData({ ...formData, [name]: value })
         }
+
 
     }
 
@@ -143,13 +178,25 @@ function AddToCartForm({ product }: Props) {
             return setFormErrors(prev => ({ ...prev, ...errors }))
         }
 
-        const productToAdd = {...formData, id: uuidv4()}
-        
+        if (userCart.length > 0) {
+            const itemExistsOrNot = (userCart.filter(item => item.color === color && item.size === size))
+            console.log(itemExistsOrNot);
 
-        dispatch(addToCart(productToAdd))
+            if (itemExistsOrNot.length > 0) {
+                const productToAdd = { ...formData, id: itemExistsOrNot[0].id }
+                dispatch(updateCartQuantity(productToAdd))
+            }
+            else {
+                const productToAdd = { ...formData, id: uuidv4() }
+                dispatch(addToCart(productToAdd))
+            }
+        }
+        else {
+            const productToAdd = { ...formData, id: uuidv4() }
+            dispatch(addToCart(productToAdd))
+        }
     }
 
-    const { color, size, quantity } = formData
 
     return (
         <form onSubmit={submitHandler}>
@@ -218,9 +265,19 @@ function AddToCartForm({ product }: Props) {
 
                 </div>
                 {formErrors.quantity && <span className='text-red-500 text-xs'>{formErrors.quantity}</span>}
+
+                {
+                    itemExists &&
+                    <span className='text-xs italic text-slate-400 block pt-4'>You have this item with exact specification in cart.<br /> View in cart or  update quantity.</span>
+                }
             </fieldset>
 
-            {action === Action.ADD ? (<Link to='/cart' className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm bg-black text-white`} >See In Cart</Link>) : (<button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >Add to Cart</button>)}
+            {action === Action.ADD ? (<Link to='/cart' className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm bg-black text-white`} >See In Cart</Link>) : (<button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >
+                {
+                    itemExists ? 'Update ' : 'Add to '
+                }
+             Cart
+            </button>)}
 
         </form>
     )
