@@ -11,18 +11,7 @@ const cartSlice = createSlice({
     initialState: initialState,
     reducers: {
         addToCart: (state, action) => {
-            const userCart = state.cart.filter(item => item.customerId === action.payload.customerId && item.color === action.payload.color && item.size === action.payload.size)
-
-            if (userCart.length > 0) {
-                const index = state.cart.indexOf(userCart[0])
-                console.log(action.payload.quantity);
-                
-                state.cart[index].quantity = action.payload.quantity
-            }
-            else {
-                state.cart.push(action.payload)
-            }
-
+            state.cart.push(action.payload)
             state.action = Action.ADD
             localStorage.setItem('cart', JSON.stringify(state.cart))
         },
@@ -32,9 +21,9 @@ const cartSlice = createSlice({
         },
 
         updateCartQuantity: (state, action) => {
-            2
             const cart = state.cart.find(cart => cart.id === action.payload.id)
             if (cart) cart.quantity = action.payload.quantity
+            state.action = Action.EDIT
             localStorage.setItem('cart', JSON.stringify(state.cart))
         },
         upDateCart: (state, action) => {

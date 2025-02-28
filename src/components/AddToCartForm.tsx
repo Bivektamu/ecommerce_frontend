@@ -56,7 +56,11 @@ function AddToCartForm({ product }: Props) {
     //code to filter cart items specific to current user
     useEffect(() => {
         if (cart.length > 0) {
+
+
+
             if (user) {
+
                 setUserCart(cart.filter(cartItem => cartItem.customerId === user.id && cartItem.productId === formData.productId))
             }
             else {
@@ -64,7 +68,7 @@ function AddToCartForm({ product }: Props) {
             }
 
         }
-    }, [user, cart])
+    }, [user, cart, formData.productId])
 
     // code to remove error info when fields are typed
     useEffect(() => {
@@ -78,22 +82,36 @@ function AddToCartForm({ product }: Props) {
     }, [formData])
 
     useEffect(() => {
-        if (action && action === Action.ADD) {
-            {
-                const toast: Toast = {
-                    id: uuidv4(),
-                    variant: Toast_Vairant.SUCCESS,
-                    msg: 'Product added to cart'
-                }
-                dispatch(addToast(toast))
+        if (action) {
+            let msg = '';
+            switch (action) {
+                case Action.ADD:
+                    msg = 'Product added to cart'
+                    break;
+
+                case Action.EDIT:
+                    msg = 'Item updated on cart'
+                    break;
+
+                default:
+                    break;
             }
+            const toast: Toast = {
+                id: uuidv4(),
+                variant: Toast_Vairant.SUCCESS,
+                msg: msg
+            }
+            dispatch(addToast(toast))
         }
     }, [action])
 
     const { color, size, quantity } = formData
 
     useEffect(() => {
-        if (userCart.length > 0) {
+
+        if (userCart.length > 0 && color && size) {
+            console.log(userCart);
+
             const itemExistsOrNot = (userCart.filter(item => item.color === color && item.size === size))
             if (itemExistsOrNot.length > 0) {
                 setItemExists(true)
@@ -102,11 +120,11 @@ function AddToCartForm({ product }: Props) {
                 setItemExists(false)
             }
         }
-    }, [color, size])
+    }, [color, size, userCart])
 
     useEffect(() => {
-        console.log(itemExists);
-    }, [itemExists])
+        console.log(userCart);
+    }, [userCart])
 
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -180,7 +198,6 @@ function AddToCartForm({ product }: Props) {
 
         if (userCart.length > 0) {
             const itemExistsOrNot = (userCart.filter(item => item.color === color && item.size === size))
-            console.log(itemExistsOrNot);
 
             if (itemExistsOrNot.length > 0) {
                 const productToAdd = { ...formData, id: itemExistsOrNot[0].id }
@@ -272,11 +289,11 @@ function AddToCartForm({ product }: Props) {
                 }
             </fieldset>
 
-            {action === Action.ADD ? (<Link to='/cart' className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm bg-black text-white`} >See In Cart</Link>) : (<button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >
+            {action === Action.ADD || action === Action.EDIT ? (<Link to='/cart' className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm bg-black text-white`} >See In Cart</Link>) : (<button type="submit" className={`w-[200px]  py-2 px-4 rounded text-center cursor-pointer text-sm ${product?.stockStatus ? 'bg-black text-white' : 'pointer-events-none bg-cultured text-slate-500'}`} >
                 {
                     itemExists ? 'Update ' : 'Add to '
                 }
-             Cart
+                Cart
             </button>)}
 
         </form>
