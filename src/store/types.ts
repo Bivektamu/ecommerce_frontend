@@ -271,5 +271,7 @@ export interface Review {
 }
 
 export interface ReviewSlice {
-    reviews: Review[]
+    reviews: Review[],
+    status: Status,
+    error: string,
 }

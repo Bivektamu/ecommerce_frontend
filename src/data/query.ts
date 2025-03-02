@@ -44,3 +44,15 @@ export const GET_PRODUCTS = gql`
   }
 }
 `
+
+export const GET_REVIEWS_BY_PRODUCT_ID = gql`
+  query ReviewsByProductId($reviewsByProductIdId: ID) {
+    reviewsByProductId(id: $reviewsByProductIdId) {
+      id
+      customerId
+      productId
+      stars
+      review
+    }
+  }
+`

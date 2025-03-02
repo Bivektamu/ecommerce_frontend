@@ -14,6 +14,7 @@ import TextLoader from '../components/ui/TextLoader'
 import ButtonLoader from '../components/ui/ButtonLoader'
 import SquareLoader from '../components/ui/SquareLoader'
 import ProductCard from '../components/ui/ProductCard'
+import { getReviewsByProductId, userReviews } from '../store/slices/reviewSlice'
 
 const ProductComponent = () => {
 
@@ -24,6 +25,10 @@ const ProductComponent = () => {
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
+  const {reviews} = useSelector(userReviews)
+
+  console.log(reviews);
+  
 
   useEffect(() => {
     dispatch(getProducts())
@@ -41,7 +46,9 @@ const ProductComponent = () => {
 
   useEffect(() => {
     if (productItem) {
-      console.log(productItem)
+      
+      dispatch(getReviewsByProductId(productItem.id))
+
       const tempProducts = products.filter(product => product.category === productItem.category && product.id !== productItem.id)
       if (tempProducts.length > 0) {
         setSimilarProducts(tempProducts)
