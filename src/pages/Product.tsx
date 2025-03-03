@@ -25,10 +25,9 @@ const ProductComponent = () => {
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const dispatch = useStoreDispatch()
   const { products, status } = useSelector(useProduct)
-  const {reviews} = useSelector(userReviews)
+  const { reviews } = useSelector(userReviews)
 
-  console.log(reviews);
-  
+
 
   useEffect(() => {
     dispatch(getProducts())
@@ -46,7 +45,7 @@ const ProductComponent = () => {
 
   useEffect(() => {
     if (productItem) {
-      
+
       dispatch(getReviewsByProductId(productItem.id))
 
       const tempProducts = products.filter(product => product.category === productItem.category && product.id !== productItem.id)
@@ -85,18 +84,22 @@ const ProductComponent = () => {
               </h2>
 
               <div className="flex gap-4 items-center mb-6">
-                <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
-                  <StarIcon /> 4.2 <span className="w-4 h-[2px] bg-slate-600"></span>
-                  54 Reviews
-                </p>
+                {
+                  reviews.length > 0 &&
+
+                  <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
+                    <StarIcon /> 
+                    {reviews.reduce((sum,review)=>review.stars+sum, 0) / reviews.length} <span className="w-4 h-[2px] bg-slate-600"></span>
+                    {reviews.length} Reviews
+                  </p>
+                }
+
                 {
                   !productItem ? <ButtonLoader /> :
                     <p className="border-2 border-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs uppercase">
                       {productItem?.stockStatus ? 'In' : 'Out of'} Stock
                     </p>
                 }
-
-
 
               </div>
 

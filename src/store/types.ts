@@ -266,8 +266,8 @@ export interface Review {
     id: string,
     productId: ProductId,
     customerId: string,
-    stars: number | null,
-    review: string | null
+    stars: number,
+    review: string
 }
 
 export interface ReviewSlice {
