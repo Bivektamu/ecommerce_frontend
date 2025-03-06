@@ -40,6 +40,9 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
                 case 'alphaNumeric': {
                     const regex: RegExp = /^[A-Za-z].*[0-9]$/
 
+                    console.log(regex);
+                    
+
                     if (!regex.test(value as string)) {
                         const error = {
                             [name]: msg || `Please insert value in alpha numeric format.`

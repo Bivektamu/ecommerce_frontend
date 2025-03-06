@@ -15,6 +15,7 @@ import ButtonLoader from '../components/ui/ButtonLoader'
 import SquareLoader from '../components/ui/SquareLoader'
 import ProductCard from '../components/ui/ProductCard'
 import { getReviewsByProductId, userReviews } from '../store/slices/reviewSlice'
+import { getAverageRating } from '../utils/helpers'
 
 const ProductComponent = () => {
 
@@ -45,6 +46,7 @@ const ProductComponent = () => {
 
   useEffect(() => {
     if (productItem) {
+
 
       dispatch(getReviewsByProductId(productItem.id))
 
@@ -89,7 +91,7 @@ const ProductComponent = () => {
 
                   <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
                     <StarIcon /> 
-                    {reviews.reduce((sum,review)=>review.stars+sum, 0) / reviews.length} <span className="w-4 h-[2px] bg-slate-600"></span>
+                    { getAverageRating(reviews)} <span className="w-4 h-[2px] bg-slate-600"></span>
                     {reviews.length} Reviews
                   </p>
                 }

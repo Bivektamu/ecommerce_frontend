@@ -51,30 +51,6 @@ mutation CreateProduct($input: CreateProduct) {
   }
 }
 `
-// export const EDIT_PRODUCT = gql`
-// mutation EditProduct($input: EditProduct) {
-//   editProduct(input: $input) {
-//     colors
-//     description
-//     featured
-//     id
-//     imgs {
-//       fileName
-//       id
-//       url
-//     }
-//     price
-//     quantity
-//     sizes
-//     sku
-//     slug
-//     stockStatus
-//     title
-//   }
-// }
-// `
-
-
 export const EDIT_PRODUCT = gql`
 mutation EditProduct($input: EditProduct) {
   editProduct(input: $input) {
@@ -93,3 +69,15 @@ export const DELETE_PRODUCT = gql`
   }
 `
 
+export const CREATE_REVIEW = gql`
+  mutation CreateReview($input: CreateReview) {
+    createReview(input: $input) {
+      id
+      customerId
+      productId
+      rating
+      review
+      timeStamp
+    }
+  }
+`

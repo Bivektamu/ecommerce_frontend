@@ -226,14 +226,6 @@ export type ToastSlice = {
     toasts: Toast[]
 }
 
-export interface Review {
-    id: string,
-    customerId: CustomerId,
-    productId: ProductId,
-    text: string,
-    timeStamp: Date,
-    rating: number,
-}
 
 export interface PriceRange {
     min: number | '',
@@ -264,14 +256,25 @@ export interface CartSlice {
 
 export interface Review {
     id: string,
+    customerId: CustomerId,
     productId: ProductId,
-    customerId: string,
-    stars: number,
-    review: string
+    review: string,
+    timeStamp: Date,
+    rating: null | number,
 }
+
+
+export interface ReviewInput {
+    customerId: CustomerId,
+    productId: ProductId,
+    review: string,
+    rating: null | number,
+}
+
 
 export interface ReviewSlice {
     reviews: Review[],
     status: Status,
     error: string,
+    action: Action | null
 }

@@ -2,31 +2,42 @@ import { useSelector } from 'react-redux'
 import StarIcon from './ui/StarIcon'
 import { userReviews } from '../store/slices/reviewSlice'
 import { useAuth } from '../store/slices/authSlice'
-import { User } from '../store/types'
+import { Action, User } from '../store/types'
 import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import Modal from './ui/Modal'
 import AddReviewForm from './forms/AddReviewForm'
+import { getAverageRating } from '../utils/helpers'
 
-const Reviews = () => {
+type  Props = {
+    productId: string
+}
+const Reviews = ({productId}: Props) => {
 
-    const { reviews } = useSelector(userReviews)
+    const { reviews, action } = useSelector(userReviews)
     const { user } = useSelector(useAuth)
 
     const [showModal, setShowModal] = useState(false)
     const [modalContent, setModalContent] = useState<ReactElement | null>(null)
 
-     useEffect(() => {
+     useEffect(() => { 
             if (modalContent) {
                 setShowModal(true)
             }
         }, [modalContent])
     
     
+        useEffect(()=> {
+            if(action === Action.ADD) {
+                setShowModal(false)
+        setModalContent(null)
+                setModalContent(null)
+            }
+        }, [action])
 
 
     const createReviewHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
-        setModalContent(<AddReviewForm />)
+        setModalContent(<AddReviewForm productId={productId} />)
     }
 
     const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
@@ -43,7 +54,7 @@ const Reviews = () => {
             <div className='flex gap-4 items-center mb-10'>
                 {reviews.length > 0 ?
                     <>
-                        <h2 className="text-3xl font-bold">{reviews.reduce((sum, review) => review.stars + sum, 0) / reviews.length}</h2><span className="w-4 h-[2px] bg-slate-400"></span> <p className='text-slate-500 text-xs'>{reviews.length} Reviews</p>
+                        <h2 className="text-3xl font-bold">{getAverageRating(reviews)}</h2><span className="w-4 h-[2px] bg-slate-400"></span> <p className='text-slate-500 text-xs'>{reviews.length} Reviews</p>
                     </>
                     :
                     <p className="">There are no reviews for this product</p>
