@@ -66,6 +66,7 @@ export const GET_REVIEWS_BY_PRODUCT_ID = gql`
       id
       customerId
       productId
+      timeStamp
       rating
       review
     }

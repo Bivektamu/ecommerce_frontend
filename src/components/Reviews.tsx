@@ -1,9 +1,11 @@
+import { MouseEvent, ReactElement, useEffect, useState } from 'react'
+import {formatDistanceToNow} from 'date-fns'
 import { useSelector } from 'react-redux'
 import StarIcon from './ui/StarIcon'
 import { userReviews } from '../store/slices/reviewSlice'
 import { useAuth } from '../store/slices/authSlice'
 import { Action, User } from '../store/types'
-import { MouseEvent, ReactElement, useEffect, useState } from 'react'
+
 import Modal from './ui/Modal'
 import AddReviewForm from './forms/AddReviewForm'
 import { getAverageRating } from '../utils/helpers'
@@ -48,9 +50,6 @@ const Reviews = ({ productId }: Props) => {
         setModalContent(null)
     }
 
-
-
-
     return (
         <div id='reviews-tab'>
             <p className="font-semibold mb-4">Reviews</p>
@@ -80,7 +79,7 @@ const Reviews = ({ productId }: Props) => {
                         {reviews.map((review, i) =>
 
                             <div key={i} className="flex items-start justify-between mb-12 gap-10">
-                                <div className="flex items-start justify-between gap-4">
+                                <div className="flex items-start justify-between gap-4 w-full">
 
                                     <div className="basis-1/12">
                                         <CustomerAvatar id={review.customerId} />
@@ -90,15 +89,15 @@ const Reviews = ({ productId }: Props) => {
                                         <div className="mb-2 capitalize">
                                             <CustomerName id={review.customerId} />
                                         </div>
-                                        <p className="mb-4 text-slate-600 uppercase text-sm">1 week ago</p>
+                                        <p className="mb-4 text-slate-600 uppercase text-sm">{formatDistanceToNow(review.timeStamp, {addSuffix: true})}</p>
                                         <p className="text-slate-600  text-sm">
-                                            This company always goes above and beyond to satisfy their customers.
+                                            {review.review}
                                         </p>
                                     </div>
 
                                 </div>
                                 <div className='flex gap-1'>
-                                    {new Array(5).fill('*').map((_, i) =>
+                                    {new Array(review.rating as number).fill('*').map((_, i) =>
                                         <StarIcon key={i} />
                                     )}
                                 </div>
