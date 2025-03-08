@@ -11,8 +11,6 @@ type Props = {
 const DetailsReviewsTab = ({ product }: Props) => {
     const [isReview, setIsReview] = useState(false)
 
-    console.log(product?.id);
-    
     return (
 
         <div className='flex gap-8  mb-32'>
@@ -36,7 +34,7 @@ const DetailsReviewsTab = ({ product }: Props) => {
 
                         </div>
                         :
-                        <Reviews productId={product?.id} />
+                        <Reviews productId={product?.id as string} />
                 }
 
             </div>

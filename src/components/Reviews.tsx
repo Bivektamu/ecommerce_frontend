@@ -7,11 +7,13 @@ import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import Modal from './ui/Modal'
 import AddReviewForm from './forms/AddReviewForm'
 import { getAverageRating } from '../utils/helpers'
+import CustomerAvatar from './ui/CustomerAvatar'
+import CustomerName from './ui/CustomerName'
 
-type  Props = {
+type Props = {
     productId: string
 }
-const Reviews = ({productId}: Props) => {
+const Reviews = ({ productId }: Props) => {
 
     const { reviews, action } = useSelector(userReviews)
     const { user } = useSelector(useAuth)
@@ -19,20 +21,20 @@ const Reviews = ({productId}: Props) => {
     const [showModal, setShowModal] = useState(false)
     const [modalContent, setModalContent] = useState<ReactElement | null>(null)
 
-     useEffect(() => { 
-            if (modalContent) {
-                setShowModal(true)
-            }
-        }, [modalContent])
-    
-    
-        useEffect(()=> {
-            if(action === Action.ADD) {
-                setShowModal(false)
-        setModalContent(null)
-                setModalContent(null)
-            }
-        }, [action])
+    useEffect(() => {
+        if (modalContent) {
+            setShowModal(true)
+        }
+    }, [modalContent])
+
+
+    useEffect(() => {
+        if (action === Action.ADD) {
+            setShowModal(false)
+            setModalContent(null)
+            setModalContent(null)
+        }
+    }, [action])
 
 
     const createReviewHandler = (e: MouseEvent<HTMLButtonElement>) => {
@@ -45,6 +47,8 @@ const Reviews = ({productId}: Props) => {
         setShowModal(false)
         setModalContent(null)
     }
+
+
 
 
     return (
@@ -73,17 +77,19 @@ const Reviews = ({productId}: Props) => {
                     </div>
 
                     <div className="wrapper pb-8">
-                        {new Array(3).fill('*').map((_, i) =>
+                        {reviews.map((review, i) =>
 
                             <div key={i} className="flex items-start justify-between mb-12 gap-10">
                                 <div className="flex items-start justify-between gap-4">
 
                                     <div className="basis-1/12">
-                                        <span className="bg-slate-200 w-10 h-10 rounded-full block"></span>
+                                        <CustomerAvatar id={review.customerId} />
                                     </div>
 
                                     <div className='basis-11/12'>
-                                        <p className="mb-2">Emily Davis</p>
+                                        <div className="mb-2 capitalize">
+                                            <CustomerName id={review.customerId} />
+                                        </div>
                                         <p className="mb-4 text-slate-600 uppercase text-sm">1 week ago</p>
                                         <p className="text-slate-600  text-sm">
                                             This company always goes above and beyond to satisfy their customers.

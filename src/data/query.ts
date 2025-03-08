@@ -21,6 +21,21 @@ export const GET_CUSTOMER = gql`
 }
 `;
 
+export const GET_CUSTOMER_EMAIL = gql`
+  query Query($customerEmailId: ID) {
+    customerEmail(id: $customerEmailId)
+  }
+`
+
+export const GET_CUSTOMER_NAME = gql`
+  query CustomerName($customerNameId: ID) {
+    customerName(id: $customerNameId) {
+      firstName
+      lastName
+  }
+}
+`
+
 export const GET_PRODUCTS = gql`
   query Products {
   products {

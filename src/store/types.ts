@@ -10,6 +10,8 @@ export interface Customer {
 }
 export type CustomerId = Customer['id']
 
+export type CustomerEmail = Customer['email']
+
 export interface CustomerInput {
     firstName: string,
     lastName: string,
