@@ -5,9 +5,11 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 
 // Create an upload link for handling file uploads
+
+const uri = import.meta.env.PROD? import.meta.env.VITE_PROD_URI: import.meta.env.VITE_DEV_URI
+// const devURI = 
 const uploadLink = createUploadLink({
-    uri: 'http://localhost:3000/graphql',
-    // uri: 'https://ecommerce-backend-bivek.vercel.app/graphql',
+    uri
 });
 
 
