@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Action, CustomerInput, CustomerSlice, Status, RootState } from "../types";
 import client from "../../data/client";
 import { CREATE_CUSTOMER } from "../../data/mutation";
-import { GET_CUSTOMER, GET_CUSTOMER_EMAIL } from "../../data/query";
+import { GET_CUSTOMER } from "../../data/query";
 
 const initialState: CustomerSlice = {
     status: Status.IDLE,

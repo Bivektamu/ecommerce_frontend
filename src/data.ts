@@ -75,7 +75,7 @@ const data:Data =
             id:'review1',
             customerId: 'user1',
             productId: 'product1',
-            text: 'Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product!',
+            review: 'Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product! Great product!',
             timeStamp: new Date,
             rating: 2
         }

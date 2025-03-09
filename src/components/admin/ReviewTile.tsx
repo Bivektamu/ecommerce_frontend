@@ -46,7 +46,7 @@ const ReviewTile = ({ review }: Props) => {
             </span>
 
             <span className='text-sm text-slate-500'>
-                {review.text.length > 100? getExcerpt(review.text, 10):review.text}
+                {review.review.length > 100? getExcerpt(review.review, 10):review.review}
             </span>
 
             <span className='relative'>

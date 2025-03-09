@@ -6,15 +6,22 @@ import TextLoader from './TextLoader';
 type Props = {
     id: string;
 };
+// Define the expected type for the GraphQL response
+type CustomerNameData = {
+    customerName: {
+        firstName: string;
+        lastName: string;
+    };
+};
 
 const CustomerNameContent = ({ id }: Props) => {
-    const { data } = useSuspenseQuery(GET_CUSTOMER_NAME, {
+    const { data } = useSuspenseQuery<CustomerNameData>(GET_CUSTOMER_NAME, {
         variables: { customerNameId: id },
     });
 
 
     const { firstName, lastName } = data.customerName;
-    
+
     return <p>{firstName} {lastName}</p>;
 };
 

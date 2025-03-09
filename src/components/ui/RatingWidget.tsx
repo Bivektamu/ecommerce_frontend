@@ -31,7 +31,7 @@ export const RatingWidget = ({ maxStars, setStars, stars }: Props) => {
                                 onMouseOver={() => { setHoverRating(ratingValue) }}
                                 onMouseOut={() => { setHoverRating(0) }}
                                 className="cursor-pointer w-6"
-                                color={ratingValue <= (hoverRating || stars) ? "#5C5F6A" : "#e4e5e9"}
+                                color={ratingValue <= (hoverRating || stars as number) ? "#5C5F6A" : "#e4e5e9"}
                                 size={50} />
                         </label>
                     </fieldset>
