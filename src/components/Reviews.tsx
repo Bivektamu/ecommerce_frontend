@@ -1,5 +1,5 @@
 import { MouseEvent, ReactElement, useEffect, useState } from 'react'
-import {formatDistanceToNow} from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 import { useSelector } from 'react-redux'
 import StarIcon from './ui/StarIcon'
 import { userReviews } from '../store/slices/reviewSlice'
@@ -20,6 +20,15 @@ const Reviews = ({ productId }: Props) => {
     const { reviews, action } = useSelector(userReviews)
     const { user } = useSelector(useAuth)
 
+    const REVIEWS_PER_PAGE = 1
+
+
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        lastPage: Math.ceil(reviews.length / REVIEWS_PER_PAGE),
+        reviewsPerPage: reviews.slice(0, REVIEWS_PER_PAGE)
+    })
+
     const [showModal, setShowModal] = useState(false)
     const [modalContent, setModalContent] = useState<ReactElement | null>(null)
 
@@ -39,6 +48,48 @@ const Reviews = ({ productId }: Props) => {
     }, [action])
 
 
+
+    const { reviewsPerPage, currentPage, lastPage } = pagination
+
+
+    useEffect(() => {
+        if (currentPage < lastPage) {
+            setPagination(prev =>
+            ({
+                ...prev,
+                reviewsPerPage: reviews.slice(0, REVIEWS_PER_PAGE * currentPage)
+            })
+            )
+
+        }
+        else if (currentPage === lastPage) {
+            setPagination(prev =>
+            ({
+                ...prev,
+                reviewsPerPage: reviews,
+            })
+            )
+        }
+    }, [currentPage])
+
+
+
+    useEffect(() => {
+        console.log(pagination);
+    }, [pagination])
+
+
+    const handlePagination = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
+
+        setPagination(prev => ({
+            ...prev,
+            currentPage: prev.currentPage + 1
+        }))
+
+    }
+
+
     const createReviewHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         setModalContent(<AddReviewForm productId={productId} />)
@@ -49,6 +100,9 @@ const Reviews = ({ productId }: Props) => {
         setShowModal(false)
         setModalContent(null)
     }
+
+
+
 
     return (
         <div id='reviews-tab'>
@@ -76,7 +130,7 @@ const Reviews = ({ productId }: Props) => {
                     </div>
 
                     <div className="wrapper pb-8">
-                        {reviews.map((review, i) =>
+                        {reviewsPerPage.map((review, i) =>
 
                             <div key={i} className="flex items-start justify-between mb-12 gap-10">
                                 <div className="flex items-start justify-between gap-4 w-full">
@@ -89,7 +143,7 @@ const Reviews = ({ productId }: Props) => {
                                         <div className="mb-2 capitalize">
                                             <CustomerName id={review.customerId} />
                                         </div>
-                                        <p className="mb-4 text-slate-600 uppercase text-sm">{formatDistanceToNow(review.timeStamp, {addSuffix: true})}</p>
+                                        <p className="mb-4 text-slate-600 uppercase text-sm">{formatDistanceToNow(review.timeStamp, { addSuffix: true })}</p>
                                         <p className="text-slate-600  text-sm">
                                             {review.review}
                                         </p>
@@ -104,8 +158,10 @@ const Reviews = ({ productId }: Props) => {
                             </div>
                         )}
                     </div>
-
-                    <button className="border-[1px] border-slate-600 py-2 px-4 rounded text-center cursor-pointer text-sm font-medium text-slate-600 mx-auto block">Load more reviews</button>
+                    <button
+                        disabled={currentPage === lastPage && true}
+                        onClick={handlePagination}
+                        className={`border-[1px]  py-2 px-4 rounded text-center cursor-pointer text-sm font-medium text-slate-600 mx-auto block ${currentPage === lastPage ? 'cursor-not-allowed text-slate-300 border-slate-300' : 'border-slate-600'}`}>Load more reviews</button>
                 </>
             }
 
