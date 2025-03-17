@@ -16,6 +16,7 @@ const SignIn = () => {
 
   useEffect(() => {
     dispatch(getAuthStatus())
+
   }, [])
 
   const [email, setEmail] = useState('admin@gmail.com')
@@ -51,10 +52,13 @@ const SignIn = () => {
     }
 
     dispatch(loginAdmin(data))
-
   }
 
-  if (status === Status.PENDING || isLoggedIn || user) {
+  // if (status === Status.PENDING || isLoggedIn || user) {
+  //   return <Preloader />
+  // }
+
+  if (status === Status.PENDING) {
     return <Preloader />
   }
 

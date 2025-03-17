@@ -20,7 +20,7 @@ const Reviews = ({ productId }: Props) => {
     const { reviews, action } = useSelector(userReviews)
     const { user } = useSelector(useAuth)
 
-    const REVIEWS_PER_PAGE = 1
+    const REVIEWS_PER_PAGE = 3
 
 
     const [pagination, setPagination] = useState({
@@ -161,7 +161,7 @@ const Reviews = ({ productId }: Props) => {
                     <button
                         disabled={currentPage === lastPage && true}
                         onClick={handlePagination}
-                        className={`border-[1px]  py-2 px-4 rounded text-center cursor-pointer text-sm font-medium text-slate-600 mx-auto block ${currentPage === lastPage ? 'cursor-not-allowed text-slate-300 border-slate-300' : 'border-slate-600'}`}>Load more reviews</button>
+                        className={`border-[1px]  py-2 px-4 rounded text-center  text-sm font-medium text-slate-600 mx-auto block ${currentPage === lastPage ? 'cursor-not-allowed text-slate-200 border-slate-300' : 'cursor-pointer border-slate-600'}`}>Load more reviews</button>
                 </>
             }
 

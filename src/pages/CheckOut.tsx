@@ -8,6 +8,7 @@ import { Cart as CartType, Status } from '../store/types'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { Link } from 'react-router-dom'
+import ShippingForm from '../components/forms/ShippingForm'
 
 const Checkout = () => {
 
@@ -68,11 +69,13 @@ const Checkout = () => {
           <div className="basis-2/3">
             <p className="font-bold text-xl  border-slate-200 mb-24">Shipping Address</p>
 
-          </div>
+            <ShippingForm />
 
+          </div>
+          {/* border-slate-200 border-[1px] */}
           {
             status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : total > 0 &&
-              <div className="basis-1/3 border-slate-200 border-[1px] p-6">
+              <div className="basis-1/3 border-slate-200 border-l-[1px]  pl-16 pr-0">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
                 <p className="flex justify-between mb-4">
                   <span className=" text-gray-500 font-medium">Subtotal</span>
