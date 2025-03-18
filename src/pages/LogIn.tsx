@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Cart, FormData, FormError, User, ValidateSchema } from '../store/types'
+import { Cart, FormData, FormError, Role, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -83,7 +83,7 @@ const LogIn = () => {
   }
 
 
-  if (isLoggedIn && user?.userRole === User.CUSTOMER && searchParams.get('cart')) {
+  if (isLoggedIn && user?.role === Role.CUSTOMER && searchParams.get('cart')) {
 
     if (user.id) {
       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.customerId || user.id }))
@@ -92,7 +92,7 @@ const LogIn = () => {
 
     }
   }
-else if (isLoggedIn && user?.userRole === User.CUSTOMER) {
+else if (isLoggedIn && user?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
   return (

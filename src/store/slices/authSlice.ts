@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, FormData, User, UserRole } from "../types";
+import { Auth, Status, RootState, FormData, User, Role } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
@@ -58,8 +58,12 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
             query: GET_AUTH,
         })
         const isLoggedIn = response.data.getAuthStatus.isLoggedIn
-        const userRole = JSON.parse(response.data.getAuthStatus.userRole)
-        return { isLoggedIn, userRole }
+        const user = response.data.getAuthStatus.user
+
+        console.log('asdf');
+        
+
+        return { isLoggedIn, user }
     } catch (error) {
         if (error instanceof Error)
             throw error
@@ -89,8 +93,8 @@ const authSlice = createSlice({
                 client.resetStore()
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
-                const user:UserRole = {
-                    userRole: User.ADMIN,
+                const user:User = {
+                    role: Role.ADMIN,
                     id:''
                 }
                 state.user = user
@@ -113,8 +117,8 @@ const authSlice = createSlice({
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
                 state.isLoggedIn = true
-                const user:UserRole = {
-                    userRole: User.CUSTOMER,
+                const user:User = {
+                    role: Role.CUSTOMER,
                     id:''
                 }
                 state.user = user
@@ -134,7 +138,7 @@ const authSlice = createSlice({
             .addCase(getAuthStatus.fulfilled, (state: Auth, action) => {
                 state.status = Status.FULFILLED
                 state.isLoggedIn = action.payload?.isLoggedIn
-                state.user = action.payload?.userRole
+                state.user = action.payload?.user
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED

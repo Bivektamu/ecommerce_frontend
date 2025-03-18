@@ -61,18 +61,17 @@ export enum Status {
     IDLE = 'IDLE'
 }
 
-export enum User {
+export enum Role {
     ADMIN = "ADMIN",
     CUSTOMER = "CUSTOMER"
 }
-export interface UserRole {
-    userRole: User,
+export interface User {
+    role: Role,
     id: string
 }
-
 export interface Auth {
     isLoggedIn: boolean,
-    user: UserRole | null,
+    user: User | null,
     status: Status,
     error: string,
 }
