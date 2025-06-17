@@ -30,9 +30,6 @@ const Cart = () => {
     
     let tempCart: CartType[] = carts
 
-    console.log(user);
-    
-
     if (tempCart.length > 0 && user) {
       tempCart = [...tempCart.filter(cart => cart.customerId === user.id)]
     }

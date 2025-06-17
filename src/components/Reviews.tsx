@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import StarIcon from './ui/StarIcon'
 import { userReviews } from '../store/slices/reviewSlice'
 import { useAuth } from '../store/slices/authSlice'
-import { Action, User } from '../store/types'
+import { Action, Role } from '../store/types'
 
 import Modal from './ui/Modal'
 import AddReviewForm from './forms/AddReviewForm'
@@ -119,7 +119,7 @@ const Reviews = ({ productId }: Props) => {
 
             </div>
             {
-                user?.userRole === User.CUSTOMER && <button onClick={createReviewHandler} className="border-[1px] border-slate-600 py-2 px-4 rounded text-center cursor-pointer text-sm font-medium mb-2">Write a review</button>
+                user?.role === Role.CUSTOMER && <button onClick={createReviewHandler} className="border-[1px] border-slate-600 py-2 px-4 rounded text-center cursor-pointer text-sm font-medium mb-2">Write a review</button>
             }
 
             {

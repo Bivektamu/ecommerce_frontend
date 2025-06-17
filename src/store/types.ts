@@ -32,22 +32,14 @@ export interface CustomerEditInput {
     isVerified?: boolean
 }
 
-
 export interface Address {
     street: string,
-    suburb: string,
     city: string,
-    postcode: string,
+    zipcode?: number | null,
+    country: string,
     state: string
 }
 export interface FormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-}
-
-export interface ShippingForm {
     firstName: string;
     lastName: string;
     email: string;
