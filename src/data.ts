@@ -60,10 +60,10 @@ const data:Data =
             email:'bivek.tamu@gmail.com',
             address: {
                 street:'32b hinton loop',
-                suburb: 'oran park',
                 city: 'sydney',
-                postcode: '2570',
-                state:'nsw'
+                zipcode: 2570,
+                state:'nsw',
+                country: 'Australia'
             },
             isActive: true,
             isVerified: false,

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Action, FormData,  FormError,  Toast, Toast_Vairant, User } from '../store/types'
+import { Action, FormData,  FormError,  Toast, Toast_Vairant, Role } from '../store/types'
 import { Link, Navigate,  useNavigate,  useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -136,7 +136,7 @@ const SignUp = () => {
     return <Navigate to="/checkout" />
   }
 
-  if ( isLoggedIn && user?.userRole === User.CUSTOMER) {
+  if ( isLoggedIn && user?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
 

@@ -7,7 +7,7 @@ import BreadCrumbs from '../../components/ui/BreadCrumbs'
 
 import { useToasts } from "../../store/slices/toastSlice"
 import ToastComponent from "../../components/ui/Toast"
-import { Status, User } from '../../store/types'
+import { Status, Role } from '../../store/types'
 import { useStoreDispatch } from '../../store'
 import ProgressLoader from '../../components/ui/ProgressLoader'
 import Preloader from '../../components/ui/Preloader'
@@ -40,7 +40,7 @@ const PrivateRoute = () => {
 
     useEffect(()=> {
         
-        if(user && user.userRole !== User.ADMIN) {
+        if(user && user.role !== Role.ADMIN) {
             navigate('/admin/login')
         }
     }, [user])
@@ -57,7 +57,7 @@ const PrivateRoute = () => {
         dispatch(logOut())
     }
 
-    if(status === Status.PENDING || !isLoggedIn || user?.userRole !== User.ADMIN) {
+    if(status === Status.PENDING || !isLoggedIn || user?.role !== Role.ADMIN) {
         return <Preloader />
     }
     

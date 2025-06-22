@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status, User } from '../../store/types'
+import { FormData, Status, Role } from '../../store/types'
 import { useNavigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
@@ -24,7 +24,7 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Partial<Pick<FormData, 'email' | 'password'>>>({})
 
   useEffect(() => {
-    if (status === Status.FULFILLED && isLoggedIn && user?.userRole === User.ADMIN) {
+    if (status === Status.FULFILLED && isLoggedIn && user?.role === Role.ADMIN) {
       navigate('/admin/dashboard')
     }
   }, [status, isLoggedIn, user])

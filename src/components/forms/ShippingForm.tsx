@@ -2,9 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { Address, FormError, ValidateSchema } from "../../store/types"
 import validateForm from "../../utils/validate"
 
-type Props = {}
-
-const ShippingForm = (props: Props) => {
+const ShippingForm = () => {
 
     const [formData, setFormData] = useState<Address>({
         street: '',

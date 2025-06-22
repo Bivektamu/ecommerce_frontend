@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom'
 
 
-import { Action, Cart, Colour, FormError, Product, Size, Toast, Toast_Vairant, User, ValidateSchema } from '../store/types'
+import { Action, Cart, Colour, FormError, Product, Role, Size, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import CircleLoader from './ui/CircleLoader'
 import getClasses from '../utils/getClasses'
 import validateForm from '../utils/validate'
@@ -48,7 +48,7 @@ function AddToCartForm({ product }: Props) {
 
     // code to set userId in cart items
     useEffect(() => {
-        if (user && user.userRole === User.CUSTOMER) {
+        if (user && user.role === Role.CUSTOMER) {
             setFormData({ ...formData, customerId: user.id })
         }
     }, [user])
