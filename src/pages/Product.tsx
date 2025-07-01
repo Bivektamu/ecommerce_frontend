@@ -63,10 +63,6 @@ const ProductComponent = () => {
   }, [productItem])
 
 
-  console.log(reviews);
-  
-
-
 
   return (
     <>

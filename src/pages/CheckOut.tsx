@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -7,11 +7,13 @@ import { useCart } from '../store/slices/cartSlice'
 import { Cart as CartType, Role, Status } from '../store/types'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ShippingForm from '../components/forms/ShippingForm'
 import Preloader from '../components/ui/Preloader'
+import ProgressLoader from '../components/ui/ProgressLoader'
 
 const Checkout = () => {
+  const navigate = useNavigate()
 
   const dispatch = useStoreDispatch()
   const { user, status: authStatus } = useSelector(useAuth)
@@ -20,8 +22,9 @@ const Checkout = () => {
 
   const [cartState, setCartState] = useState<CartType[]>([])
   const [total, setTotal] = useState<number>(0)
+  const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
 
-  const navigate = useNavigate()
+
 
   useEffect(() => {
     if (status === Status.IDLE)
@@ -74,10 +77,15 @@ const Checkout = () => {
 
   const uniqueCartItems = useMemo(() => [...new Map(cartState.map(item => [item.productId, item])).values()], [cartState])
 
+  const placeHandler = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setPreloaderFlag(true)
+  }
 
+  if (preloaderFlag)
+    return  <Preloader />
 
   return (
-
     <>
       {
         authStatus !== Status.FULFILLED && user?.role !== Role.CUSTOMER && <Preloader />
@@ -133,16 +141,13 @@ const Checkout = () => {
                   <span className='font-medium'>${total + total / 10}</span>
                 </p>
 
-                <button className='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8'>Checkout</button>
-                <div className='block text-center'>
-                  <Link to='/collections' className='text-sm font-semibold border-b-[1px] border-black'>Continue Shopping</Link>
-                </div>
-
+                <button className='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8' onClick={placeHandler}>Place Order</button>
               </div>
           }
 
         </div>
       </section>
+
     </>
   )
 }

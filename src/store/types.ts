@@ -166,12 +166,6 @@ export interface ProductEditInput extends Omit<Product, 'imgs'> {
     newImgs: ProductImageInput[]
 }
 
-export interface OrderedProduct {
-    productId: ProductId,
-    color: Colour,
-    quantity: number,
-    size: Size
-}
 
 export interface ValidateSchema<T> {
     name: string,
@@ -184,24 +178,6 @@ export interface FormError {
 }
 
 
-export enum Order_Status {
-    PENDING = 'PENDING',
-    COMPLETED = 'COMPLETED',
-    PROCESSING = 'PROCESSING',
-    CANCELLED = 'CANCELLED',
-    FAILED = 'FAILED',
-    SHIPPED = 'SHIPPED',
-    REFUNDED = 'REFUNDED',
-}
-
-export interface Order {
-    id: string,
-    total: number,
-    customerId: CustomerId,
-    timeStamp: Date,
-    products: OrderedProduct[],
-    status: Order_Status
-}
 
 export enum Toast_Vairant {
     DANGER = 'DANGER',
@@ -246,6 +222,36 @@ export interface Cart {
 export interface CartSlice {
     cart: Cart[],
     action: Action | null
+}
+
+
+export enum Order_Status {
+    PENDING = 'PENDING',
+    COMPLETED = 'COMPLETED',
+    PROCESSING = 'PROCESSING',
+    CANCELLED = 'CANCELLED',
+    FAILED = 'FAILED',
+    SHIPPED = 'SHIPPED',
+    REFUNDED = 'REFUNDED',
+}
+
+
+export interface OrderItem {
+    id: string,
+    productId: ProductId,
+    color: Colour,
+    quantity: number,
+    size: Size,
+    price: number,
+    imgUrl: string
+}
+export interface Order {
+    id:string,
+    userId: string,
+    items: [OrderItem],
+    status: Order_Status,
+    total: number,
+    shippingAddress: Address,
 }
 
 export interface Review {
