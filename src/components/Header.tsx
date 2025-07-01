@@ -29,7 +29,6 @@ const Header = () => {
   useEffect(() => {
     if (user && user.role === Role.CUSTOMER) {
       dispatch(getCustomer(user.id))
-
     }
   }, [user])
 

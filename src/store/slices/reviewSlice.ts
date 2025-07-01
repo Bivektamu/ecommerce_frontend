@@ -67,7 +67,7 @@ const reviewSlice = createSlice({
         }) 
         .addCase(getReviewsByProductId.fulfilled, (state: ReviewSlice, action)=> {
             state.status = Status.FULFILLED
-            state.reviews = (action.payload)
+            state.reviews = action.payload;
             state.action = Action.FETCH
         })
         .addCase(addReview.pending, (state: ReviewSlice) => {

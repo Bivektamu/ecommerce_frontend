@@ -25,9 +25,16 @@ export const CREATE_CUSTOMER = gql`
   }
 `
 
-
-
-
+export const UPDATE_ADDRESS = gql`
+  mutation UpdateAddress($input: AddressInput) {
+    updateAddress(input: $input) {
+      city
+      country
+      postcode
+      street
+    }
+}
+`
 
 export const CREATE_PRODUCT = gql`
 mutation CreateProduct($input: CreateProduct) {

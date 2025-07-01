@@ -32,17 +32,19 @@ function AddToCartForm({ product }: Props) {
         color: null,
         size: null,
         quantity: 0,
-        price: product?.price || null
+        price: product?.price || null,
+        imgUrl: ''
     })
 
     const [userCart, setUserCart] = useState<Cart[]>([])
     const [itemExists, setItemExists] = useState<boolean>(false)
 
     const [formErrors, setFormErrors] = useState<FormError>({})
+    // console.log(product?.imgs[0].url);
 
     useEffect(() => {
         if (product && Object.keys(product).length > 0) {
-            setFormData({ ...formData, productId: product?.id, price: product?.price })
+            setFormData({ ...formData, productId: product?.id, price: product?.price, imgUrl: product?.imgs[0].url })
         }
     }, [product])
 
@@ -208,6 +210,8 @@ function AddToCartForm({ product }: Props) {
             dispatch(addToCart(productToAdd))
         }
     }
+
+    
 
 
     return (

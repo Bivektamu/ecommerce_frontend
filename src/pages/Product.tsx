@@ -63,6 +63,10 @@ const ProductComponent = () => {
   }, [productItem])
 
 
+  console.log(reviews);
+  
+
+
 
   return (
     <>
@@ -87,7 +91,7 @@ const ProductComponent = () => {
 
               <div className="flex gap-4 items-center mb-6">
                 {
-                  reviews.length > 0 &&
+                  reviews && reviews.length > 0 &&
 
                   <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
                     <StarIcon /> 

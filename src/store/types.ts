@@ -35,7 +35,7 @@ export interface CustomerEditInput {
 export interface Address {
     street: string,
     city: string,
-    zipcode?: number | null,
+    postcode?:string,
     country: string,
     state: string
 }
@@ -239,7 +239,8 @@ export interface Cart {
     color: Colour | null,
     quantity: number,
     size: Size | null,
-    price: number | null
+    price: number | null,
+    imgUrl: string
 }
 
 export interface CartSlice {

@@ -54,6 +54,7 @@ const Cart = () => {
     }
 
   }, [cartState, status])
+  console.log(cartState);
 
 
   return (

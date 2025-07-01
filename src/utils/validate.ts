@@ -9,7 +9,10 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
     validateSchema.map(schema => {
         const { name, type, value, msg } = schema
 
+        
+
         if (value === '' || value === null) {
+
             let error = {
                 [name]: msg || `Please insert ${name}.`
             }
@@ -40,8 +43,6 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
                 case 'alphaNumeric': {
                     const regex: RegExp = /^[A-Za-z].*[0-9]$/
 
-                    console.log(regex);
-                    
 
                     if (!regex.test(value as string)) {
                         const error = {
@@ -91,6 +92,7 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
 
     })
 
+    console.log(errors)
     return errors
 }
 

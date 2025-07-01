@@ -60,8 +60,6 @@ export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
         const isLoggedIn = response.data.getAuthStatus.isLoggedIn
         const user = response.data.getAuthStatus.user
 
-        console.log('asdf');
-        
 
         return { isLoggedIn, user }
     } catch (error) {
@@ -80,7 +78,7 @@ const authSlice = createSlice({
             localStorage.setItem('token', '')
             state.isLoggedIn = false
             state.user = null
-            state.status = Status.FULFILLED
+            state.status = Status.IDLE
 
         },
     },

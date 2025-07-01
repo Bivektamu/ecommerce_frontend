@@ -19,7 +19,13 @@ export const GET_CUSTOMER = gql`
     firstName
     lastName
     email
-    password
+    address {
+        street
+        city
+        postcode
+        state
+        country
+      }
   }
 }
 `;

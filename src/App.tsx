@@ -17,7 +17,6 @@ import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
 import PageNotFound from "./pages/admin/PageNotFound"
 import Checkout from "./pages/CheckOut"
-
 const Home = lazy(() => import("./pages/Home"))
 const Layout = lazy(() => import("./components/ui/Layout"))
 const Product = lazy(() => import("./pages/Product"))

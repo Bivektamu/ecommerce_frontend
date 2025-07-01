@@ -1,29 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useCart } from '../store/slices/cartSlice'
-import { Cart as CartType, Status } from '../store/types'
+import { Cart as CartType, Role, Status } from '../store/types'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
-import { Link } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import ShippingForm from '../components/forms/ShippingForm'
+import Preloader from '../components/ui/Preloader'
 
 const Checkout = () => {
 
   const dispatch = useStoreDispatch()
-  const { user } = useSelector(useAuth)
-  const { cart:carts } = useSelector(useCart)
+  const { user, status: authStatus } = useSelector(useAuth)
+  const { cart: carts } = useSelector(useCart)
   const { status } = useSelector(useProduct)
 
   const [cartState, setCartState] = useState<CartType[]>([])
   const [total, setTotal] = useState<number>(0)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
-    dispatch(getAuthStatus())
-    dispatch(getProducts())
-  }, [])
+    if (status === Status.IDLE)
+      dispatch(getProducts())
+  }, [status])
+
+  useEffect(() => {
+    if (authStatus === Status.IDLE) {
+      dispatch(getAuthStatus())
+    }
+    else if (authStatus !== Status.PENDING && user?.role !== Role.CUSTOMER) {
+      navigate('/')
+    }
+  }, [authStatus])
+
 
   useEffect(() => {
     let tempCart: CartType[] = carts
@@ -31,9 +44,13 @@ const Checkout = () => {
     if (tempCart.length > 0 && user) {
       tempCart = [...tempCart.filter(cart => cart.customerId === user.id)]
     }
-    
-    if(!user) {
-      tempCart = [...tempCart.filter(cart=>!cart.customerId)]
+
+    if (!user) {
+      tempCart = [...tempCart.filter(cart => !cart.customerId)]
+    }
+
+    if (tempCart.length === 0) {
+      navigate('/')
     }
 
     setCartState([...tempCart])
@@ -55,8 +72,17 @@ const Checkout = () => {
   }, [cartState, status])
 
 
+  const uniqueCartItems = useMemo(() => [...new Map(cartState.map(item => [item.productId, item])).values()], [cartState])
+
+
+
   return (
+
     <>
+      {
+        authStatus !== Status.FULFILLED && user?.role !== Role.CUSTOMER && <Preloader />
+      }
+
       <section id="breadcrums" className="">
         <div className="py-14 container mx-auto">
           <h2 className="text-2xl font-bold mb-4">Checkout</h2>
@@ -77,6 +103,18 @@ const Checkout = () => {
             status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : total > 0 &&
               <div className="basis-1/3 border-slate-200 border-l-[1px]  pl-16 pr-0">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
+                <div className="flex justify-between mb-12">
+                  <div className='flex'>
+                    {
+                      uniqueCartItems.map(item => <img className='w-8 mr-4' src={item.imgUrl} />)
+                    }
+                    {
+                      uniqueCartItems.length < cartState.length && <span className='self-center text-sm italic font-medium text-slate-600 '>+ {cartState.length - uniqueCartItems.length}</span>
+                    }
+
+                  </div>
+                  <Link to='/cart' className='text-sm  border-[1px] border-black w-28 justify-center flex items-center rounded'>Edit Cart</Link>
+                </div>
                 <p className="flex justify-between mb-4">
                   <span className=" text-gray-500 font-medium">Subtotal</span>
                   <span className='font-medium'>${total}</span>
@@ -97,7 +135,7 @@ const Checkout = () => {
 
                 <button className='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8'>Checkout</button>
                 <div className='block text-center'>
-                <Link to='/collections' className='text-sm font-semibold border-b-[1px] border-black'>Continue Shopping</Link>
+                  <Link to='/collections' className='text-sm font-semibold border-b-[1px] border-black'>Continue Shopping</Link>
                 </div>
 
               </div>

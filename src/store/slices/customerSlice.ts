@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Action, CustomerInput, CustomerSlice, Status, RootState } from "../types";
+import { Action, CustomerInput, CustomerSlice, Status, RootState, Address } from "../types";
 import client from "../../data/client";
-import { CREATE_CUSTOMER } from "../../data/mutation";
+import { CREATE_CUSTOMER, UPDATE_ADDRESS } from "../../data/mutation";
 import { GET_CUSTOMER } from "../../data/query";
 
 const initialState: CustomerSlice = {
@@ -45,29 +45,35 @@ export const getCustomer = createAsyncThunk(`/customer/:id`, async (id: string) 
     }
 })
 
+
+
+export const updateAddress = createAsyncThunk('/customer/updateaddress', async (formData: Address) => {
+console.log('response.data');
+
+    try {
+        const response = await client.mutate({
+            mutation: UPDATE_ADDRESS,
+            variables: { input: formData }
+        })
+
+
+        return response.data.updateAddress
+
+    } catch (error) {
+
+        if (error instanceof Error) {
+            throw error
+        }
+    }
+})
+
+
 const customerSlice = createSlice({
     name: 'customers',
     initialState: initialState,
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(createCustomer.fulfilled, (state, action) => {
-                state.customer = action.payload
-                state.action = Action.ADD
-                state.error = null
-                state.status = Status.FULFILLED
-            })
-            .addCase(createCustomer.pending, (state) => {
-                state.status = Status.PENDING
-                state.error = null
-            })
-
-            .addCase(createCustomer.rejected, (state, action) => {
-                state.error = action.error.message as string
-                state.status = Status.REJECTED
-                state.customer = null
-            })
-
             .addCase(getCustomer.fulfilled, (state, action) => {
                 state.customer = action.payload
                 state.action = Action.FETCH
@@ -84,6 +90,50 @@ const customerSlice = createSlice({
                 state.status = Status.REJECTED
                 state.customer = null
             })
+
+            .addCase(createCustomer.fulfilled, (state, action) => {
+                state.customer = action.payload
+                state.action = Action.ADD
+                state.error = null
+                state.status = Status.FULFILLED
+            })
+            .addCase(createCustomer.pending, (state) => {
+                state.status = Status.PENDING
+                state.error = null
+            })
+            .addCase(createCustomer.rejected, (state, action) => {
+                state.error = action.error.message as string
+                state.status = Status.REJECTED
+                state.customer = null
+            })
+
+            // Update Address
+            .addCase(updateAddress.fulfilled, (state, action) => {
+                if (state.customer) {
+                    state.customer.address = action.payload
+                }
+                state.action = Action.EDIT
+                state.error = null
+                state.status = Status.FULFILLED
+            })
+            .addCase(updateAddress.pending, (state) => {
+                state.status = Status.PENDING
+                state.error = null
+            })
+            .addCase(updateAddress.rejected, (state, action) => {
+                state.error = action.error.message as string
+                state.status = Status.REJECTED
+
+                console.log(action.error);
+                
+
+                if (state.customer) {
+                    state.customer.address = {} as Address
+                }
+
+            })
+
+
     }
 })
 
