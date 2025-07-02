@@ -23,7 +23,7 @@ export interface CustomerInput {
 }
 
 export interface CustomerEditInput {
-    id:CustomerId
+    id: CustomerId
     firstName: string,
     lastName: string,
     email: string,
@@ -35,7 +35,7 @@ export interface CustomerEditInput {
 export interface Address {
     street: string,
     city: string,
-    postcode?:string,
+    postcode?: string,
     country: string,
     state: string
 }
@@ -158,7 +158,7 @@ export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' 
 }
 export interface QueriedProduct extends Omit<Product, 'imgs'> {
     __typename: string,
-    imgs:QueriedProductImage[]
+    imgs: QueriedProductImage[]
 }
 export interface ProductEditInput extends Omit<Product, 'imgs'> {
     __typename?: string
@@ -211,7 +211,7 @@ export interface Filters {
 export interface Cart {
     id: string,
     productId: ProductId,
-    customerId:string | null
+    customerId: string | null
     color: Colour | null,
     quantity: number,
     size: Size | null,
@@ -246,12 +246,16 @@ export interface OrderItem {
     imgUrl: string
 }
 export interface Order {
-    id:string,
+    id: string,
     userId: string,
-    items: [OrderItem],
+    items: OrderItem[],
     status: Order_Status,
     total: number,
     shippingAddress: Address,
+}
+
+export interface CreateOrder extends Omit<Order, 'id' | 'items'> {
+    items: Omit<OrderItem, 'id'>[]
 }
 
 export interface Review {
