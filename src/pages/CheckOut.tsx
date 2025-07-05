@@ -12,10 +12,13 @@ import ShippingForm from '../components/forms/ShippingForm'
 import Preloader from '../components/ui/Preloader'
 import ProgressLoader from '../components/ui/ProgressLoader'
 import { useCustomer } from '../store/slices/customerSlice'
-import { IoTerminalSharp } from 'react-icons/io5'
+import { useMutation } from '@apollo/client'
+import { CREATE_ORDER } from '../data/mutation'
 
 const Checkout = () => {
   const navigate = useNavigate()
+
+  const [createOrder, { data, loading, error }] = useMutation(CREATE_ORDER)
 
   const dispatch = useStoreDispatch()
   const { user, status: authStatus } = useSelector(useAuth)
@@ -44,9 +47,11 @@ const Checkout = () => {
 
   useEffect(() => {
     if (customer && customer.address) {
+      const { __typename, ...rest } = customer.address
+
       setOrder(prev => ({
         ...prev,
-        shippingAddress: customer.address
+        shippingAddress: rest
       }))
     }
   }, [customer])
@@ -89,18 +94,24 @@ const Checkout = () => {
 
   }, [cartState, status])
 
-  useEffect(() => {
-    console.log(order);
-  }, [order])
-
 
   const uniqueCartItems = useMemo(() => order.items ? [...new Map(order.items.map(item => [item.productId, item])).values()] : [], [order.items])
 
-  const placeHandler = (e: MouseEvent<HTMLButtonElement>) => {
+  const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setPreloaderFlag(true)
-    console.log(order);
-    
+
+    try {
+      const { data } = await createOrder({
+        variables: {
+          input: order
+        }
+      })
+      console.log("Order created:", data.createOrder);
+
+    } catch (error) {
+      console.error("Error creating order", error);
+    }
   }
 
   if (preloaderFlag)

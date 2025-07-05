@@ -1,3 +1,10 @@
+export interface Address {
+    street: string,
+    city: string,
+    postcode: string,
+    country: string,
+    state: string
+}
 export interface Customer {
     id: string,
     firstName: string,
@@ -32,13 +39,7 @@ export interface CustomerEditInput {
     isVerified?: boolean
 }
 
-export interface Address {
-    street: string,
-    city: string,
-    postcode?: string,
-    country: string,
-    state: string
-}
+
 export interface FormData {
     firstName: string;
     lastName: string;

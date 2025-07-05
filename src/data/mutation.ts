@@ -88,3 +88,9 @@ export const CREATE_REVIEW = gql`
     }
   }
 `
+
+export const CREATE_ORDER = gql`
+  mutation CreateOrder($input: OrderInput) {
+    createOrder(input: $input)
+  }
+`
