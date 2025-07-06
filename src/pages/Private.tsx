@@ -26,7 +26,7 @@ const Private = ({ children }: Props) => {
     useEffect(() => {
         if (status === Status.FULFILLED && !isLoggedIn) {
             console.log('saf');
-            
+
             navigate('/')
         }
         else if (status === Status.REJECTED) {

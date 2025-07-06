@@ -16,7 +16,7 @@ const Cart = lazy(() => import("./pages/Cart"))
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
 import Fail from "./pages/checkout/Fail"
-import Account from "./pages/Account/Account"
+import Account from "./pages/account/Account"
 const PageNotFound = lazy(() => import("./pages/admin/PageNotFound"))
 const Checkout = lazy(() => import("./pages/checkout/CheckOut"))
 const Success = lazy(() => import("./pages/checkout/Success"))
