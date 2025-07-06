@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -10,6 +10,9 @@ import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { Link } from 'react-router-dom'
 import CustomNavLink from '../components/CustomNavLink'
+import PageWrapper from '../components/ui/PageWrapper'
+
+const TAX_RATE: number = 0.1
 
 const Cart = () => {
 
@@ -19,7 +22,7 @@ const Cart = () => {
   const { status } = useSelector(useProduct)
 
   const [cartState, setCartState] = useState<CartType[]>([])
-  const [total, setTotal] = useState<number>(0)
+  const [subTotal, setSubtotal] = useState<number>(0)
 
   useEffect(() => {
     dispatch(getAuthStatus())
@@ -27,7 +30,7 @@ const Cart = () => {
   }, [])
 
   useEffect(() => {
-    
+
     let tempCart: CartType[] = carts
 
     if (tempCart.length > 0 && user) {
@@ -47,18 +50,21 @@ const Cart = () => {
       cartState.forEach((cart: CartType) => {
         tempTotal += cart.price as number * cart.quantity
       })
-      setTotal(tempTotal)
+      setSubtotal(tempTotal)
     }
     else {
-      setTotal(0)
+      setSubtotal(0)
     }
 
   }, [cartState, status])
-  console.log(cartState);
 
+
+  const tax = useMemo(() => parseFloat((subTotal * TAX_RATE).toFixed(2)), [subTotal])
+
+  const total = useMemo(() => parseFloat((subTotal + tax).toFixed(2)), [subTotal, tax])
 
   return (
-    <>
+    <PageWrapper>
       <section id="breadcrums" className="">
         <div className="py-14 container mx-auto">
           <h2 className="text-2xl font-semibold mb-4">Cart</h2>
@@ -81,12 +87,12 @@ const Cart = () => {
           </div>
 
           {
-            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : total > 0 &&
+            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : subTotal > 0 &&
               <div className="basis-1/3 border-slate-200 border-[1px] p-6">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
                 <p className="flex justify-between mb-4">
                   <span className=" text-gray-500 font-medium">Subtotal</span>
-                  <span className='font-medium'>${total}</span>
+                  <span className='font-medium'>${subTotal}</span>
                 </p>
                 <p className='flex justify-between mb-4'>
                   <span className="text-gray-500 font-medium">Shipping</span>
@@ -94,16 +100,25 @@ const Cart = () => {
                 </p>
                 <p className='flex justify-between pb-8 mb-8 border-b-[1px] border-gray-200'>
                   <span className="text-gray-500 font-medium">Tax</span>
-                  <span className='font-medium'>${total / 10}</span>
+                  <span className='font-medium'>{tax}</span>
                 </p>
 
                 <p className='flex justify-between mb-10 border-gray-200'>
                   <span className="font-medium">Total</span>
-                  <span className='font-medium'>${total + total / 10}</span>
+                  <span className='font-medium'>${total}</span>
                 </p>
                 {
                   user ?
-                    <CustomNavLink to="/checkout" cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Checkout</CustomNavLink>
+
+                    <CustomNavLink
+                      to='/checkout'
+
+                      state={
+                        {
+                          tax: tax
+                        }
+                      }
+                      cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Checkout</CustomNavLink>
                     :
                     <>
                       <CustomNavLink to="/login?cart=true" cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-2 block'>Sign in to checkout</CustomNavLink>
@@ -120,8 +135,8 @@ const Cart = () => {
           }
 
         </div>
-      </section>
-    </>
+      </section >
+    </PageWrapper>
   )
 }
 

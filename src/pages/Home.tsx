@@ -13,6 +13,7 @@ import GridLoader from "../components/ui/GridLoader"
 import { Status } from "../store/types"
 import FeaturedLatest from "../components/FeaturedLatest"
 import ProductCard from "../components/ui/ProductCard"
+import PageWrapper from "../components/ui/PageWrapper"
 
 const Home = () => {
   const dispatch = useStoreDispatch()
@@ -23,7 +24,7 @@ const Home = () => {
   }, [])
 
   return (
-    <>
+    <PageWrapper>
       <Hero />
       <section className="bg-white pt-24 pb-36">
         <Grids cssClass='container mx-auto grid-cols-3 grid gap-24 mb-36'>
@@ -86,7 +87,7 @@ const Home = () => {
 
       <FeaturedLatest products={products} status={status} />
 
-    </>
+    </PageWrapper>
   )
 }
 

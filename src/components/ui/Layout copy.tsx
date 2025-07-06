@@ -6,7 +6,6 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useToasts } from '../../store/slices/toastSlice'
 import ToastComponent from './Toast'
-import { AnimatePresence, motion } from 'framer-motion'
 
 const Layout = () => {
   const allToasts = useSelector(useToasts)
@@ -18,20 +17,16 @@ const Layout = () => {
   }
 
   return (
-    <AnimatePresence mode="wait">
-      
-        <Header />
-        <main id="main">
-          {
-            allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
-          }
-
-          <Outlet key={location.pathname} />
-
-        </main>
-        <Footer />
-
-    </AnimatePresence >
+    <>
+      <Header />
+      <main id="main">
+        {
+          allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
+        }
+        <Outlet />
+      </main>
+      <Footer />
+    </>
   )
 }
 

@@ -37,13 +37,18 @@ const cartSlice = createSlice({
             state.cart = carts
             localStorage.setItem('cart', JSON.stringify(state.cart))
         },
+        deleteCartByCustomerId: (state, action) => {
+            const carts = state.cart.filter(cart => cart.customerId !== action.payload)
+            state.cart = carts
+            localStorage.setItem('cart', JSON.stringify(state.cart))
+        },
         resetCartAction: (state) => {
             state.action = null
         }
     }
 })
 
-export const { addToCart, removeFromCart, updateCartQuantity, upDateCart, deleteCart, resetCartAction } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCartQuantity, upDateCart, deleteCart, deleteCartByCustomerId, resetCartAction } = cartSlice.actions;
 
 export const useCart = (state: RootState) => state.cart
 

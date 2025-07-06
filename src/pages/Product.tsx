@@ -16,6 +16,7 @@ import SquareLoader from '../components/ui/SquareLoader'
 import ProductCard from '../components/ui/ProductCard'
 import { getReviewsByProductId, userReviews } from '../store/slices/reviewSlice'
 import { getAverageRating } from '../utils/helpers'
+import PageWrapper from '../components/ui/PageWrapper'
 
 const ProductComponent = () => {
 
@@ -65,7 +66,7 @@ const ProductComponent = () => {
 
 
   return (
-    <>
+    <PageWrapper>
       <section id="breadcrums" className="bg-white">
         <div className="py-8 container mx-auto">
           <BreadCrumbs rootLink="Ecommerce" />
@@ -133,7 +134,7 @@ const ProductComponent = () => {
         </div>
 
       </section>
-    </>
+    </PageWrapper>
   )
 }
 

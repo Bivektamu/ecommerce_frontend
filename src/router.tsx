@@ -1,5 +1,5 @@
-import { Suspense, lazy } from "react"
-import { createBrowserRouter } from "react-router-dom"
+import { Suspense, lazy, useEffect } from "react"
+import { createBrowserRouter, useLocation } from "react-router-dom"
 
 const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
 const Products = lazy(() => import("./pages/admin/Products"))
@@ -27,10 +27,25 @@ const Collections = lazy(() => import("./pages/Collections"))
 const UnderWork = lazy(() => import("./pages/UnderWork"))
 const LogIn = lazy(() => import("./pages/LogIn"))
 const SignUp = lazy(() => import("./pages/SignUp"))
+
+const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+};
+
+
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Suspense fallback={< Preloader />}> <Layout /></Suspense >,
+        element: <Suspense fallback={< Preloader />}>
+            <ScrollToTop />
+            <Layout />
+        </Suspense >,
         children: [
             {
                 path: '/',
@@ -68,7 +83,7 @@ const router = createBrowserRouter([
                             <Success />
                         </Suspense>,
                     },
-                     {
+                    {
                         path: 'fail',
                         element: <Suspense fallback={< Preloader />} >
                             <Fail />

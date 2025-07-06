@@ -2,15 +2,16 @@ import React from 'react'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { Link } from 'react-router-dom'
 import Arrow from '../../components/ui/Arrow'
+import PageWrapper from '../../components/ui/PageWrapper'
 
 const Success = () => {
     return (
-        <>
+        <PageWrapper>
             <section id="breadcrums" className="bg-[#D5E5D7]">
                 <div className="py-14 container mx-auto">
                     <h2 className="text-2xl font-bold mb-4">Successful Order</h2>
                     <div>
-                        <p className="text-sm capitalize font-medium text-slate-500">Ecommerce > Successful Order</p>
+                        <p className="text-sm capitalize font-medium text-slate-500">Ecommerce {'>'} Successful Order</p>
                     </div>
                 </div>
             </section>
@@ -28,7 +29,7 @@ const Success = () => {
 
 
             </section>
-        </>
+        </PageWrapper>
     )
 }
 

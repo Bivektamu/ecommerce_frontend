@@ -8,6 +8,7 @@ import validateForm from '../utils/validate'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import CustomNavLink from '../components/CustomNavLink'
 import { upDateCart, useCart } from '../store/slices/cartSlice'
+import PageWrapper from '../components/ui/PageWrapper'
 
 const LogIn = () => {
 
@@ -96,7 +97,7 @@ else if (isLoggedIn && user?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
   return (
-    <>
+    <PageWrapper>
       <section id="breadcrums" className="">
         <div className="py-14 container mx-auto">
           <h2 className="text-2xl font-semibold mb-4">Login</h2>
@@ -127,7 +128,7 @@ else if (isLoggedIn && user?.role === Role.CUSTOMER) {
           </p>
         </div>
       </section>
-    </>
+    </PageWrapper>
   )
 }
 

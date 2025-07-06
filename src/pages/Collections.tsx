@@ -12,6 +12,7 @@ import GridLoader from "../components/ui/GridLoader"
 import ProductCard from "../components/ui/ProductCard"
 import SortProducts from "../components/SortProducts"
 import { resetCartAction, useCart } from "../store/slices/cartSlice"
+import PageWrapper from "../components/ui/PageWrapper"
 
 
 const Collections = () => {
@@ -111,7 +112,7 @@ const Collections = () => {
   const { category, colors, sizes } = filters
 
   return (
-    <>
+    <PageWrapper>
       <section id="breadcrums" className="">
         <div className="py-8 container mx-auto">
           <BreadCrumbs rootLink="Ecommerce" />
@@ -206,7 +207,7 @@ const Collections = () => {
           </div>
         </div>
       </section>
-    </>
+    </PageWrapper>
   )
 }
 

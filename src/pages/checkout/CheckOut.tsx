@@ -3,20 +3,26 @@ import { useStoreDispatch } from '../../store/index'
 import { useAuth, getAuthStatus } from '../../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
-import { useCart } from '../../store/slices/cartSlice'
+import { deleteCartByCustomerId, useCart } from '../../store/slices/cartSlice'
 import { Cart as CartType, CreateOrder, Order, Order_Status, OrderItem, Role, Status } from '../../store/types'
 import SquareLoader from '../../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../../store/slices/productSlice'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import ShippingForm from '../../components/forms/ShippingForm'
 import Preloader from '../../components/ui/Preloader'
 import ProgressLoader from '../../components/ui/ProgressLoader'
 import { useCustomer } from '../../store/slices/customerSlice'
 import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
+import PageWrapper from '../../components/ui/PageWrapper'
 
 const Checkout = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { tax } = location.state || {}
+
+  console.log(location.state);
+
 
   const [createOrder, { data, loading, error }] = useMutation(CREATE_ORDER)
 
@@ -107,10 +113,13 @@ const Checkout = () => {
           input: order
         }
       })
-      console.log("Order created:", data.createOrder);
+
+      dispatch(deleteCartByCustomerId(user?.id))
+      navigate(`/checkout/success/${data.createOrder}`)
 
     } catch (error) {
       console.error("Error creating order", error);
+      navigate('/checkout/fail')
     }
   }
 
@@ -118,7 +127,7 @@ const Checkout = () => {
     return <Preloader />
 
   return (
-    <>
+    <PageWrapper>
       {
         authStatus !== Status.FULFILLED && user?.role !== Role.CUSTOMER && <Preloader />
       }
@@ -146,7 +155,7 @@ const Checkout = () => {
                 <div className="flex justify-between mb-12">
                   <div className='flex'>
                     {
-                      uniqueCartItems.map(item => <img className='w-8 mr-4' src={item.imgUrl} />)
+                      uniqueCartItems.map((item, index) => <img key={index} className='w-8 mr-4' src={item.imgUrl} />)
                     }
                     {
                       uniqueCartItems.length < order.items.length && <span className='self-center text-sm italic font-medium text-slate-600 '>+ {order.items.length - uniqueCartItems.length}</span>
@@ -179,8 +188,7 @@ const Checkout = () => {
 
         </div>
       </section>
-
-    </>
+    </PageWrapper>
   )
 }
 

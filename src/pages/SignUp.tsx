@@ -11,6 +11,7 @@ import { ValidateSchema } from '../store/types'
 import validateForm from '../utils/validate'
 import { createCustomer, useCustomer } from '../store/slices/customerSlice'
 import { addToast } from '../store/slices/toastSlice';
+import PageWrapper from '../components/ui/PageWrapper';
 
 const SignUp = () => {
 
@@ -141,7 +142,7 @@ const SignUp = () => {
   }
 
   return (
-    <>
+    <PageWrapper>
       <section id="breadcrums" className="">
         <div className="py-14 container mx-auto">
           <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
@@ -187,7 +188,7 @@ const SignUp = () => {
           </p>
         </div>
       </section>
-    </>
+    </PageWrapper>
   )
 }
 
