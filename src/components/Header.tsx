@@ -12,6 +12,7 @@ import { MouseEvent, useEffect, useState } from 'react'
 import { useStoreDispatch } from '../store'
 import { getCustomer, useCustomer } from '../store/slices/customerSlice'
 import CustomNavLink from './CustomNavLink'
+import { NavLink } from 'react-router-dom'
 
 const Header = () => {
   const { products } = useSelector(useProduct)
@@ -70,12 +71,17 @@ const Header = () => {
               {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <UserAvatar />}
 
             </button>
-            <div className="absolute top-6 left-0 bg-white w-[70px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
+            <div className="absolute top-7 -left-[10px] bg-white w-[90px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
               {
                 isLoggedIn && user?.role !== Role.ADMIN ?
-                  <button onClick={logOutHandler} className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
-                    Log out
-                  </button>
+                  <>
+                    <NavLink to={'/account'} className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                      My Account
+                    </NavLink>
+                    <button onClick={logOutHandler} className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
+                      Log Out
+                    </button>
+                  </>
                   :
                   <>
                     <CustomNavLink to='/login' cssClass='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >

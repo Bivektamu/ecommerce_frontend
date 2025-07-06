@@ -3,28 +3,33 @@ import CustomNavLink from '../CustomNavLink'
 
 type Props = {
     rootLink?: string,
+    alias?: string
 }
 
-const BreadCrumbs = ({ rootLink }: Props) => {
+const BreadCrumbs = ({ rootLink, alias }: Props) => {
 
     let pathname = useLocation().pathname
+    if (alias) pathname = '/' + alias
     if (rootLink) {
         pathname = '/' + rootLink + pathname
     }
 
     let links = ''
 
-    const mactches = pathname.split('/').filter(str => str !== '')
-    const crumb = mactches.map((url, index) => {
+    const matches = pathname.split('/').filter(str => str !== '')
+    const crumb = matches.map((url, index) => {
 
         const uurl = url === rootLink ? '' : url
         links += '/' + uurl
         links = links.replaceAll('//', '/')
+        console.log(index)
 
         return (
             <div key={index} className='flex items-center gap-x-2'>
-                <CustomNavLink to={links} cssClass={`text-sm  capitalize ${mactches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>{url.replaceAll('-', ' ')}</CustomNavLink>
-                {mactches.length !== index + 1 ? (<span className=" w-3 h-3 border-t-2 border-r-2 border-slate-600 rotate-45"></span>) : ''}
+                <CustomNavLink isDisabled={index === matches.length - 1 && true} to={links} cssClass={`text-sm  capitalize ${matches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>
+                    {url.replaceAll('-', ' ')}
+                </CustomNavLink>
+                {matches.length !== index + 1 ? (<span className=" w-3 h-3 border-t-2 border-r-2 border-slate-600 rotate-45"></span>) : ''}
             </div>)
     }
     )

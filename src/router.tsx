@@ -16,6 +16,7 @@ const Cart = lazy(() => import("./pages/Cart"))
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
 import Fail from "./pages/checkout/Fail"
+import Account from "./pages/Account/Account"
 const PageNotFound = lazy(() => import("./pages/admin/PageNotFound"))
 const Checkout = lazy(() => import("./pages/checkout/CheckOut"))
 const Success = lazy(() => import("./pages/checkout/Success"))
@@ -93,6 +94,25 @@ const router = createBrowserRouter([
                         index: true,
                         element: <Suspense fallback={< Preloader />}>
                             <Checkout />
+                        </Suspense>,
+                    }
+                ]
+
+            },
+
+              {
+                path: '/account',
+                children: [
+                    // {
+                    //     path: 'success/:orderNumber',
+                    //     element: <Suspense fallback={< Preloader />} >
+                    //         <Success />
+                    //     </Suspense>,
+                    // },
+                    {
+                        index: true,
+                        element: <Suspense fallback={< Preloader />}>
+                            <Account />
                         </Suspense>,
                     }
                 ]

@@ -40,7 +40,7 @@ const Fail = () => {
 
                 <h2 className="text-2xl font-bold mb-4">Oops! There was an issue</h2>
                 <p className="text-sm  text-slate-500 mb-8">Oops! There was a problem processing your order. Please review the details and try again.</p>
-                <Link className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8' to="../">Reorder
+                <Link className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8' to="/checkout">Reorder
                     <Arrow cssClass='mt-[2px]' />
                 </Link>
 

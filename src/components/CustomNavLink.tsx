@@ -7,38 +7,44 @@ type Props = {
   state?: object,
   children: React.ReactNode,
   cssClass?: string,
-  isNavLink?: boolean
+  isNavLink?: boolean,
+  isDisabled?: boolean
   //   setShowNav?: SetStateAction<>
 }
 
-const CustomNavLink = ({ to, state, children, cssClass, isNavLink }: Props) => {
+const CustomNavLink = ({ to, state, children, cssClass, isNavLink, isDisabled }: Props) => {
 
   // const navigate = useNavigate()
 
   // const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    // e.preventDefault()
-    // e.stopPropagation()
+  // e.preventDefault()
+  // e.stopPropagation()
 
-    // const body = document.querySelector('body')
-    // body?.classList.add('opacity-0', 'transition', 'duration-200', 'overflow-hidden')
+  // const body = document.querySelector('body')
+  // body?.classList.add('opacity-0', 'transition', 'duration-200', 'overflow-hidden')
 
-    // setTimeout(() => {
-    //   navigate(to)
-    // }, 200)
+  // setTimeout(() => {
+  //   navigate(to)
+  // }, 200)
 
-    // setTimeout(() => {
-    //   window.scrollTo({
-    //     top: 0,
-    //     behavior: "instant",
-    //   });
-    //   body?.classList.remove('opacity-0', 'overflow-hidden')
-    // }, 400)
+  // setTimeout(() => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     behavior: "instant",
+  //   });
+  //   body?.classList.remove('opacity-0', 'overflow-hidden')
+  // }, 400)
   // }
 
-
-  return (
-    <NavLink state={state || {}} className={({ isActive }) => `${(isActive && isNavLink) ? 'font-bold' : ''} ${cssClass}`}  to={to}>{children}</NavLink>
-  )
+  if (isDisabled) {
+    return (
+      <span className={cssClass}>{children}</span>
+    )
+  }
+  else
+    return (
+      <NavLink state={state || {}} className={({ isActive }) => `${(isActive && isNavLink) ? 'font-bold' : ''} ${cssClass}`} to={to}>{children}</NavLink>
+    )
 }
 
 export default CustomNavLink

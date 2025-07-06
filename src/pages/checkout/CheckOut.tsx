@@ -19,28 +19,14 @@ import PageWrapper from '../../components/ui/PageWrapper'
 const Checkout = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { tax } = location.state || {}
-
-  console.log(location.state);
-
 
   const [createOrder, { data, loading, error }] = useMutation(CREATE_ORDER)
 
   const dispatch = useStoreDispatch()
   const { user, status: authStatus } = useSelector(useAuth)
   const { customer } = useSelector(useCustomer)
-  const { cart: carts } = useSelector(useCart)
-  const { status } = useSelector(useProduct)
 
-  const [cartState, setCartState] = useState<CartType[]>([])
-  const [total, setTotal] = useState<number>(0)
   const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
-  const [order, setOrder] = useState<CreateOrder>({} as CreateOrder)
-
-  useEffect(() => {
-    if (status === Status.IDLE)
-      dispatch(getProducts())
-  }, [status])
 
   useEffect(() => {
     if (authStatus === Status.IDLE) {
@@ -51,66 +37,39 @@ const Checkout = () => {
     }
   }, [authStatus])
 
-  useEffect(() => {
-    if (customer && customer.address) {
-      const { __typename, ...rest } = customer.address
 
-      setOrder(prev => ({
-        ...prev,
-        shippingAddress: rest
-      }))
+  const newOrder: CreateOrder = useMemo(() => {
+    if (location.state?.order) {
+      const order = location.state.order
+      order.items = order.items.map(({ id, customerId, ...rest }) => rest)
+      if (customer && customer.address) {
+        const { __typename, ...rest } = customer.address
+        order.shippingAddress = rest
+      }
+      return order
     }
-  }, [customer])
+    else return {}
+  }, [location, customer])
 
+  const uniqueCartItems = useMemo(() => newOrder.items ? [...new Map(newOrder.items.map(item => [item.productId, item])).values()] : [], [newOrder.items])
 
   useEffect(() => {
-    let tempCart: CartType[] = carts
 
-    if (tempCart.length > 0 && user) {
-      const orderItems: Omit<OrderItem, 'id'>[] = [...tempCart.filter(cart => cart.customerId === user.id)].map(({ id, customerId, ...rest }) => rest)
-
-      setOrder(prev => ({
-        ...prev,
-        userId: user.id,
-        status: Order_Status.PENDING,
-        items: orderItems,
-        total: orderItems.reduce((sum, item) => sum += item.price * item.quantity, 0),
-      }))
-    }
-
-    if (tempCart.length === 0) {
+    if (Object.keys(newOrder).length < 1 || newOrder.items.length < 1) {
       navigate('/')
     }
+  }, [newOrder])
 
-    setCartState([...tempCart])
-
-  }, [carts, user])
-
-  useEffect(() => {
-    if (cartState.length > 0 && status !== Status.REJECTED) {
-      let tempTotal = 0
-      cartState.forEach((cart: CartType) => {
-        tempTotal += cart.price as number * cart.quantity
-      })
-      setTotal(tempTotal)
-    }
-    else {
-      setTotal(0)
-    }
-
-  }, [cartState, status])
-
-
-  const uniqueCartItems = useMemo(() => order.items ? [...new Map(order.items.map(item => [item.productId, item])).values()] : [], [order.items])
 
   const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setPreloaderFlag(true)
+    console.log(newOrder)
 
     try {
       const { data } = await createOrder({
         variables: {
-          input: order
+          input: newOrder
         }
       })
 
@@ -123,8 +82,9 @@ const Checkout = () => {
     }
   }
 
-  if (preloaderFlag)
+  if (preloaderFlag || Object.keys(newOrder).length < 1)
     return <Preloader />
+
 
   return (
     <PageWrapper>
@@ -149,7 +109,7 @@ const Checkout = () => {
           </div>
           {/* border-slate-200 border-[1px] */}
           {
-            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : total > 0 &&
+            Object.keys(newOrder).length < 1 ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : newOrder.total > 0 &&
               <div className="basis-1/3 border-slate-200 border-l-[1px]  pl-16 pr-0">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
                 <div className="flex justify-between mb-12">
@@ -158,7 +118,7 @@ const Checkout = () => {
                       uniqueCartItems.map((item, index) => <img key={index} className='w-8 mr-4' src={item.imgUrl} />)
                     }
                     {
-                      uniqueCartItems.length < order.items.length && <span className='self-center text-sm italic font-medium text-slate-600 '>+ {order.items.length - uniqueCartItems.length}</span>
+                      uniqueCartItems.length < newOrder.items.length && <span className='self-center text-sm italic font-medium text-slate-600 '>+ {newOrder.items.length - uniqueCartItems.length}</span>
                     }
 
                   </div>
@@ -166,7 +126,7 @@ const Checkout = () => {
                 </div>
                 <p className="flex justify-between mb-4">
                   <span className=" text-gray-500 font-medium">Subtotal</span>
-                  <span className='font-medium'>${order.total}</span>
+                  <span className='font-medium'>${newOrder.subTotal}</span>
                 </p>
                 <p className='flex justify-between mb-4'>
                   <span className="text-gray-500 font-medium">Shipping</span>
@@ -174,12 +134,12 @@ const Checkout = () => {
                 </p>
                 <p className='flex justify-between pb-8 mb-8 border-b-[1px] border-gray-200'>
                   <span className="text-gray-500 font-medium">Tax</span>
-                  <span className='font-medium'>${order.total / 10}</span>
+                  <span className='font-medium'>${newOrder.tax}</span>
                 </p>
 
                 <p className='flex justify-between mb-10 border-gray-200'>
                   <span className="font-medium">Total</span>
-                  <span className='font-medium'>${order.total + order.total / 10}</span>
+                  <span className='font-medium'>${newOrder.total}</span>
                 </p>
 
                 <button className='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8' onClick={placeHandler}>Place Order</button>

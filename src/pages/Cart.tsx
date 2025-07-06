@@ -4,13 +4,14 @@ import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useCart } from '../store/slices/cartSlice'
-import { Cart as CartType, Status } from '../store/types'
+import { Cart as CartType, CreateOrder, Order_Status, OrderItem, Status } from '../store/types'
 import CartItem from '../components/CartItem'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { Link } from 'react-router-dom'
 import CustomNavLink from '../components/CustomNavLink'
 import PageWrapper from '../components/ui/PageWrapper'
+
 
 const TAX_RATE: number = 0.1
 
@@ -20,48 +21,34 @@ const Cart = () => {
   const { user } = useSelector(useAuth)
   const { cart: carts } = useSelector(useCart)
   const { status } = useSelector(useProduct)
-
-  const [cartState, setCartState] = useState<CartType[]>([])
-  const [subTotal, setSubtotal] = useState<number>(0)
-
   useEffect(() => {
     dispatch(getAuthStatus())
     dispatch(getProducts())
   }, [])
 
-  useEffect(() => {
 
-    let tempCart: CartType[] = carts
+  const newOrder = useMemo(() => {
+    if (carts.length > 0 && user) {
+      const orderItems = [...carts.filter(cart => cart.customerId === user?.id)]
 
-    if (tempCart.length > 0 && user) {
-      tempCart = [...tempCart.filter(cart => cart.customerId === user.id)]
+      const subTotal = orderItems.reduce((sum, item) => sum += item.price * item.quantity, 0)
+      const tax = parseFloat((subTotal * TAX_RATE).toFixed(2))
+
+      const orderItem = {
+        userId: user?.id,
+        status: Order_Status.PENDING,
+        items: orderItems,
+        subTotal,
+        tax,
+        total: parseFloat((subTotal + tax).toFixed(2)),
+        shippingAddress: {}
+      }
+
+      return orderItem
     }
-
-    if (!user) {
-      tempCart = [...tempCart.filter(cart => !cart.customerId)]
-    }
-
-    setCartState([...tempCart])
+    else return {}
   }, [carts, user])
 
-  useEffect(() => {
-    if (cartState.length > 0 && status !== Status.REJECTED) {
-      let tempTotal = 0
-      cartState.forEach((cart: CartType) => {
-        tempTotal += cart.price as number * cart.quantity
-      })
-      setSubtotal(tempTotal)
-    }
-    else {
-      setSubtotal(0)
-    }
-
-  }, [cartState, status])
-
-
-  const tax = useMemo(() => parseFloat((subTotal * TAX_RATE).toFixed(2)), [subTotal])
-
-  const total = useMemo(() => parseFloat((subTotal + tax).toFixed(2)), [subTotal, tax])
 
   return (
     <PageWrapper>
@@ -77,22 +64,22 @@ const Cart = () => {
           <div className="basis-2/3">
             <p className="font-bold text-xl pb-4 border-b-[1px] border-slate-200 mb-12">Your Cart</p>
             {
-              cartState.length < 1 ?
+              Object.keys(newOrder).length < 1 ?
                 <p className='text-sm'>
                   Ther are no items in your cart. Please add items to your shopping cart.</p>
-                : cartState.map((cartItem: CartType) => (
+                : newOrder.items.map((cartItem: CartType) => (
                   <CartItem key={cartItem.id} cartItem={cartItem} />
                 ))
             }
           </div>
 
           {
-            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : subTotal > 0 &&
+            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : newOrder.subTotal > 0 &&
               <div className="basis-1/3 border-slate-200 border-[1px] p-6">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
                 <p className="flex justify-between mb-4">
                   <span className=" text-gray-500 font-medium">Subtotal</span>
-                  <span className='font-medium'>${subTotal}</span>
+                  <span className='font-medium'>${newOrder.subTotal}</span>
                 </p>
                 <p className='flex justify-between mb-4'>
                   <span className="text-gray-500 font-medium">Shipping</span>
@@ -100,12 +87,12 @@ const Cart = () => {
                 </p>
                 <p className='flex justify-between pb-8 mb-8 border-b-[1px] border-gray-200'>
                   <span className="text-gray-500 font-medium">Tax</span>
-                  <span className='font-medium'>{tax}</span>
+                  <span className='font-medium'>{newOrder.tax}</span>
                 </p>
 
                 <p className='flex justify-between mb-10 border-gray-200'>
                   <span className="font-medium">Total</span>
-                  <span className='font-medium'>${total}</span>
+                  <span className='font-medium'>${newOrder.total}</span>
                 </p>
                 {
                   user ?
@@ -115,7 +102,7 @@ const Cart = () => {
 
                       state={
                         {
-                          tax: tax
+                          order:newOrder
                         }
                       }
                       cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Checkout</CustomNavLink>
