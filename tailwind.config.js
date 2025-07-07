@@ -23,6 +23,7 @@ export default {
       gridTemplateColumns: {
         'table': '1fr 3fr 1.5fr 1.5fr 1.5fr 2fr 1fr 1fr',
         'table-order': '1fr 3fr 1.5fr 1.5fr 1.5fr 2fr  1fr',
+        'ui-table-order': '2.5fr 2.5fr 1.5fr 1.5fr 1.5fr 2.5fr',
         'table-customers': '1fr 1fr 2fr 3fr 2fr  1fr 1fr  1fr',
         'table-reviews': '1fr 2fr 6fr 1fr 1fr  1fr',
       },

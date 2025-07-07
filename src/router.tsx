@@ -15,8 +15,12 @@ const Cart = lazy(() => import("./pages/Cart"))
 
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
-import Fail from "./pages/checkout/Fail"
-import Account from "./pages/account/Account"
+
+const Fail = lazy(() => import("./pages/checkout/Fail"))
+
+const Account = lazy(() => import("./pages/account/Account"))
+const UserOrders = lazy(() => import("./pages/account/Orders"))
+const UserOrderDetails = lazy(() => import("./pages/account/UserOrderDetails"))
 const PageNotFound = lazy(() => import("./pages/admin/PageNotFound"))
 const Checkout = lazy(() => import("./pages/checkout/CheckOut"))
 const Success = lazy(() => import("./pages/checkout/Success"))
@@ -100,23 +104,26 @@ const router = createBrowserRouter([
 
             },
 
-              {
+            {
                 path: '/account',
+                element: <Suspense fallback={<Preloader />}>
+                    <Account />
+                </Suspense>,
                 children: [
-                    // {
-                    //     path: 'success/:orderNumber',
-                    //     element: <Suspense fallback={< Preloader />} >
-                    //         <Success />
-                    //     </Suspense>,
-                    // },
                     {
-                        index: true,
-                        element: <Suspense fallback={< Preloader />}>
-                            <Account />
+                        path: 'orders',
+                        element: <Suspense fallback={< Preloader />} >
+                            <UserOrders />
                         </Suspense>,
-                    }
-                ]
+                    },
+                    {
+                        path: 'orders/:orderNumber',
+                        element: <Suspense fallback={< Preloader />} >
+                            <UserOrderDetails />
+                        </Suspense>,
+                    },
 
+                ]
             },
 
             {
