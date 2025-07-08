@@ -57,7 +57,8 @@ const UserOrderDetails = () => {
         <span className="text-sm text-slate-500">22</span>
         <span className="text-sm text-slate-500">44</span>
       </div>
-        <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
+      
+      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
         <img className="w-14" src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="" />
 
         <span className="text-sm text-slate-500  col-span-2">

@@ -17,10 +17,11 @@ import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
 
 const Fail = lazy(() => import("./pages/checkout/Fail"))
-
 const Account = lazy(() => import("./pages/account/Account"))
 const UserOrders = lazy(() => import("./pages/account/Orders"))
 const UserOrderDetails = lazy(() => import("./pages/account/UserOrderDetails"))
+const WishList = lazy(() => import("./pages/account/WishList"))
+
 const PageNotFound = lazy(() => import("./pages/admin/PageNotFound"))
 const Checkout = lazy(() => import("./pages/checkout/CheckOut"))
 const Success = lazy(() => import("./pages/checkout/Success"))
@@ -120,6 +121,12 @@ const router = createBrowserRouter([
                         path: 'orders/:orderNumber',
                         element: <Suspense fallback={< Preloader />} >
                             <UserOrderDetails />
+                        </Suspense>,
+                    },
+                    {
+                        path: 'wishlist',
+                        element: <Suspense fallback={< Preloader />} >
+                            <WishList />
                         </Suspense>,
                     },
 
