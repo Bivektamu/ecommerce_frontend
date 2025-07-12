@@ -3,37 +3,44 @@ import { Link } from "react-router-dom"
 const WishList = () => {
   return (
     <div className=" pt-8 pb-12 px-8 rounded-lg basis-2/3">
-      <h2 className="font-bold mb-8">WishList</h2>
+      <h2 className="font-bold mb-8">Wishlist</h2>
+      <div className="mb-8 w-[620px]">
+        <div className="flex items-center justify-between border-b-[1px] py-12">
+          <div className="flex items-center gap-6 ">
+            {/* <div className="bg-cultured"> */}
+            <img src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="UTRAANET Black" className="w-20 h-20 object-contain" />
+            {/* </div> */}
+            <div>
+              <h3 className="font-semibold mb-2">UTRAANET Black</h3>
+              <p className="text-xs font-medium mb-2 text-slate-600">Added on: 27 July 2023</p>
+              <button className="text-sm font-medium">Remove Item</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="font-semibold mr-4">$ 43</p>
 
-      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6">
-        <span className="">&nbsp;</span>
-        <span className="text-sm text-slate-500 font-semibold  col-span-2">Product</span>
-        <span className="text-sm text-slate-500 font-semibold ">Colour</span>
-        <span className="text-sm text-slate-500 font-semibold">Size</span>
-        <span className="text-sm text-slate-500 font-semibold">Unit Price</span>
-        <span className="text-sm text-slate-500 font-semibold text-center">Action</span>
-      </div>
-
-      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
-        <img className="w-14" src="https://ecommerce-backend-cloud.s3.amazonaws.com/essential-neutrals-66e3c8fdd638887d2bbef4e7.png" alt="" />
-
-        <span className="text-sm text-slate-500  col-span-2">
-          Essential Neutrals
-        </span>
-        <span className="text-sm text-slate-500">None</span>
-        <span className="text-sm text-slate-500 ">None</span>
-        <span className="text-sm text-slate-500">22</span>
-
-        <div className="text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2">
-          <button>...</button>
-          <div className="absolute bg-white  border-[1px] rounded-lg shadow w-[110px]  -translate-x-[55px] translate-y-[45px]">
-            <button className="block w-full text-xs font-normal text-left hover:bg-slate-200 px-4 py-2" >Remove Item</button>
-            <button className="block w-full text-xs font-normal text-left hover:bg-slate-200 px-4 py-2" >Add to cart</button>
+            <a className="text-sm border-[1px] p-2  border-slate-700 font-medium w-[120px] text-center rounded" href="/account/orders/23232">Add to cart</a>
           </div>
         </div>
 
-      </div>
+        <div className="flex items-center justify-between border-b-[1px] py-12">
+          <div className="flex items-center gap-6 ">
+            {/* <div className="bg-cultured"> */}
+            <img src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="UTRAANET Black" className="w-20 h-20 object-contain" />
+            {/* </div> */}
+            <div>
+              <h3 className="font-semibold mb-2">UTRAANET Black</h3>
+              <p className="text-xs font-medium mb-2 text-slate-600">Added on: 27 July 2023</p>
+              <button className="text-sm font-medium">Remove Item</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="font-semibold mr-4">$ 43</p>
 
+            <a className="text-sm border-[1px] p-2  border-slate-700 font-medium w-[120px] text-center rounded" href="/account/orders/23232">Add to cart</a>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
