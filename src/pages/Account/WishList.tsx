@@ -2,8 +2,7 @@ import { Link } from "react-router-dom"
 
 const WishList = () => {
   return (
-    <div className=" pt-8 pb-12 px-8 rounded-lg basis-2/3">
-      <h2 className="font-bold mb-8">Wishlist</h2>
+    <>      <h2 className="font-bold mb-8">Wishlist</h2>
       <div className="mb-8 w-[620px]">
         <div className="flex items-center justify-between border-b-[1px] py-12">
           <div className="flex items-center gap-6 ">
@@ -41,7 +40,7 @@ const WishList = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

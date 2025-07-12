@@ -15,6 +15,9 @@ const Cart = lazy(() => import("./pages/Cart"))
 
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
+import Address from "./pages/account/Address"
+import ChangePassword from "./pages/account/ChangePassword"
+import AccountDetails from "./pages/account/AccountDetails"
 
 const Fail = lazy(() => import("./pages/checkout/Fail"))
 const Account = lazy(() => import("./pages/account/Account"))
@@ -127,6 +130,24 @@ const router = createBrowserRouter([
                         path: 'wishlist',
                         element: <Suspense fallback={< Preloader />} >
                             <WishList />
+                        </Suspense>,
+                    },
+                    {
+                        path: 'address',
+                        element: <Suspense fallback={< Preloader />} >
+                            <Address />
+                        </Suspense>,
+                    },
+                    {
+                        path: 'change-password',
+                        element: <Suspense fallback={< Preloader />} >
+                            <ChangePassword />
+                        </Suspense>,
+                    },
+                    {
+                        path: 'details',
+                        element: <Suspense fallback={< Preloader />} >
+                            <AccountDetails />
                         </Suspense>,
                     },
 
