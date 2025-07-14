@@ -55,18 +55,28 @@ export enum Status {
 }
 
 export enum Role {
-    ADMIN = "ADMIN",
-    CUSTOMER = "CUSTOMER"
+    ADMIN = "admin",
+    CUSTOMER = "customer"
 }
 export interface User {
     role: Role,
     id: string
 }
+
+export enum ErrorCode {
+    USER_NOT_FOUND = 'USER_NOT_FOUND',
+    BAD_CREDENTIALS = 'BAD_CREDENTIALS'
+} 
+
+export interface CustomError {
+    msg: string,
+    code?: ErrorCode
+}
 export interface Auth {
     isLoggedIn: boolean,
     user: User | null,
     status: Status,
-    error: string,
+    error: CustomError | null,
 }
 
 export enum Action {
@@ -283,3 +293,11 @@ export interface ReviewSlice {
     error: string,
     action: Action | null
 }
+
+
+export interface LoginInput {
+    email:string,
+    password:string
+}
+
+export type LoginResponse = string

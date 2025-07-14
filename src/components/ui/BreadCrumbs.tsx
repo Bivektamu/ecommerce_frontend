@@ -22,8 +22,6 @@ const BreadCrumbs = ({ rootLink, alias }: Props) => {
         const uurl = url === rootLink ? '' : url
         links += '/' + uurl
         links = links.replaceAll('//', '/')
-        console.log(index)
-
         return (
             <div key={index} className='flex items-center gap-x-2'>
                 <CustomNavLink isDisabled={index === matches.length - 1 && true} to={links} cssClass={`text-sm  capitalize ${matches.length !== index + 1 ? 'font-medium text-slate-500' : 'font-bold'}`}>

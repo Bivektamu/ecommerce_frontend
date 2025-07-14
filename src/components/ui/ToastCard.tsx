@@ -1,11 +1,11 @@
 import Close from './Close'
 import { Toast, Toast_Vairant } from '../../store/types'
 import { MouseEvent, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { removeToast } from '../../store/slices/toastSlice'
 import DangerSvg from './DangerSvg'
 import InfoSvg from './InfoSvg'
 import SuccessSvg from './SuccessSvg'
+import { useStoreDispatch } from '../../store'
 
 type Props = {
     toast: Toast
@@ -13,7 +13,7 @@ type Props = {
 
 const ToastCard = ({ toast }: Props) => {
 
-    const dispatch = useDispatch()
+    const dispatch = useStoreDispatch()
 
     useEffect(() => {
         const timer = setTimeout(() => {

@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Cart, FormData, FormError, Role, ValidateSchema } from '../store/types'
+import { v4 as uuidv4 } from 'uuid';
+
+import { Cart, ErrorCode, FormData, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -9,11 +11,12 @@ import { Navigate, useSearchParams } from 'react-router-dom'
 import CustomNavLink from '../components/CustomNavLink'
 import { upDateCart, useCart } from '../store/slices/cartSlice'
 import PageWrapper from '../components/ui/PageWrapper'
+import { addToast } from '../store/slices/toastSlice';
 
 const LogIn = () => {
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn, user } = useSelector(useAuth)
+  const { isLoggedIn, user, error } = useSelector(useAuth)
   const [searchParams] = useSearchParams()
   const { cart } = useSelector(useCart)
 
@@ -21,6 +24,17 @@ const LogIn = () => {
     if (isLoggedIn)
       dispatch(getAuthStatus())
   }, [isLoggedIn])
+
+  useEffect(() => {
+    if (error && error?.code === ErrorCode.USER_NOT_FOUND) {
+      const toast: Toast = {
+        id: uuidv4(),
+        variant: Toast_Vairant.WARNING,
+        msg: error.msg as string
+      }
+      dispatch(addToast(toast))
+    }
+  }, [error])
 
 
   const [formData, setFormData] = useState<Pick<FormData, 'email' | 'password'>>({
@@ -66,7 +80,7 @@ const LogIn = () => {
         },
         {
           name: 'password',
-          type: 'password',
+          type: 'string',
           value: password
         }
       ]
@@ -89,11 +103,11 @@ const LogIn = () => {
     if (user.id) {
       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.customerId || user.id }))
       dispatch(upDateCart(cartItems))
-    return <Navigate to="/checkout" />
+      return <Navigate to="/checkout" />
 
     }
   }
-else if (isLoggedIn && user?.role === Role.CUSTOMER) {
+  else if (isLoggedIn && user?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
   return (
@@ -124,7 +138,7 @@ else if (isLoggedIn && user?.role === Role.CUSTOMER) {
             <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer w-full'>Login</button>
           </form>
           <p className="text-sm mt-8 text-center text-slate-500">
-            Don't have an account? <CustomNavLink to='/login' cssClass='font-semibold'>Sign up</CustomNavLink>
+            Don't have an account? <CustomNavLink to='/signup' cssClass='font-semibold'>Sign up</CustomNavLink>
           </p>
         </div>
       </section>

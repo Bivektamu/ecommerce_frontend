@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, FormData, User, Role } from "../types";
+import { Auth, Status, RootState, FormData, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
@@ -8,7 +8,7 @@ const initialState: Auth = {
     isLoggedIn: false,
     user: null,
     status: Status.IDLE,
-    error: '',
+    error: null,
 }
 
 export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, password }: Partial<Pick<FormData, 'email' | 'password'>>) => {
@@ -31,24 +31,30 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
 })
 
 
+export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput, { rejectValue: CustomError }>(
+    '/customer/login',
+    async ({ email, password }, { rejectWithValue }) => {
 
-export const logInCustomer = createAsyncThunk('/customer/login', async ({ email, password }: Partial<Pick<FormData, 'email' | 'password'>>) => {
+        try {
+            const response = await client.mutate({
+                mutation: LOGIN_CUSTOMER,
+                variables: { input: { email, password } }
+            })
 
-    try {
-        const response = await client.mutate({
-            mutation: LOGIN_CUSTOMER,
-            variables: { input: { email, password } }
-        })
-
-        const token = response.data.logInCustomer.token
-        if (token) {
-            return token
+            const token = response.data.logInCustomer.token
+            if (token) {
+                return token
+            }
+        } catch (error: any) {
+            if (error) {
+                const err = {
+                    msg: error?.message,
+                    code: error?.graphQLErrors[0]?.extensions?.code
+                }
+                return rejectWithValue({ ...err })
+            }
         }
-    } catch (error) {
-        if (error instanceof Error)
-            throw error
-    }
-})
+    })
 
 
 export const getAuthStatus = createAsyncThunk('/admin/getAuth', async () => {
@@ -74,11 +80,13 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logOut: (state) => {
+            state.status = Status.IDLE
+
             client.resetStore()
             localStorage.setItem('token', '')
             state.isLoggedIn = false
             state.user = null
-            state.status = Status.IDLE
+            state.status = Status.FULFILLED
 
         },
     },
@@ -91,13 +99,13 @@ const authSlice = createSlice({
                 client.resetStore()
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
-                const user:User = {
+                const user: User = {
                     role: Role.ADMIN,
-                    id:''
+                    id: ''
                 }
                 state.user = user
                 state.isLoggedIn = true
-                
+
             })
             .addCase(loginAdmin.rejected, (state: Auth, action) => {
                 localStorage.setItem('token', '')
@@ -115,9 +123,9 @@ const authSlice = createSlice({
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
                 state.isLoggedIn = true
-                const user:User = {
+                const user: User = {
                     role: Role.CUSTOMER,
-                    id:''
+                    id: ''
                 }
                 state.user = user
 
@@ -127,7 +135,16 @@ const authSlice = createSlice({
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
-                state.error = action.error.message as string
+                const newError:CustomError = {
+                    msg:action.payload?.msg,
+                    code:action.payload?.code as ErrorCode
+                }
+                if(action?.payload?.code === ErrorCode.USER_NOT_FOUND) {
+                    newError.msg = 'Email does not exist. Please sign up'
+                    
+                }
+
+                state.error = newError
             })
 
             .addCase(getAuthStatus.pending, (state: Auth) => {
@@ -137,12 +154,15 @@ const authSlice = createSlice({
                 state.status = Status.FULFILLED
                 state.isLoggedIn = action.payload?.isLoggedIn
                 state.user = action.payload?.user
+                state.error = null
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
-                state.error = action.error.message as string
+                state.error = {
+                    msg: action.error as string
+                }
 
             })
     }

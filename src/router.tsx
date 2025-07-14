@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from "react"
-import { createBrowserRouter, useLocation } from "react-router-dom"
+import { createBrowserRouter, Navigate, useLocation } from "react-router-dom"
 
 const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
 const Products = lazy(() => import("./pages/admin/Products"))
