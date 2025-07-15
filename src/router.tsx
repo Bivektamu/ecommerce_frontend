@@ -1,6 +1,9 @@
 import { Suspense, lazy, useEffect } from "react"
 import { createBrowserRouter, useLocation } from "react-router-dom"
 
+import Preloader from "./components/ui/Preloader"
+import ProgressLoader from "./components/ui/ProgressLoader"
+
 const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
 const Products = lazy(() => import("./pages/admin/Products"))
 const SignIn = lazy(() => import("./pages/admin/SignIn"))
@@ -13,11 +16,9 @@ const PrivateRoute = lazy(() => import("./pages/admin/Private"))
 
 const Cart = lazy(() => import("./pages/Cart"))
 
-import Preloader from "./components/ui/Preloader"
-import ProgressLoader from "./components/ui/ProgressLoader"
-import Address from "./pages/account/Address"
-import ChangePassword from "./pages/account/ChangePassword"
-import AccountDetails from "./pages/account/AccountDetails"
+const Address = lazy(() => import("./pages/account/Address"))
+const ChangePassword = lazy(() => import("./pages/account/ChangePassword"))
+const AccountDetails = lazy(() => import("./pages/account/AccountDetails"))
 
 const Fail = lazy(() => import("./pages/checkout/Fail"))
 const Account = lazy(() => import("./pages/account/Account"))
