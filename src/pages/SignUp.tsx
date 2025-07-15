@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Action, FormData,  FormError,  Toast, Toast_Vairant, Role } from '../store/types'
+import { Action, CreateUserForm,  FormError,  Toast, Toast_Vairant, Role } from '../store/types'
 import { Link, Navigate,  useNavigate,  useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -62,33 +62,33 @@ const SignUp = () => {
     }
   }, [customerError])
 
-  const [formData, setFormData] = useState<FormData>({
+  const [userForm, setUserForm] = useState<CreateUserForm>({
     firstName: '',
     lastName: '',
     email: '',
-    password: ''
+    password: '',
   })
   const [errors, setErrors] = useState<FormError>({})
 
 
   // code to remove error info when fields are typed
   useEffect(() => {
-    if (Object.keys(formData).length > 0) {
-      Object.keys(formData).map(key => {
-        if (formData[key as keyof typeof formData]) {
+    if (Object.keys(userForm).length > 0) {
+      Object.keys(userForm).map(key => {
+        if (userForm[key as keyof typeof userForm]) {
           setErrors(prev => ({ ...prev, [key]: '' }))
         }
 
       })
     }
-  }, [formData])
+  }, [userForm])
 
 
-  const { firstName, lastName, email, password } = formData
+  const { firstName, lastName, email, password } = userForm
 
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setUserForm({ ...userForm, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = (e: FormEvent) => {
@@ -129,7 +129,7 @@ const SignUp = () => {
       return setErrors({ ...newErrors })
     }
 
-    dispatch(createCustomer(formData))
+    dispatch(createCustomer(userForm))
 
   }
 

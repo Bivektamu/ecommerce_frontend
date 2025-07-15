@@ -1,11 +1,11 @@
 import { lazy } from 'react'
-const Header = lazy(() => import("../Header"))
+const Header = lazy(() => import("../components/Header"))
 
-import Footer from '../Footer'
+import Footer from '../components/Footer'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { useToasts } from '../../store/slices/toastSlice'
-import ToastComponent from './Toast'
+import { useToasts } from '../store/slices/toastSlice'
+import ToastComponent from '../components/ui/Toast'
 import { AnimatePresence } from 'framer-motion'
 
 const Layout = () => {
@@ -19,13 +19,16 @@ const Layout = () => {
 
   return (
     <>
+
+      {
+        allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
+      }
+
       <Header />
       <AnimatePresence mode="wait">
 
         <main id="main" key={location.pathname}>
-          {
-            allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
-          }
+
           <Outlet />
         </main>
       </AnimatePresence >

@@ -3,8 +3,10 @@ import { useStoreDispatch } from '../../store/index'
 import { useAuth, getAuthStatus } from '../../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
+import { v4 as uuidv4 } from 'uuid';
+
 import { deleteCartByCustomerId, useCart } from '../../store/slices/cartSlice'
-import { Cart as CartType, CreateOrder, Order, Order_Status, OrderItem, Role, Status } from '../../store/types'
+import { Cart as CartType, CreateOrder, Order, Order_Status, OrderItem, Role, Status, Toast, Toast_Vairant } from '../../store/types'
 import SquareLoader from '../../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -15,6 +17,7 @@ import { useCustomer } from '../../store/slices/customerSlice'
 import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
 import PageWrapper from '../../components/ui/PageWrapper'
+import { addToast } from '../../store/slices/toastSlice'
 
 const Checkout = () => {
   const navigate = useNavigate()
@@ -44,6 +47,7 @@ const Checkout = () => {
       order.items = order.items.map(({ id, customerId, ...rest }) => rest)
       if (customer && customer.address) {
         const { __typename, ...rest } = customer.address
+        console.log(rest)
         order.shippingAddress = rest
       }
       return order
@@ -63,8 +67,17 @@ const Checkout = () => {
 
   const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    const addressValid: boolean = Object.values(newOrder.shippingAddress).every(value => value !== null)
+    if (!addressValid) {
+      const newToast: Toast = {
+        id: uuidv4(),
+        variant: Toast_Vairant.DANGER,
+        msg: 'Please update shipping address first '
+      }
+      dispatch(addToast(newToast))
+      return
+    }
     setPreloaderFlag(true)
-    console.log(newOrder)
 
     try {
       const { data } = await createOrder({
@@ -74,11 +87,19 @@ const Checkout = () => {
       })
 
       dispatch(deleteCartByCustomerId(user?.id))
-      navigate(`/checkout/success/${data.createOrder}`)
+      navigate(`/checkout/success/${data.createOrder}`, {
+        state: {
+          fromCheckout:true
+        }
+      })
 
     } catch (error) {
       console.error("Error creating order", error);
-      navigate('/checkout/fail')
+      navigate('/checkout/fail', {
+        state: {
+          order:newOrder
+        }
+      })
     }
   }
 

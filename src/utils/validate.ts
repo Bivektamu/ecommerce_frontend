@@ -91,8 +91,6 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
         }
 
     })
-
-    console.log(errors)
     return errors
 }
 

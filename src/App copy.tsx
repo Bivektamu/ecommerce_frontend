@@ -15,10 +15,10 @@ const Cart = lazy(() => import("./pages/Cart"))
 
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
-import PageNotFound from "./pages/admin/PageNotFound"
+import PageNotFound from "./pages/PageNotFound"
 
 const Home = lazy(() => import("./pages/Home"))
-const Layout = lazy(() => import("./components/ui/Layout"))
+const Layout = lazy(() => import("./pages/Layout"))
 const Product = lazy(() => import("./pages/Product"))
 // const Contact = lazy(() => import("./pages/Contact"))
 const Collections = lazy(() => import("./pages/Collections"))

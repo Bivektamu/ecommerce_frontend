@@ -1,18 +1,31 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import Arrow from '../../components/ui/Arrow'
 import PageWrapper from '../../components/ui/PageWrapper'
+import PageNotFound from '../PageNotFound'
 
 const Success = () => {
+
+    const location = useLocation()
+    const navigate = useNavigate();
+    const { orderNumber } = useParams();
+
+    useEffect(() => {
+        if (!location.state?.fromCheckout || !orderNumber) {
+            navigate('/404', { replace: true });
+        }
+    }, [location, navigate, orderNumber]);
+
+
     return (
         <PageWrapper>
             <section id="breadcrums" className="bg-[#D5E5D7]">
                 <div className="py-14 container mx-auto">
                     <h2 className="text-2xl font-bold mb-4">Successful Order</h2>
-                    <div>
-                        <p className="text-sm capitalize font-medium text-slate-500">Ecommerce {'>'} Successful Order</p>
-                    </div>
+
+                    <BreadCrumbs rootLink="Ecommerce" alias='Successful Order' />
+
                 </div>
             </section>
 
@@ -22,9 +35,9 @@ const Success = () => {
                     <path d="M136.004 92.0562L120.217 106.712L117.479 102.842C116.877 101.994 115.697 101.791 114.847 102.391C113.994 102.994 113.794 104.172 114.395 105.023L118.38 110.653C118.696 111.098 119.187 111.383 119.728 111.441C119.793 111.448 119.858 111.45 119.922 111.45C120.397 111.45 120.856 111.273 121.206 110.946L138.572 94.8219C139.337 94.1119 139.381 92.9181 138.671 92.1553C137.961 91.3856 136.762 91.3441 136.004 92.0562Z" fill="#6FA479" />
                 </svg>
                 <h2 className="text-2xl font-bold mb-4">Thank you for shopping</h2>
-                <p className="text-sm  text-slate-500 mb-8">Your order has been successfully placed and is now being processed.</p>
-                <Link className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8' to="/">Go to my account
-                        <Arrow cssClass='mt-[2px]' />
+                <p className="text-sm  text-slate-500 mb-8">Your order {orderNumber} has been successfully placed and is now being processed.</p>
+                <Link className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8' to="/account">Go to my account
+                    <Arrow cssClass='mt-[2px]' />
                 </Link>
 
 

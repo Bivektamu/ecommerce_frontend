@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Arrow from '../../components/ui/Arrow'
 import PageWrapper from '../../components/ui/PageWrapper'
 
 const Fail = () => {
+
+    const location = useLocation()
+    const navigate = useNavigate()
+    const order = location?.state?.order
+    useEffect(()=> {
+        if(!order) {
+            navigate('/404')
+        }
+    },[order])
+
     return (
         <PageWrapper>
             <section id="breadcrums" className="bg-[#FBD9D0]">
                 <div className="py-14 container mx-auto">
                     <h2 className="text-2xl font-bold mb-4">Failed Order</h2>
-                    <div>
-                        <p className="text-sm capitalize font-medium text-slate-500">Ecommerce {'>'} Failed Order</p>
-                    </div>
+                    <BreadCrumbs rootLink="Ecommerce" alias = 'Failed Order' />
                 </div>
             </section>
 
@@ -40,7 +48,15 @@ const Fail = () => {
 
                 <h2 className="text-2xl font-bold mb-4">Oops! There was an issue</h2>
                 <p className="text-sm  text-slate-500 mb-8">Oops! There was a problem processing your order. Please review the details and try again.</p>
-                <Link className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8' to="/checkout">Reorder
+                <Link
+                    className='flex gap-x-4 align-center bg-black text-white py-3 px-6 rounded text-center cursor-pointer text-sm  mb-8'
+                    to="/checkout"
+                    state={
+                        {
+                            order:order
+                        }
+                    }
+                >Reorder
                     <Arrow cssClass='mt-[2px]' />
                 </Link>
 

@@ -40,7 +40,7 @@ export interface CustomerEditInput {
 }
 
 
-export interface FormData {
+export interface CreateUserForm {
     firstName: string;
     lastName: string;
     email: string;
