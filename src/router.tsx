@@ -15,12 +15,11 @@ const Reviews = lazy(() => import("./pages/admin/Reviews"))
 const PrivateRoute = lazy(() => import("./pages/admin/Private"))
 
 const Cart = lazy(() => import("./pages/Cart"))
+const Fail = lazy(() => import("./pages/checkout/Fail"))
 
 const Address = lazy(() => import("./pages/account/Address"))
 const ChangePassword = lazy(() => import("./pages/account/ChangePassword"))
 const AccountDetails = lazy(() => import("./pages/account/AccountDetails"))
-
-const Fail = lazy(() => import("./pages/checkout/Fail"))
 const Account = lazy(() => import("./pages/account/Account"))
 const UserOrders = lazy(() => import("./pages/account/Orders"))
 const UserOrderDetails = lazy(() => import("./pages/account/UserOrderDetails"))
