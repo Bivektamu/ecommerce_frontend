@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import Arrow from '../../components/ui/Arrow'
 import PageWrapper from '../../components/ui/PageWrapper'
-import PageNotFound from '../PageNotFound'
 
 const Success = () => {
 

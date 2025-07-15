@@ -7,7 +7,7 @@ import { useStoreDispatch } from "../../store"
 
 const ShippingForm = () => {
 
-    const { customer, status } = useSelector(useCustomer)
+    const { customer } = useSelector(useCustomer)
 
     const dispatch = useStoreDispatch()
 
@@ -62,7 +62,7 @@ const ShippingForm = () => {
 
     const postCodeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
-        if (!isNaN(e.target.value)) {
+        if (!isNaN(parseInt(e.target.value))) {
             setFormData(prev => ({
                 ...prev,
                 postcode: e.target.value

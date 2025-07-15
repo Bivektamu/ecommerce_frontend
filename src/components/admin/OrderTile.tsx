@@ -101,7 +101,7 @@ const OrderTile = ({ order }: Props) => {
             </span>
 
             <span className='text-sm text-slate-500'>
-                {getMonth(order.timeStamp.getMonth()) + ', ' + order.timeStamp.getDate()}
+                {order.orderPlaced? getMonth(order.orderPlaced.getMonth()) + ', ' + order.orderPlaced.getDate() : 'NA'}
             </span>
 
             <span className='text-sm text-slate-500'>

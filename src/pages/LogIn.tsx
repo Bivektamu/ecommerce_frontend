@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-import { Cart, ErrorCode, FormData, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
+import { Cart, ErrorCode, LoginInput, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
@@ -37,7 +37,7 @@ const LogIn = () => {
   }, [error])
 
 
-  const [formData, setFormData] = useState<Pick<FormData, 'email' | 'password'>>({
+  const [formData, setFormData] = useState<LoginInput>({
     email: '',
     password: ''
   })
@@ -101,7 +101,7 @@ const LogIn = () => {
   if (isLoggedIn && user?.role === Role.CUSTOMER && searchParams.get('cart')) {
 
     if (user.id) {
-      const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.customerId || user.id }))
+      const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user.id }))
       dispatch(upDateCart(cartItems))
       return <Navigate to="/checkout" />
 

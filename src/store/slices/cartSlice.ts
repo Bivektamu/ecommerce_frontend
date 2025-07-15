@@ -38,7 +38,7 @@ const cartSlice = createSlice({
             localStorage.setItem('cart', JSON.stringify(state.cart))
         },
         deleteCartByCustomerId: (state, action) => {
-            const carts = state.cart.filter(cart => cart.customerId !== action.payload)
+            const carts = state.cart.filter(cart => cart.userId !== action.payload)
             state.cart = carts
             localStorage.setItem('cart', JSON.stringify(state.cart))
         },

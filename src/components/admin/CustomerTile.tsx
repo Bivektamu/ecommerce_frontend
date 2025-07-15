@@ -50,7 +50,7 @@ const CustomerTile = ({ customer }: Props) => {
             </span>
 
             <span className='text-sm text-slate-500 capitalize'>
-                {customer.address.street}, {customer.address.city}, {customer.address.city}, {customer.address.state.toUpperCase()}, {customer.address.zipcode}
+                {customer.address.street}, {customer.address.city}, {customer.address.city}, {customer.address.state.toUpperCase()}, {customer.address.postcode}
             </span>
 
             <span className='text-sm text-slate-500'>

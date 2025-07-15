@@ -4,7 +4,6 @@ import getMonth from '../../utils/getMonth'
 import data from '../../data'
 import gravatar from 'gravatar'
 import Tooltip from '../ui/Tooltip'
-
 type Props = {
     order: Order
 }
@@ -20,20 +19,20 @@ const OrderDetails = ({ order }: Props) => {
 
 
     useEffect(() => {
-        const customerExists = customers.filter(cs => cs.id === order.customerId)[0]
+        const customerExists = customers.filter(cs => cs.id === order.userId)[0]
         if (customerExists) {
             setCustomer({ ...customerExists })
             setGravatarUrl(gravatar.url(customerExists.email, { s: '200', r: 'pg', d: '404' }))
         }
-    }, [order.customerId])
+    }, [order.userId])
 
 
     useEffect(() => {
-        console.log(order.products);
+        console.log(order.items);
 
-        if (order.products.length > 0) {
+        if (order.items.length > 0) {
             const productArray: Product[] = []
-            order.products.map(pr => {
+            order.items.map(pr => {
                 const productExists = products.find(item => item.id === pr.productId)
 
                 if (productExists) {
@@ -46,8 +45,8 @@ const OrderDetails = ({ order }: Props) => {
             )
             setOrderedProducts([...productArray])
         }
-      
-    }, [order.products])
+
+    }, [order.items])
 
     useEffect(() => {
         if (orderedProducts.length > 0) {
@@ -55,13 +54,17 @@ const OrderDetails = ({ order }: Props) => {
         }
     }, [orderedProducts])
 
+
     return (
         <section className='text-left'>
             <p className="font-medium text-slate-900 mb-6 pb-2 border-b-[1px] text-lg">Order Detail</p>
             <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-slate-500">Ordered on:</span>
-                <span className="text-sm font-medium">{getMonth(order.timeStamp.getMonth()) + ', ' + order.timeStamp.getDay()}</span>
-            </div>
+                {
+                    order?.orderPlaced && <span className="text-sm font-medium">{getMonth(order.orderPlaced.getMonth()) + ', ' + order.orderPlaced.getDay()}</span>
+                }
+
+            </div>xxx
 
             <div className="flex items-center justify-between ">
                 <span className="text-sm font-medium text-slate-500">Status:</span>

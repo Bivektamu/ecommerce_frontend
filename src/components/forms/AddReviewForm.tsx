@@ -17,7 +17,7 @@ const AddReviewForm = ({ productId }: Props) => {
 
   const [formData, setFormData] = useState<ReviewInput>({
     productId: productId,
-    customerId: user?.id,
+    userId: user?.id,
     rating: null,
     review: '',
   } as Review)

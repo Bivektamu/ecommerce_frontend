@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Status, Role } from '../store/types'
 import { useStoreDispatch } from '../store'
 import ProgressLoader from '../components/ui/ProgressLoader'
-import Preloader from '../components/ui/Preloader'
+// import Preloader from '../components/ui/Preloader'
 
 type Props = {
     children: ReactNode

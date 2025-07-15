@@ -136,12 +136,12 @@ const Reviews = ({ productId }: Props) => {
                                 <div className="flex items-start justify-between gap-4 w-full">
 
                                     <div className="basis-1/12">
-                                        <CustomerAvatar id={review.customerId} />
+                                        <CustomerAvatar id={review.userId} />
                                     </div>
 
                                     <div className='basis-11/12'>
                                         <div className="mb-2 capitalize">
-                                            <CustomerName id={review.customerId} />
+                                            <CustomerName id={review.userId} />
                                         </div>
                                         <p className="mb-4 text-slate-600 uppercase text-sm">{formatDistanceToNow(review.timeStamp, { addSuffix: true })}</p>
                                         <p className="text-slate-600  text-sm">

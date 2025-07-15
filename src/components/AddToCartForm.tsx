@@ -27,7 +27,7 @@ function AddToCartForm({ product }: Props) {
 
     const [formData, setFormData] = useState<Cart>({
         id: uuidv4(),
-        customerId: null,
+        userId: null,
         productId: product?.id || '',
         color: null,
         size: null,
@@ -51,7 +51,7 @@ function AddToCartForm({ product }: Props) {
     // code to set userId in cart items
     useEffect(() => {
         if (user && user.role === Role.CUSTOMER) {
-            setFormData({ ...formData, customerId: user.id })
+            setFormData({ ...formData, userId: user.id })
         }
     }, [user])
 
@@ -63,10 +63,10 @@ function AddToCartForm({ product }: Props) {
 
             if (user) {
 
-                setUserCart(cart.filter(cartItem => cartItem.customerId === user.id && cartItem.productId === formData.productId))
+                setUserCart(cart.filter(cartItem => cartItem.userId === user.id && cartItem.productId === formData.productId))
             }
             else {
-                setUserCart(cart.filter(CartItem => !CartItem.customerId && CartItem.productId === formData.productId))
+                setUserCart(cart.filter(CartItem => !CartItem.userId && CartItem.productId === formData.productId))
             }
 
         }

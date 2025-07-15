@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom"
-
 const WishList = () => {
   return (
     <>      <h2 className="font-bold mb-8">Wishlist</h2>

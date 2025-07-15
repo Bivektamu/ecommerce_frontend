@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, FormData, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError } from "../types";
+import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
@@ -11,7 +11,7 @@ const initialState: Auth = {
     error: null,
 }
 
-export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, password }: Partial<Pick<FormData, 'email' | 'password'>>) => {
+export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, password }: Partial<Pick<LoginInput, 'email' | 'password'>>) => {
 
     try {
         const response = await client.mutate({
@@ -112,7 +112,9 @@ const authSlice = createSlice({
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
-                state.error = action.error.message as string
+                state.error = {
+                    msg: action.error.message as string
+                }
             })
 
             .addCase(logInCustomer.pending, (state: Auth) => {
@@ -136,7 +138,7 @@ const authSlice = createSlice({
                 state.isLoggedIn = false
                 state.user = null
                 const newError:CustomError = {
-                    msg:action.payload?.msg,
+                    msg:action.payload?.msg as string,
                     code:action.payload?.code as ErrorCode
                 }
                 if(action?.payload?.code === ErrorCode.USER_NOT_FOUND) {

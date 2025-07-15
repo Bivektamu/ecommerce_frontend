@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useCart } from '../store/slices/cartSlice'
-import { Cart as CartType, CreateOrder, Order_Status, OrderItem, Status } from '../store/types'
+import { Order_Status, Status, OrderInput, OrderItemInput, Colour, Size, Address } from '../store/types'
 import CartItem from '../components/CartItem'
 import SquareLoader from '../components/ui/SquareLoader'
 import { getProducts, useProduct } from '../store/slices/productSlice'
@@ -26,28 +26,37 @@ const Cart = () => {
     dispatch(getProducts())
   }, [])
 
+  const userCart = useMemo(() => carts.length > 0 && user ? [...carts.filter(cart => cart.userId === user?.id)] : [], [carts, user])
 
-  const newOrder = useMemo(() => {
-    if (carts.length > 0 && user) {
-      const orderItems = [...carts.filter(cart => cart.customerId === user?.id)]
 
-      const subTotal = orderItems.reduce((sum, item) => sum += item.price * item.quantity, 0)
+  const newOrder: OrderInput | null = useMemo(() => {
+    if (userCart.length > 0 && user) {
+      const subTotal = userCart.reduce((sum, item) => sum += item?.price ? item.price : 0 * item.quantity, 0)
       const tax = parseFloat((subTotal * TAX_RATE).toFixed(2))
 
-      const orderItem = {
+      const items: OrderItemInput[] = userCart.map((item) => ({
+        productId: item.productId,
+        color: item.color as Colour,
+        quantity: item.quantity,
+        size: item.size as Size,
+        price: item.price as number,
+        imgUrl: item.imgUrl
+      }))
+
+      const order:OrderInput = {
         userId: user?.id,
         status: Order_Status.PENDING,
-        items: orderItems,
-        subTotal,
-        tax,
+        items,
+        subTotal: subTotal,
+        tax: tax,
         total: parseFloat((subTotal + tax).toFixed(2)),
-        shippingAddress: {}
+        shippingAddress: {} as Address
       }
 
-      return orderItem
+      return order
     }
-    else return {}
-  }, [carts, user])
+    else return null
+  }, [userCart, user])
 
 
   return (
@@ -64,17 +73,15 @@ const Cart = () => {
           <div className="basis-2/3">
             <p className="font-bold text-xl pb-4 border-b-[1px] border-slate-200 mb-12">Your Cart</p>
             {
-              Object.keys(newOrder).length < 1 ?
+              userCart.length < 1 ?
                 <p className='text-sm'>
                   Ther are no items in your cart. Please add items to your shopping cart.</p>
-                : newOrder.items.map((cartItem: CartType) => (
-                  <CartItem key={cartItem.id} cartItem={cartItem} />
-                ))
+                : userCart.map((item) => (<CartItem key={item.id} cartItem={item} />))
             }
           </div>
 
           {
-            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : newOrder.subTotal > 0 &&
+            status !== Status.FULFILLED ? <SquareLoader square={1} squareClass='basis-1/3 h-[400px]' /> : newOrder && newOrder?.subTotal > 0 &&
               <div className="basis-1/3 border-slate-200 border-[1px] p-6">
                 <p className="font-bold text-xl mb-12">Order Summary</p>
                 <p className="flex justify-between mb-4">
@@ -102,7 +109,7 @@ const Cart = () => {
 
                       state={
                         {
-                          order:newOrder
+                          order: newOrder
                         }
                       }
                       cssClass='bg-black text-white py-3 px-4 rounded text-center cursor-pointer text-sm w-full mb-8 block'>Checkout</CustomNavLink>

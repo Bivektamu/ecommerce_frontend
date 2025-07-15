@@ -5,15 +5,14 @@ import { useSelector } from 'react-redux'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { v4 as uuidv4 } from 'uuid';
 
-import { deleteCartByCustomerId, useCart } from '../../store/slices/cartSlice'
-import { Cart as CartType, CreateOrder, Order, Order_Status, OrderItem, Role, Status, Toast, Toast_Vairant } from '../../store/types'
+import { deleteCartByCustomerId } from '../../store/slices/cartSlice'
+import { OrderInput, Role, Status, Toast, Toast_Vairant } from '../../store/types'
 import SquareLoader from '../../components/ui/SquareLoader'
-import { getProducts, useProduct } from '../../store/slices/productSlice'
+// import { getProducts, useProduct } from '../../store/slices/productSlice'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import ShippingForm from '../../components/forms/ShippingForm'
 import Preloader from '../../components/ui/Preloader'
-import ProgressLoader from '../../components/ui/ProgressLoader'
-import { useCustomer } from '../../store/slices/customerSlice'
+// import ProgressLoader from '../../components/ui/ProgressLoader'
 import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
 import PageWrapper from '../../components/ui/PageWrapper'
@@ -23,12 +22,10 @@ const Checkout = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [createOrder, { data, loading, error }] = useMutation(CREATE_ORDER)
+  const [createOrder] = useMutation(CREATE_ORDER)
 
   const dispatch = useStoreDispatch()
   const { user, status: authStatus } = useSelector(useAuth)
-  const { customer } = useSelector(useCustomer)
-
   const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
 
   useEffect(() => {
@@ -41,25 +38,15 @@ const Checkout = () => {
   }, [authStatus])
 
 
-  const newOrder: CreateOrder = useMemo(() => {
-    if (location.state?.order) {
-      const order = location.state.order
-      order.items = order.items.map(({ id, customerId, ...rest }) => rest)
-      if (customer && customer.address) {
-        const { __typename, ...rest } = customer.address
-        console.log(rest)
-        order.shippingAddress = rest
-      }
-      return order
-    }
-    else return {}
-  }, [location, customer])
+  const newOrder: OrderInput | null = useMemo(() =>
+    location.state?.order ? location.state.order as OrderInput : null
+    , [location])
 
-  const uniqueCartItems = useMemo(() => newOrder.items ? [...new Map(newOrder.items.map(item => [item.productId, item])).values()] : [], [newOrder.items])
+  const uniqueCartItems = useMemo(() => newOrder?.items ? [...new Map(newOrder.items.map(item => [item.productId, item])).values()] : [], [newOrder])
 
   useEffect(() => {
 
-    if (Object.keys(newOrder).length < 1 || newOrder.items.length < 1) {
+    if (!newOrder || Object.keys(newOrder).length < 1 || newOrder.items.length < 1) {
       navigate('/')
     }
   }, [newOrder])
@@ -67,7 +54,7 @@ const Checkout = () => {
 
   const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    const addressValid: boolean = Object.values(newOrder.shippingAddress).every(value => value !== null)
+    const addressValid: boolean = Object.values((newOrder as OrderInput).shippingAddress).every(value => value !== null)
     if (!addressValid) {
       const newToast: Toast = {
         id: uuidv4(),
@@ -89,7 +76,7 @@ const Checkout = () => {
       dispatch(deleteCartByCustomerId(user?.id))
       navigate(`/checkout/success/${data.createOrder}`, {
         state: {
-          fromCheckout:true
+          fromCheckout: true
         }
       })
 
@@ -97,13 +84,13 @@ const Checkout = () => {
       console.error("Error creating order", error);
       navigate('/checkout/fail', {
         state: {
-          order:newOrder
+          order: newOrder as OrderInput
         }
       })
     }
   }
 
-  if (preloaderFlag || Object.keys(newOrder).length < 1)
+  if (preloaderFlag || !newOrder)
     return <Preloader />
 
 

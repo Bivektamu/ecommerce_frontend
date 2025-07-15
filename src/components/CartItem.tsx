@@ -11,7 +11,7 @@ import { deleteCart, updateCartQuantity } from '../store/slices/cartSlice'
 import Modal from './ui/Modal'
 
 type Props = {
-    cartItem: Cart,
+    cartItem: Cart ,
 }
 
 const CartItem = ({ cartItem }: Props) => {

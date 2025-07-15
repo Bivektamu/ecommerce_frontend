@@ -222,7 +222,7 @@ export interface Filters {
 export interface Cart {
     id: string,
     productId: ProductId,
-    customerId: string | null
+    userId: string | null
     color: Colour | null,
     quantity: number,
     size: Size | null,
@@ -256,22 +256,29 @@ export interface OrderItem {
     price: number,
     imgUrl: string
 }
+
+export type OrderItemInput  = Omit<OrderItem, 'id'>
+
 export interface Order {
     id: string,
     userId: string,
     items: OrderItem[],
     status: Order_Status,
+    subTotal:number,
     total: number,
+    tax:number,
     shippingAddress: Address,
+    orderPlaced?:Date
 }
 
-export interface CreateOrder extends Omit<Order, 'id' | 'items'> {
-    items: Omit<OrderItem, 'id'>[]
+export interface OrderInput  extends Omit<Order, 'id' | 'items'> {
+    items: OrderItemInput[]
 }
+
 
 export interface Review {
     id: string,
-    customerId: CustomerId,
+    userId: CustomerId,
     productId: ProductId,
     review: string,
     timeStamp: Date,
@@ -280,7 +287,7 @@ export interface Review {
 
 
 export interface ReviewInput {
-    customerId: CustomerId,
+    userId: CustomerId,
     productId: ProductId,
     review: string,
     rating: null | number,

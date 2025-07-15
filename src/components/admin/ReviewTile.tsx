@@ -16,7 +16,7 @@ const ReviewTile = ({ review }: Props) => {
     const [product, setProduct] = useState<Product | null>(null)
     const [customer, setCustomer] = useState<Customer | null>(null)
 
-    const {customerId, productId} = review
+    const {userId, productId} = review
 
     const {products, customers} = data
     useEffect(()=> {
@@ -27,11 +27,11 @@ const ReviewTile = ({ review }: Props) => {
     }, [productId])
 
     useEffect(()=> {
-        const customerExists:Customer | null = customers.filter(item=>item.id === customerId)[0]
+        const customerExists:Customer | null = customers.filter(item=>item.id === userId)[0]
         if(customerExists) {
             setCustomer(customerExists)
         }
-    }, [customerId])
+    }, [userId])
 
     const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()

@@ -1,17 +1,29 @@
-import React, { useState } from 'react'
-import { FormData } from '../../store/types'
+import React, { useEffect, useState } from 'react'
+import { CreateUserForm, FormError } from '../../store/types'
 
 
 
 const AccountDetailsForm = () => {
 
 
-    const [formData, setFormData] = useState<Omit<FormData, 'password'>>({
+    const [formData, setFormData] = useState<Omit<CreateUserForm, 'password'>>({
         firstName: '',
         lastName: '',
         email: '',
     })
     const [errors, setErrors] = useState<FormError>({})
+
+  // code to remove error info when fields are typed
+  useEffect(() => {
+    if (Object.keys(formData).length > 0) {
+      Object.keys(formData).map(key => {
+        if (formData[key as keyof typeof formData]) {
+          setErrors(prev => ({ ...prev, [key]: '' }))
+        }
+
+      })
+    }
+  }, [formData])
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })

@@ -1,6 +1,4 @@
-// import { SetStateAction } from 'react'
-import { MouseEvent } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 type Props = {
   to: string,
@@ -9,7 +7,6 @@ type Props = {
   cssClass?: string,
   isNavLink?: boolean,
   isDisabled?: boolean
-  //   setShowNav?: SetStateAction<>
 }
 
 const CustomNavLink = ({ to, state, children, cssClass, isNavLink, isDisabled }: Props) => {

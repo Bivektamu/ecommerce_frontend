@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Arrow from '../../components/ui/Arrow'

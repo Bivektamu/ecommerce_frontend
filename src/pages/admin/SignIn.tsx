@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { FormData, Status, Role } from '../../store/types'
+import { CreateUserForm, Status, Role } from '../../store/types'
 import { useNavigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
@@ -21,7 +21,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState('admin@gmail.com')
   const [password, setPassword] = useState('password123')
-  const [errors, setErrors] = useState<Partial<Pick<FormData, 'email' | 'password'>>>({})
+  const [errors, setErrors] = useState<Partial<Pick<CreateUserForm, 'email' | 'password'>>>({})
 
   useEffect(() => {
     if (status === Status.FULFILLED && isLoggedIn && user?.role === Role.ADMIN) {
@@ -46,7 +46,7 @@ const SignIn = () => {
     if (Object.keys(newErrors).length > 0) {
       return setErrors({ ...newErrors })
     }
-    const data: Partial<Pick<FormData, 'email' | 'password'>> = {
+    const data: Partial<Pick<CreateUserForm, 'email' | 'password'>> = {
       email,
       password
     }
