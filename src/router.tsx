@@ -3,6 +3,7 @@ import { createBrowserRouter, useLocation } from "react-router-dom"
 
 import Preloader from "./components/ui/Preloader"
 import ProgressLoader from "./components/ui/ProgressLoader"
+import Private from "./pages/Private"
 
 const DashBoard = lazy(() => import("./pages/admin/DashBoard"))
 const Products = lazy(() => import("./pages/admin/Products"))
@@ -85,6 +86,9 @@ const router = createBrowserRouter([
             },
             {
                 path: '/checkout',
+                element: <Suspense fallback={< Preloader />}>
+                    <Private />
+                </Suspense>,
                 children: [
                     {
                         path: 'success/:orderNumber',

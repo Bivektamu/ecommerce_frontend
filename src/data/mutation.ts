@@ -32,6 +32,7 @@ export const UPDATE_ADDRESS = gql`
       country
       postcode
       street
+      state
     }
 }
 `

@@ -1,16 +1,17 @@
-import { ReactNode, useEffect } from 'react'
+import {  useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getAuthStatus, useAuth } from '../store/slices/authSlice'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Status, Role } from '../store/types'
 import { useStoreDispatch } from '../store'
 import ProgressLoader from '../components/ui/ProgressLoader'
 // import Preloader from '../components/ui/Preloader'
 
-type Props = {
-    children: ReactNode
-}
-const Private = ({ children }: Props) => {
+// type Props = {
+//     children: ReactNode
+// }
+const Private = () => {
+// const Private = ({ children }: Props) => {
 
     const navigate = useNavigate()
 
@@ -48,8 +49,7 @@ const Private = ({ children }: Props) => {
             {
                 status !== Status.FULFILLED ?
                     (<ProgressLoader cssClass='mt-32' />) :
-                    (
-                        children)
+                    <Outlet />
             }
 
         </>

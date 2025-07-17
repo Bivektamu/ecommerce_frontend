@@ -3,6 +3,7 @@ import { Action, CustomerInput, CustomerSlice, Status, RootState, Address } from
 import client from "../../data/client";
 import { CREATE_CUSTOMER, UPDATE_ADDRESS } from "../../data/mutation";
 import { GET_CUSTOMER } from "../../data/query";
+import { stripTypename } from "@apollo/client/utilities";
 
 const initialState: CustomerSlice = {
     status: Status.IDLE,
@@ -48,7 +49,7 @@ export const getCustomer = createAsyncThunk(`/customer/:id`, async (id: string) 
 
 
 export const updateAddress = createAsyncThunk('/customer/updateaddress', async (formData: Address) => {
-console.log('response.data');
+    console.log('response.data');
 
     try {
         const response = await client.mutate({
@@ -75,7 +76,7 @@ const customerSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(getCustomer.fulfilled, (state, action) => {
-                state.customer = action.payload
+                state.customer = stripTypename(action.payload)
                 state.action = Action.FETCH
                 state.error = null
                 state.status = Status.FULFILLED
@@ -92,7 +93,7 @@ const customerSlice = createSlice({
             })
 
             .addCase(createCustomer.fulfilled, (state, action) => {
-                state.customer = action.payload
+                state.customer = stripTypename(action.payload)
                 state.action = Action.ADD
                 state.error = null
                 state.status = Status.FULFILLED
@@ -110,7 +111,7 @@ const customerSlice = createSlice({
             // Update Address
             .addCase(updateAddress.fulfilled, (state, action) => {
                 if (state.customer) {
-                    state.customer.address = action.payload
+                    state.customer.address = stripTypename(action.payload)
                 }
                 state.action = Action.EDIT
                 state.error = null
@@ -125,7 +126,7 @@ const customerSlice = createSlice({
                 state.status = Status.REJECTED
 
                 console.log(action.error);
-                
+
 
                 if (state.customer) {
                     state.customer.address = {} as Address

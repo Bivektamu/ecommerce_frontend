@@ -1,13 +1,16 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { Address, FormError, ValidateSchema } from "../../store/types"
+import { v4 as uuidv4 } from 'uuid';
+import { Action, Address, FormError, Toast, Toast_Vairant, ValidateSchema } from "../../store/types"
 import validateForm from "../../utils/validate"
 import { updateAddress, useCustomer } from "../../store/slices/customerSlice"
 import { useSelector } from "react-redux"
 import { useStoreDispatch } from "../../store"
+import { addToast } from "../../store/slices/toastSlice";
+
 
 const ShippingForm = () => {
 
-    const { customer } = useSelector(useCustomer)
+    const { customer,  action} = useSelector(useCustomer)
 
     const dispatch = useStoreDispatch()
 
@@ -47,6 +50,17 @@ const ShippingForm = () => {
             })
         }
     }, [formData])
+
+    useEffect(()=> {
+        if(action === Action.EDIT) {
+            const newToast: Toast = {
+                    id: uuidv4(),
+                    variant: Toast_Vairant.SUCCESS,
+                    msg: 'Shipping address updated'
+                  }
+                  dispatch(addToast(newToast))
+        }
+    }, [action])
 
     const { street, postcode, state, city, country } = formData
 
@@ -115,7 +129,6 @@ const ShippingForm = () => {
         if (Object.keys(errors).length > 0) {
             return setFormErrors(prev => ({ ...prev, ...errors }))
         }
-
 
         dispatch(updateAddress(formData))
 

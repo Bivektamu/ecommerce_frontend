@@ -17,6 +17,7 @@ import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
 import PageWrapper from '../../components/ui/PageWrapper'
 import { addToast } from '../../store/slices/toastSlice'
+import { useCustomer } from '../../store/slices/customerSlice'
 
 const Checkout = () => {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ const Checkout = () => {
 
   const dispatch = useStoreDispatch()
   const { user, status: authStatus } = useSelector(useAuth)
+  const { customer } = useSelector(useCustomer)
   const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
 
   useEffect(() => {
@@ -38,9 +40,14 @@ const Checkout = () => {
   }, [authStatus])
 
 
-  const newOrder: OrderInput | null = useMemo(() =>
-    location.state?.order ? location.state.order as OrderInput : null
-    , [location])
+  const newOrder: OrderInput | null = useMemo(() => {
+    const order = location.state?.order ? location.state.order as OrderInput : null
+    if (order && customer?.address) {
+      order.shippingAddress = customer.address
+    }
+    return order
+  }
+    , [location, customer])
 
   const uniqueCartItems = useMemo(() => newOrder?.items ? [...new Map(newOrder.items.map(item => [item.productId, item])).values()] : [], [newOrder])
 
@@ -54,7 +61,16 @@ const Checkout = () => {
 
   const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    const addressValid: boolean = Object.values((newOrder as OrderInput).shippingAddress).every(value => value !== null)
+    let addressValid: boolean
+    const { shippingAddress } = newOrder as OrderInput
+    console.log(shippingAddress)
+    if (Object.keys(shippingAddress).length < 1) {
+      addressValid = false
+    }
+    else {
+      addressValid = Object.values(shippingAddress).every(value => value !== null)
+    }
+
     if (!addressValid) {
       const newToast: Toast = {
         id: uuidv4(),
@@ -65,6 +81,7 @@ const Checkout = () => {
       return
     }
     setPreloaderFlag(true)
+
 
     try {
       const { data } = await createOrder({
