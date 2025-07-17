@@ -81,3 +81,63 @@ export const GET_REVIEWS_BY_PRODUCT_ID = gql`
     }
   }
 `
+
+export const GET_ORDERS = gql`
+query Orders {
+  orders {
+    id
+    orderNumber
+    userId
+    status
+    total
+    subTotal
+    tax
+    orderPlaced
+    items {
+      productId
+      color
+      quantity
+      size
+      price
+      imgUrl
+    }
+    shippingAddress {
+      street
+      city
+      postcode
+      state
+      country
+    }
+  }
+}
+`
+
+export const GET_ORDERS_BY_CUSTOMER_ID = gql`
+query CustomerOrders($customerOrdersId: ID) {
+  customerOrders(id: $customerOrdersId) {
+    id
+    orderNumber
+    userId
+    status
+    total
+    subTotal
+    tax
+    items {
+      productId
+      color
+      quantity
+      size
+      price
+      imgUrl
+    }
+    shippingAddress {
+      street
+      city
+      postcode
+      state
+      country
+    }
+    orderPlaced
+  }
+}
+`

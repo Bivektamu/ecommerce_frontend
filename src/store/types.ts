@@ -65,7 +65,8 @@ export interface User {
 
 export enum ErrorCode {
     USER_NOT_FOUND = 'USER_NOT_FOUND',
-    BAD_CREDENTIALS = 'BAD_CREDENTIALS'
+    BAD_CREDENTIALS = 'BAD_CREDENTIALS',
+    INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 } 
 
 export interface CustomError {
@@ -261,6 +262,7 @@ export type OrderItemInput  = Omit<OrderItem, 'id'>
 
 export interface Order {
     id: string,
+    orderNumber: number,
     userId: string,
     items: OrderItem[],
     status: Order_Status,
@@ -268,10 +270,10 @@ export interface Order {
     total: number,
     tax:number,
     shippingAddress: Address,
-    orderPlaced?:Date
+    orderPlaced:Date
 }
 
-export interface OrderInput  extends Omit<Order, 'id' | 'items'> {
+export interface OrderInput  extends Omit<Order, 'id' | 'items' | 'orderNumber' | 'orderPlaced'> {
     items: OrderItemInput[]
 }
 

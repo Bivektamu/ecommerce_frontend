@@ -35,27 +35,38 @@ export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput, { rejec
     '/customer/login',
     async ({ email, password }, { rejectWithValue }) => {
 
-        const response = await client.mutate({
-            mutation: LOGIN_CUSTOMER,
-            variables: { input: { email, password } }
-        })
-        console.log(response.errors)
-
-        if (response.errors && response.errors.length > 0) {
-
-            const gqlErrors = response.errors[0]
-            return rejectWithValue({
-                msg: gqlErrors.message,
-                code: gqlErrors.extensions?.code
+        try {
+            const response = await client.mutate({
+                mutation: LOGIN_CUSTOMER,
+                variables: { input: { email, password } }
             })
+                console.log(response.errors)
+
+            if (response.errors && response.errors.length > 0) {
+
+                const gqlErrors = response.errors[0]
+                return rejectWithValue({
+                    msg: gqlErrors.message,
+                    code: gqlErrors.extensions?.code
+                })
+            }
+
+            const token = response.data?.logInCustomer?.token
+            if (token) {
+                return token
+            }
+
+        } catch (error) {
+            if (error instanceof Error) {
+
+                console.log(error)
+                const err = {
+                    msg: error.message || 'Unkown Error',
+                    code: ErrorCode.INTERNAL_SERVER_ERROR
+                }
+                return rejectWithValue({ ...err })
+            }
         }
-
-        const token = response.data?.logInCustomer?.token
-        if (token) {
-            return token
-        }
-
-
     })
 
 

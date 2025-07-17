@@ -3,21 +3,36 @@ import BreadCrumbs from "../../components/ui/BreadCrumbs"
 import PageWrapper from "../../components/ui/PageWrapper"
 import SubNav from "./SubNav"
 import { useEffect } from "react"
+import { Role } from "../../store/types"
+import { useSelector } from "react-redux"
+import { useAuth } from "../../store/slices/authSlice"
 
 const Account = () => {
 
-      const {pathname}  = useLocation()
-      const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const { isLoggedIn, user } = useSelector(useAuth)
 
-      useEffect(()=> {
-        console.log(pathname);
+  useEffect(() => {
+    console.log(pathname);
 
-        if(pathname === '/account' || pathname === '/account/') {
-          navigate('/account/orders')
-        }
-        
-      }, [pathname])
-  
+    if (pathname === '/account' || pathname === '/account/') {
+      navigate('/account/orders')
+    }
+
+  }, [pathname])
+
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/')
+    }
+
+    if (isLoggedIn && user && user.role !== Role.CUSTOMER) {
+      navigate('/')
+    }
+  }, [user, isLoggedIn])
+
   return (
     <PageWrapper>
       <section id="breadcrums" className="bg-white">

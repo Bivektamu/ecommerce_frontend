@@ -3,27 +3,43 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Cart, ErrorCode, LoginInput, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
-import { useAuth, getAuthStatus, logInCustomer } from '../store/slices/authSlice'
+import { useAuth, logInCustomer, getAuthStatus } from '../store/slices/authSlice'
 import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import validateForm from '../utils/validate'
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import CustomNavLink from '../components/CustomNavLink'
 import { upDateCart, useCart } from '../store/slices/cartSlice'
 import PageWrapper from '../components/ui/PageWrapper'
 import { addToast } from '../store/slices/toastSlice';
 
 const LogIn = () => {
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   const dispatch = useStoreDispatch()
   const { isLoggedIn, user, error } = useSelector(useAuth)
-  const [searchParams] = useSearchParams()
   const { cart } = useSelector(useCart)
 
+  useEffect(()=> {
+    dispatch(getAuthStatus())
+  }, [])
+  
   useEffect(() => {
-    if (isLoggedIn)
-      dispatch(getAuthStatus())
-  }, [isLoggedIn])
+    if (isLoggedIn && user?.role === Role.CUSTOMER)
+      navigate('/')
+  }, [isLoggedIn, user])
+
+    useEffect(()=> {
+    if(searchParams.get('cart')) {
+
+       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user.id }))
+      dispatch(upDateCart(cartItems))
+      navigate('/checkout')
+    }
+  }, [searchParams])
+
+
 
   useEffect(() => {
     if (error && error?.code === ErrorCode.USER_NOT_FOUND) {
@@ -98,18 +114,7 @@ const LogIn = () => {
   }
 
 
-  if (isLoggedIn && user?.role === Role.CUSTOMER && searchParams.get('cart')) {
 
-    if (user.id) {
-      const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user.id }))
-      dispatch(upDateCart(cartItems))
-      return <Navigate to="/checkout" />
-
-    }
-  }
-  else if (isLoggedIn && user?.role === Role.CUSTOMER) {
-    return <Navigate to="/" />
-  }
   return (
     <PageWrapper>
       <section id="breadcrums" className="">
