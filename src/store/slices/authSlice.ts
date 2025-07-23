@@ -159,11 +159,23 @@ const authSlice = createSlice({
                 state.status = Status.PENDING
             })
             .addCase(getAuthStatus.fulfilled, (state: Auth, action) => {
-                state.status = Status.FULFILLED
-                state.isLoggedIn = action.payload?.isLoggedIn
 
-                state.user = stripTypename(action.payload?.user)
-                state.error = null
+                state.status = Status.FULFILLED
+
+                if (action.payload?.isLoggedIn) {
+                    state.isLoggedIn = action.payload?.isLoggedIn
+                    state.user = stripTypename(action.payload?.user)
+                    state.error = null
+
+                }
+                else {
+                    state.isLoggedIn = false
+                    state.error = {
+                        msg: ErrorCode.BAD_CREDENTIALS as string
+                    }
+
+                }
+
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED

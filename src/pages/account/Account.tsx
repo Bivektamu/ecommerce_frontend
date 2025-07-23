@@ -3,35 +3,41 @@ import BreadCrumbs from "../../components/ui/BreadCrumbs"
 import PageWrapper from "../../components/ui/PageWrapper"
 import SubNav from "./SubNav"
 import { useEffect } from "react"
-import { Role } from "../../store/types"
+import { Role, Status } from "../../store/types"
 import { useSelector } from "react-redux"
 import { useAuth } from "../../store/slices/authSlice"
+import Preloader from "../../components/ui/Preloader"
+import { useStoreDispatch } from "../../store"
 
 const Account = () => {
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { isLoggedIn, user } = useSelector(useAuth)
+  const { isLoggedIn, user, status } = useSelector(useAuth)
 
   useEffect(() => {
-    console.log(pathname);
+    console.log(status, isLoggedIn, user, 'asdf')
 
-    if (pathname === '/account' || pathname === '/account/') {
+    if (status === Status.REJECTED) {
+      navigate('/')
+    }
+    else if (!isLoggedIn && status === Status.FULFILLED) {
+      navigate('/')
+
+    }
+    else if (isLoggedIn && user && user.role !== Role.CUSTOMER) {
+      navigate('/')
+    }
+    else if (pathname === '/account' || pathname === '/account/') {
       navigate('/account/orders')
     }
 
-  }, [pathname])
 
+  }, [user, isLoggedIn, status, pathname])
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/')
-    }
-
-    if (isLoggedIn && user && user.role !== Role.CUSTOMER) {
-      navigate('/')
-    }
-  }, [user, isLoggedIn])
+  if(!isLoggedIn) {
+    return <Preloader />
+  }
 
   return (
     <PageWrapper>
