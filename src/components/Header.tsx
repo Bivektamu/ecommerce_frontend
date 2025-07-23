@@ -24,7 +24,7 @@ const Header = () => {
   const dispatch = useStoreDispatch()
 
   useEffect(() => {
-    dispatch(getAuthStatus())
+      dispatch(getAuthStatus())
   }, [])
 
   useEffect(() => {

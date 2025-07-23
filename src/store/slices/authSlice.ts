@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError } from "../types";
+import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError, CustomJwtPayload } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
 import { GraphQLError } from "graphql";
+import { jwtDecode } from "jwt-decode";
+import { stripTypename } from "@apollo/client/utilities";
 
 const initialState: Auth = {
     isLoggedIn: false,
@@ -31,30 +33,25 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
 })
 
 
-export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput, { rejectValue: CustomError }>(
+export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput>(
     '/customer/login',
-    async ({ email, password }, { rejectWithValue }) => {
+    async ({ email, password }) => {
 
-        const response = await client.mutate({
-            mutation: LOGIN_CUSTOMER,
-            variables: { input: { email, password } }
-        })
-        console.log(response.errors)
-
-        if (response.errors && response.errors.length > 0) {
-
-            const gqlErrors = response.errors[0]
-            return rejectWithValue({
-                msg: gqlErrors.message,
-                code: gqlErrors.extensions?.code
+        try {
+            const response = await client.mutate({
+                mutation: LOGIN_CUSTOMER,
+                variables: { input: { email, password } }
             })
-        }
 
-        const token = response.data?.logInCustomer?.token
-        if (token) {
-            return token
+            const token = response.data?.logInCustomer?.token
+            if (token) {
+                return token
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                throw error
+            }
         }
-
 
     })
 
@@ -126,15 +123,20 @@ const authSlice = createSlice({
 
                 client.resetStore()
 
-                console.log(action.payload)
-                localStorage.setItem('token', action.payload)
-                state.status = Status.FULFILLED
-                state.isLoggedIn = true
-                const user: User = {
-                    role: Role.CUSTOMER,
-                    id: ''
+                const decode_user = jwtDecode<CustomJwtPayload>(action.payload)
+                if (decode_user) {
+
+                    localStorage.setItem('token', action.payload)
+                    state.status = Status.FULFILLED
+                    state.isLoggedIn = true
+                    const user: User = {
+                        role: decode_user.role,
+                        id: decode_user.id
+                    }
+                    state.user = user
+
                 }
-                state.user = user
+
 
             })
             .addCase(logInCustomer.rejected, (state: Auth, action) => {
@@ -159,7 +161,8 @@ const authSlice = createSlice({
             .addCase(getAuthStatus.fulfilled, (state: Auth, action) => {
                 state.status = Status.FULFILLED
                 state.isLoggedIn = action.payload?.isLoggedIn
-                state.user = action.payload?.user
+
+                state.user = stripTypename(action.payload?.user)
                 state.error = null
             })
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {

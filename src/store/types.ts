@@ -1,3 +1,5 @@
+import { JwtPayload } from "jwt-decode"
+
 export interface Address {
     street: string,
     city: string,
@@ -310,3 +312,5 @@ export interface LoginInput {
 }
 
 export type LoginResponse = string
+
+export interface CustomJwtPayload extends User, JwtPayload  {}
