@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/client"
 import { Link } from "react-router-dom"
-import { GET_ORDERS, GET_ORDERS_BY_CUSTOMER_ID } from "../../data/query"
-import { useEffect, useMemo } from "react"
+import {  GET_ORDERS_BY_CUSTOMER_ID } from "../../data/query"
+import {  useMemo } from "react"
 import { stripTypename } from "@apollo/client/utilities"
-import Preloader from "../../components/ui/Preloader"
 import ProgressLoader from "../../components/ui/ProgressLoader"
 import { IoFileTrayOutline } from "react-icons/io5"
 import Arrow from "../../components/ui/Arrow"
@@ -79,13 +78,13 @@ const UserOrders = () => {
 
         {
           refinedData.map((order: Order) => (
-            <div className="grid grid-cols-ui-table-order items-center justify-between gap-x-8 px-8 py-4 border-b-[1px] ">
+            <div key={order.id} className="grid grid-cols-ui-table-order items-center justify-between gap-x-8 px-8 py-4 border-b-[1px] ">
               <span className="text-sm text-slate-500 ">{order.orderNumber}</span>
               <span className="text-sm text-slate-500">{new Date(order.orderPlaced).getDate() +' '+getMonth((new Date(order.orderPlaced).getMonth())) + ' ' + (new Date(order.orderPlaced).getFullYear())}</span>
-              <span className="text-sm text-slate-500 ">4</span>
-              <span className="text-sm text-slate-500">134.5</span>
-              <span className="text-sm text-slate-500">PENDING</span>
-              <Link to="./23232" className="text-sm text-slate-600 border-[1px] p-2  border-slate-600 font-medium w-[120px] text-center rounded" >View Details</Link>
+              <span className="text-sm text-slate-500 ">{order.items.length}</span>
+              <span className="text-sm text-slate-500">{order.total}</span>
+              <span className="text-sm text-slate-500">{order.status}</span>
+              <Link to={`./${order.orderNumber}`} className="text-sm text-slate-600 border-[1px] p-2  border-slate-600 font-medium w-[120px] text-center rounded" >View Details</Link>
             </div>
           ))
         }

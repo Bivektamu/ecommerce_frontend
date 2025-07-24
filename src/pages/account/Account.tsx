@@ -7,7 +7,6 @@ import { Role, Status } from "../../store/types"
 import { useSelector } from "react-redux"
 import { useAuth } from "../../store/slices/authSlice"
 import Preloader from "../../components/ui/Preloader"
-import { useStoreDispatch } from "../../store"
 
 const Account = () => {
 
@@ -16,17 +15,16 @@ const Account = () => {
   const { isLoggedIn, user, status } = useSelector(useAuth)
 
   useEffect(() => {
-    console.log(status, isLoggedIn, user, 'asdf')
 
     if (status === Status.REJECTED) {
-      navigate('/')
+      navigate('/login')
     }
     else if (!isLoggedIn && status === Status.FULFILLED) {
-      navigate('/')
+      navigate('/login')
 
     }
     else if (isLoggedIn && user && user.role !== Role.CUSTOMER) {
-      navigate('/')
+      navigate('/login')
     }
     else if (pathname === '/account' || pathname === '/account/') {
       navigate('/account/orders')

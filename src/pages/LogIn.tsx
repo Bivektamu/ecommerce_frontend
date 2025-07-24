@@ -33,7 +33,7 @@ const LogIn = () => {
     useEffect(()=> {
     if(searchParams.get('cart')) {
 
-       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user.id }))
+       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user?.id }))
       dispatch(upDateCart(cartItems))
       navigate('/checkout')
     }

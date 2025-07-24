@@ -37,6 +37,7 @@ const data: Data =
     orders: [
         {
             id: 'order1',
+            orderNumber: 123123123123,
             total: 223,
             subTotal: 211,
             tax: 23,

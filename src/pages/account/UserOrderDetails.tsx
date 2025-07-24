@@ -1,76 +1,107 @@
+import { useQuery } from "@apollo/client"
+import { useNavigate, useParams } from "react-router-dom"
+import { GET_ORDER_DETAILS_BY_ORDER_NUMBER } from "../../data/query"
+import Preloader from "../../components/ui/Preloader"
+import { useEffect } from "react"
+import { stripTypename } from "@apollo/client/utilities"
+import { Order, OrderItem } from "../../store/types"
+import getMonth from "../../utils/getMonth"
+
 const UserOrderDetails = () => {
-  return (
-    <>
-      <div className="summary-wrapper mb-20">
-        <h1 className="font-bold mb-12">Order Summary</h1>
 
-        <div className="flex items-center gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] ">
-          <span className="text-sm text-slate-500 font-semibold basis-1/3 ">Order Number</span>
-          <span className="text-sm text-slate-500 basis-2/3">123123123</span>
+
+  const navigate = useNavigate()
+
+  const { orderNumber } = useParams()
+
+
+  const { data, loading, error } = useQuery(GET_ORDER_DETAILS_BY_ORDER_NUMBER, {
+    variables: {
+      orderNumber: orderNumber
+    }
+  })
+
+  console.log(data, loading, error)
+
+  useEffect(() => {
+    if (error)
+      navigate('/404')
+  }, [error])
+
+  if (loading) {
+    return <Preloader />
+  }
+
+  const order: Order = stripTypename(data?.orderByNumber)
+
+  if (order)
+    return (
+      <>
+        <div className="summary-wrapper mb-20">
+          <h1 className="font-bold mb-12">Order Summary</h1>
+
+          <div className="flex items-center gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] ">
+            <span className="text-sm text-slate-500 font-semibold basis-1/3 ">Order Number</span>
+            <span className="text-sm text-slate-500 basis-2/3">{order.orderNumber}</span>
+          </div>
+
+          <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
+            <span className="text-sm text-slate-500 font-semibold basis-1/3 ">Placed On</span>
+            <span className="text-sm text-slate-500 basis-2/3">{new Date(order.orderPlaced).getDate() + ' ' + getMonth((new Date(order.orderPlaced).getMonth())) + ' ' + (new Date(order.orderPlaced).getFullYear())}</span>
+          </div>
+
+          <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
+            <span className="text-sm text-slate-500 font-semibold basis-1/3">Status</span>
+            <span className="text-sm text-slate-500 basis-2/3">{order.status}</span>
+          </div>
+
+          <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
+            <span className="text-sm text-slate-500 font-semibold basis-1/3">Total</span>
+            <span className="text-sm text-slate-500 basis-2/3">{order.total}</span>
+          </div>
+
+          <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
+            <span className="text-sm text-slate-500 font-semibold basis-1/3">Shipping Address</span>
+            <span className="text-sm text-slate-500 basis-2/3">
+              {`${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.postcode}`}
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
-          <span className="text-sm text-slate-500 font-semibold basis-1/3 ">Placed On</span>
-          <span className="text-sm text-slate-500 basis-2/3">07 July 025</span>
+
+
+        <h2 className="font-semibold mb-8">Order Items</h2>
+
+        <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6">
+          <span className="">&nbsp;</span>
+          <span className="text-sm text-slate-500 font-semibold  col-span-2">Product</span>
+          <span className="text-sm text-slate-500 font-semibold">Qty</span>
+          <span className="text-sm text-slate-500 font-semibold ">Colour</span>
+          <span className="text-sm text-slate-500 font-semibold">Size</span>
+          <span className="text-sm text-slate-500 font-semibold">Unit Price</span>
+          <span className="text-sm text-slate-500 font-semibold">Subtotal</span>
         </div>
 
-        <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
-          <span className="text-sm text-slate-500 font-semibold basis-1/3">Status</span>
-          <span className="text-sm text-slate-500 basis-2/3">PENDING</span>
-        </div>
+        {
+          order.items.map((item: OrderItem) =>
 
-        <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
-          <span className="text-sm text-slate-500 font-semibold basis-1/3">Total</span>
-          <span className="text-sm text-slate-500 basis-2/3">134.5</span>
-        </div>
+            <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
+              <img className="w-14" src={item.imgUrl} alt="" />
 
-        <div className="flex items-center gap-x-8 px-8 py-4 border-b-[1px]">
-          <span className="text-sm text-slate-500 font-semibold basis-1/3">Shipping Address</span>
-          <span className="text-sm text-slate-500 basis-2/3">32B Hinton Loop, Oran Park, NSW, 2570</span>
-        </div>
-      </div>
+              <span className="text-sm text-slate-500  col-span-2">
+                Essential Neutrals
+              </span>
+              <span className="text-sm text-slate-500">{item.quantity}</span>
+              <span className="text-sm text-slate-500 ">{item.color}</span>
+              <span className="text-sm text-slate-500">{item.size}</span>
+              <span className="text-sm text-slate-500">{item.price}</span>
+              <span className="text-sm text-slate-500">{item.price * item.quantity}</span>
+            </div>
 
-
-
-      <h2 className="font-semibold mb-8">Order Items</h2>
-
-      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6">
-        <span className="">&nbsp;</span>
-        <span className="text-sm text-slate-500 font-semibold  col-span-2">Product</span>
-        <span className="text-sm text-slate-500 font-semibold">Qty</span>
-        <span className="text-sm text-slate-500 font-semibold ">Colour</span>
-        <span className="text-sm text-slate-500 font-semibold">Size</span>
-        <span className="text-sm text-slate-500 font-semibold">Unit Price</span>
-        <span className="text-sm text-slate-500 font-semibold">Subtotal</span>
-      </div>
-
-      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
-        <img className="w-14" src="https://ecommerce-backend-cloud.s3.amazonaws.com/essential-neutrals-66e3c8fdd638887d2bbef4e7.png" alt="" />
-
-        <span className="text-sm text-slate-500  col-span-2">
-          Essential Neutrals
-        </span>
-        <span className="text-sm text-slate-500">2</span>
-        <span className="text-sm text-slate-500 ">Red</span>
-        <span className="text-sm text-slate-500">Small</span>
-        <span className="text-sm text-slate-500">22</span>
-        <span className="text-sm text-slate-500">44</span>
-      </div>
-
-      <div className="grid grid-cols-8 items-center gap-x-8 px-8 py-4  border-b-[1px]">
-        <img className="w-14" src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="" />
-
-        <span className="text-sm text-slate-500  col-span-2">
-          UTRAANET Black
-        </span>
-        <span className="text-sm text-slate-500">2</span>
-        <span className="text-sm text-slate-500 ">Black</span>
-        <span className="text-sm text-slate-500">Large</span>
-        <span className="text-sm text-slate-500">43</span>
-        <span className="text-sm text-slate-500">86</span>
-      </div>
-    </>
-  )
+          )
+        }
+      </>
+    )
 }
 
 export default UserOrderDetails

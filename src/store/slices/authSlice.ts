@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomError, CustomJwtPayload } from "../types";
+import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomJwtPayload } from "../types";
 import client from "../../data/client";
 import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
-import { GraphQLError } from "graphql";
 import { jwtDecode } from "jwt-decode";
 import { stripTypename } from "@apollo/client/utilities";
 
@@ -48,7 +47,10 @@ export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput>(
                 return token
             }
         } catch (error) {
+            localStorage.setItem('token', '')
+
             if (error instanceof Error) {
+                console.log(error)
                 throw error
             }
         }
@@ -140,19 +142,12 @@ const authSlice = createSlice({
 
             })
             .addCase(logInCustomer.rejected, (state: Auth, action) => {
-                localStorage.setItem('token', '')
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
-                const newError: CustomError = {
-                    msg: action.payload?.msg as string,
-                    code: action.payload?.code as ErrorCode
+                state.error = {
+                    msg: action.error.message as string
                 }
-                if (action?.payload?.code === ErrorCode.USER_NOT_FOUND) {
-                    newError.msg = 'Email does not exist. Please sign up'
-                }
-
-                state.error = newError
             })
 
             .addCase(getAuthStatus.pending, (state: Auth) => {
@@ -181,6 +176,7 @@ const authSlice = createSlice({
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
+                console.log(action.payload)
                 state.error = {
                     msg: action.error as string
                 }

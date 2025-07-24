@@ -141,3 +141,34 @@ query CustomerOrders($customerOrdersId: ID) {
   }
 }
 `
+
+
+export const GET_ORDER_DETAILS_BY_ORDER_NUMBER = gql`
+query OrderByNumber($orderNumber: String) {
+  orderByNumber(orderNumber: $orderNumber) {
+    id
+    orderNumber
+    userId
+    status
+    total
+    subTotal
+    tax
+    items {
+      productId
+      color
+      quantity
+      size
+      price
+      imgUrl
+    }
+    shippingAddress {
+      street
+      city
+      postcode
+      state
+      country
+    }
+    orderPlaced
+  }
+}
+`
