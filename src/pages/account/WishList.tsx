@@ -1,7 +1,36 @@
+import { useQuery } from "@apollo/client"
+import { GET_WISH_LIST_BY_USER_ID } from "../../data/query"
+import { useSelector } from "react-redux"
+import { useAuth } from "../../store/slices/authSlice"
+import ProgressLoader from "../../components/ui/ProgressLoader"
+import { useMemo } from "react"
+import { stripTypename } from "@apollo/client/utilities"
+
 const WishList = () => {
+  const { user } = useSelector(useAuth)
+
+  const { data, loading } = useQuery(GET_WISH_LIST_BY_USER_ID, {
+    variables: {
+      userId: user?.id
+    }
+  })
+
+  const wishList = useMemo(() => {
+    if (!data) return {}
+    return stripTypename(data.wishListByUserId)
+  }, [data])
+
+  console.log(wishList)
+
+  if (loading) {
+    return <ProgressLoader />
+  }
+
   return (
-    <>      <h2 className="font-bold mb-8">Wishlist</h2>
+    <div>
+      <h2 className="font-bold mb-8">Wishlist</h2>
       <div className="mb-8 w-[620px]">
+        
         <div className="flex items-center justify-between border-b-[1px] py-12">
           <div className="flex items-center gap-6 ">
             {/* <div className="bg-cultured"> */}
@@ -38,7 +67,7 @@ const WishList = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

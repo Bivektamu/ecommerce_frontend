@@ -20,9 +20,6 @@ const UserOrders = () => {
       customerOrdersId: user?.id
     } 
   })
-
-  console.log(data)
-
   const refinedData = useMemo(() => {
     if (data && data.customerOrders.length > 0) {
       return stripTypename(data.customerOrders)
@@ -30,8 +27,6 @@ const UserOrders = () => {
     return []
   }, [data])
 
-
-  console.log(new Date(refinedData[0]?.orderPlaced).getMonth())
   if (loading) {
     return <ProgressLoader />
   }

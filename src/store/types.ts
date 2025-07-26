@@ -314,3 +314,14 @@ export interface LoginInput {
 export type LoginResponse = string
 
 export interface CustomJwtPayload extends User, JwtPayload  {}
+
+export interface LikedProduct {
+    id: ProductId,
+    createdAt: Date
+}
+
+export interface WishList {
+    id: string,
+    userId: string,
+    products: [LikedProduct]
+}

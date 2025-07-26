@@ -50,7 +50,6 @@ export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput>(
             localStorage.setItem('token', '')
 
             if (error instanceof Error) {
-                console.log(error)
                 throw error
             }
         }
@@ -176,7 +175,6 @@ const authSlice = createSlice({
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
                 state.user = null
-                console.log(action.payload)
                 state.error = {
                     msg: action.error as string
                 }

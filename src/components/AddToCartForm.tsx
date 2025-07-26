@@ -13,6 +13,7 @@ import { useAuth } from '../store/slices/authSlice'
 import { addToCart, resetCartAction, updateCartQuantity, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
 import { addToast } from '../store/slices/toastSlice';
+import LikeButton from './ui/LikeButton';
 
 type Props = {
     product: Product | null
@@ -211,7 +212,7 @@ function AddToCartForm({ product }: Props) {
         }
     }
 
-    
+
 
 
     return (
@@ -294,6 +295,11 @@ function AddToCartForm({ product }: Props) {
                 }
                 Cart
             </button>)}
+
+            {
+                product && <LikeButton productId={product.id} />
+            }
+
 
         </form>
     )

@@ -95,3 +95,16 @@ export const CREATE_ORDER = gql`
     createOrder(input: $input)
   }
 `
+
+export const ADD_TO_WISH_LIST = gql`
+ mutation AddToWishList($input: WishListInput) {
+  addToWishList(input: $input) {
+    id
+    userId
+    products {
+      id
+    createdAt
+    }
+  }
+}
+`

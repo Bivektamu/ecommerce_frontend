@@ -172,3 +172,16 @@ query OrderByNumber($orderNumber: String) {
   }
 }
 `
+
+export const GET_WISH_LIST_BY_USER_ID = gql`
+  query WishListByUserId($userId: ID) {
+    wishListByUserId(userId: $userId) {
+      id
+      userId
+      products {
+        id
+        createdAt
+      }
+    }
+  }
+`

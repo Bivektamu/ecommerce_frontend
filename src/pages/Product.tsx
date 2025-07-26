@@ -91,8 +91,8 @@ const ProductComponent = () => {
                   reviews && reviews.length > 0 &&
 
                   <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
-                    <StarIcon /> 
-                    { getAverageRating(reviews)} <span className="w-4 h-[2px] bg-slate-600"></span>
+                    <StarIcon />
+                    {getAverageRating(reviews)} <span className="w-4 h-[2px] bg-slate-600"></span>
                     {reviews.length} Reviews
                   </p>
                 }
@@ -108,6 +108,8 @@ const ProductComponent = () => {
 
               <p className="text-xl font-semibold mb-8">${productItem?.price}</p>
               <AddToCartForm product={productItem} />
+             
+
             </div>
           </div>
 

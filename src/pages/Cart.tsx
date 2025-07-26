@@ -31,7 +31,7 @@ const Cart = () => {
 
   const newOrder: OrderInput | null = useMemo(() => {
     if (userCart.length > 0 && user) {
-      const subTotal = userCart.reduce((sum, item) => sum += item?.price ? item.price : 0 * item.quantity, 0)
+      const subTotal = userCart.reduce((sum, item) => sum += ((item.price as number)  * item.quantity), 0)
       const tax = parseFloat((subTotal * TAX_RATE).toFixed(2))
 
       const items: OrderItemInput[] = userCart.map((item) => ({
