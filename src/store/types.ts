@@ -69,6 +69,7 @@ export enum ErrorCode {
     USER_NOT_FOUND = 'USER_NOT_FOUND',
     BAD_CREDENTIALS = 'BAD_CREDENTIALS',
     INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+    INPUT_ERROR = "INPUT_ERROR"
 } 
 
 export interface CustomError {

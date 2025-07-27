@@ -66,7 +66,7 @@ const validateForm = (validateSchema: ValidateSchema<unknown>[]) => {
                 case 'password': {
                     if (!passwordRegex.test(value as string)) {
                         const error = {
-                            password: msg || `Please insert password in correct format.
+                            [name]: msg || `Please insert password in correct format.
                             Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character.`
                         }
                         errors = { ...errors, ...error }

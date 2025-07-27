@@ -108,3 +108,12 @@ export const ADD_TO_WISH_LIST = gql`
   }
 }
 `
+
+export const CHANGE_PASSWORD = gql`
+
+mutation ChangePassWord($input: ChangePassword) {
+  changePassWord(input: $input)
+}
+
+
+`
