@@ -56,7 +56,7 @@ const WishList = () => {
       <div className="mb-8 w-[620px]">
 
         {
-          wishList && wishList.products.length < 1 ?
+           Object.keys(wishList).length < 1 || wishList.products.length < 1 ?
             <>
               <div className="flex justify-center items-center h-full">
                 <div className="w-max m-auto flex justify-center flex-col items-center">
