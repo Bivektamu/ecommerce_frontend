@@ -1,10 +1,15 @@
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { GET_WISH_LIST_BY_USER_ID } from "../../data/query"
 import { useSelector } from "react-redux"
 import { useAuth } from "../../store/slices/authSlice"
 import ProgressLoader from "../../components/ui/ProgressLoader"
-import { useMemo } from "react"
+import { MouseEvent, useMemo } from "react"
 import { stripTypename } from "@apollo/client/utilities"
+import { Link } from "react-router-dom"
+import Arrow from "../../components/ui/Arrow"
+import WishListItem from "../../components/wishList/WishListItem"
+import { LikedProduct, WishList as WishListType } from "../../store/types"
+import { ADD_TO_WISH_LIST } from "../../data/mutation"
 
 const WishList = () => {
   const { user } = useSelector(useAuth)
@@ -15,12 +20,31 @@ const WishList = () => {
     }
   })
 
-  const wishList = useMemo(() => {
+
+  const [addToWishList] = useMutation(ADD_TO_WISH_LIST)
+
+  const wishList:WishListType = useMemo(() => {
     if (!data) return {}
     return stripTypename(data.wishListByUserId)
   }, [data])
 
-  console.log(wishList)
+  const removeHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault()
+    console.log(id)
+    let toUpdateProducts: Omit<LikedProduct, 'createdAt'>[] = wishList.products.map(item => ({ id: item.id }))
+    toUpdateProducts = toUpdateProducts.filter(item => item.id !== id)
+    console.log(toUpdateProducts)
+
+    addToWishList({
+      variables: {
+        input: {
+          products: toUpdateProducts,
+          userId: wishList.userId
+        }
+      }
+    })
+
+  }
 
   if (loading) {
     return <ProgressLoader />
@@ -30,44 +54,26 @@ const WishList = () => {
     <div>
       <h2 className="font-bold mb-8">Wishlist</h2>
       <div className="mb-8 w-[620px]">
-        
-        <div className="flex items-center justify-between border-b-[1px] py-12">
-          <div className="flex items-center gap-6 ">
-            {/* <div className="bg-cultured"> */}
-            <img src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="UTRAANET Black" className="w-20 h-20 object-contain" />
-            {/* </div> */}
-            <div>
-              <h3 className="font-semibold mb-2">UTRAANET Black</h3>
-              <p className="text-xs font-medium mb-2 text-slate-600">Added on: 27 July 2023</p>
-              <button className="text-sm font-medium">Remove Item</button>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <p className="font-semibold mr-4">$ 43</p>
 
-            <a className="text-sm border-[1px] p-2  border-slate-700 font-medium w-[120px] text-center rounded" href="/account/orders/23232">Add to cart</a>
-          </div>
-        </div>
+        {
+          wishList && wishList.products.length < 1 ?
+            <>
+              <div className="flex justify-center items-center h-full">
+                <div className="w-max m-auto flex justify-center flex-col items-center">
+                  <p className="text-slate-400 text-sm mb-8">You have yet to add product in your wish list.</p>
+                  <Link to='/collections' className="bg-black text-white py-3  rounded text-center cursor-pointer text-sm flex gap-x-4 justify-center items-center w-[180px]"
+                  >Start Shopping <Arrow /></Link>
+                </div>
+              </div>
+            </>
+            :
 
-        <div className="flex items-center justify-between border-b-[1px] py-12">
-          <div className="flex items-center gap-6 ">
-            {/* <div className="bg-cultured"> */}
-            <img src="https://ecommerce-backend-cloud.s3.amazonaws.com/utraanet-black-66e3c970d638887d2bbef4e8.png" alt="UTRAANET Black" className="w-20 h-20 object-contain" />
-            {/* </div> */}
-            <div>
-              <h3 className="font-semibold mb-2">UTRAANET Black</h3>
-              <p className="text-xs font-medium mb-2 text-slate-600">Added on: 27 July 2023</p>
-              <button className="text-sm font-medium">Remove Item</button>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <p className="font-semibold mr-4">$ 43</p>
+            wishList.products.map((item: LikedProduct) => <WishListItem item={item} removeFromWishList={removeHandler} />)
+        }
 
-            <a className="text-sm border-[1px] p-2  border-slate-700 font-medium w-[120px] text-center rounded" href="/account/orders/23232">Add to cart</a>
-          </div>
-        </div>
-      </div>
-    </div>
+      </div >
+
+    </div >
   )
 }
 

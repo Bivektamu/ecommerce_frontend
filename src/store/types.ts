@@ -162,7 +162,7 @@ export interface Product {
     category: string,
     featured: boolean
 }
-type ProductId = Product['id']
+export type ProductId = Product['id']
 
 export interface ProductInput extends Omit<Product, 'id' | 'quantity' | 'price' | 'stockStatus' | 'imgs'> {
     quantity: number | null,

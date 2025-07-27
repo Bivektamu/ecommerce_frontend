@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { LikedProduct, WishList } from '../../store/types'
 import { stripTypename } from '@apollo/client/utilities'
 import { ADD_TO_WISH_LIST } from '../../data/mutation'
-import SquareLoader from './SquareLoader'
+import SquareLoader from '../ui/SquareLoader'
 
 type Props = {
     productId: string
@@ -55,16 +55,19 @@ const LikeButton = ({ productId }: Props) => {
     const clickHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        let toUpdateProducts = products
-
-        if (isLiked) {
-            toUpdateProducts = products.filter(item => item.id !== productId)
-        }
-        else {
-            toUpdateProducts = [...products, { id: productId }]
-        }
+        let toUpdateProducts: Omit<LikedProduct, 'createdAt'>[] = products.map(item => ({ id: item.id }))
 
         console.log(toUpdateProducts)
+
+
+        if (isLiked) {
+            toUpdateProducts = toUpdateProducts.filter(item => item.id !== productId)
+        }
+        else {
+            toUpdateProducts = [...toUpdateProducts, { id: productId }]
+        }
+        console.log(toUpdateProducts)
+
 
         addToWishList({
             variables: {
@@ -78,7 +81,7 @@ const LikeButton = ({ productId }: Props) => {
         setIsLiked(!isLiked)
     }
 
-    if(loading) {
+    if (loading) {
         return <SquareLoader square={1} squareClass='ml-8 inline-block' />
     }
 

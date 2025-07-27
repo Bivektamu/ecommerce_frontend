@@ -13,7 +13,7 @@ import { useAuth } from '../store/slices/authSlice'
 import { addToCart, resetCartAction, updateCartQuantity, useCart } from '../store/slices/cartSlice';
 import { useStoreDispatch } from '../store';
 import { addToast } from '../store/slices/toastSlice';
-import LikeButton from './ui/LikeButton';
+import LikeButton from './wishList/LikeButton';
 
 type Props = {
     product: Product | null

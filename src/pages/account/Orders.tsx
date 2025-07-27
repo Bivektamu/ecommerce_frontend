@@ -53,7 +53,7 @@ const UserOrders = () => {
           <IoFileTrayOutline className="mb-10 w-[100px] h-[100px] stroke-slate-600" />
           <p className="text-slate-400 text-sm mb-8">Your order history is waiting to be filled.
             Start Shopping</p>
-          <Link to='/products' className="bg-black text-white py-3  rounded text-center cursor-pointer text-sm flex gap-x-4 justify-center items-center w-[180px]"
+          <Link to='/collections' className="bg-black text-white py-3  rounded text-center cursor-pointer text-sm flex gap-x-4 justify-center items-center w-[180px]"
           >Start Shopping <Arrow /></Link>
         </div>
       </div>
