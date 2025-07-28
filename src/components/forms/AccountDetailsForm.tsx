@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { CreateUserForm, FormError } from '../../store/types'
+import React, { FormEvent, useEffect, useState } from 'react'
+import { CreateUserForm, Customer, FormError, ValidateSchema } from '../../store/types'
+import validateForm from '../../utils/validate'
+import { ApolloQueryResult, useMutation } from '@apollo/client'
+import { UPDATE_ACCOUNT_DETAILS } from '../../data/mutation'
 
 
+type Prop = {
+  user: Customer,
+  refetchQuery: ()=>Promise<ApolloQueryResult<Customer>>
+}
 
-const AccountDetailsForm = () => {
+const AccountDetailsForm = ({user, refetchQuery}:Prop) => {
 
+  const [updateAccount, {loading, data}] = useMutation(UPDATE_ACCOUNT_DETAILS, {
+    onCompleted: ()=> refetchQuery()
+  })
 
     const [formData, setFormData] = useState<Omit<CreateUserForm, 'password'>>({
-        firstName: '',
-        lastName: '',
-        email: '',
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
     })
     const [errors, setErrors] = useState<FormError>({})
 
@@ -29,9 +39,50 @@ const AccountDetailsForm = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
+    const submitHandler = (e:FormEvent) => {
+      e.preventDefault()
+        const validateSchema: ValidateSchema<unknown>[] =
+            [
+                {
+                    name: 'firstName',
+                    type: 'text',
+                    value: firstName,
+                    msg: 'Please insert first name'
+                },
+                {
+                    name: 'lastName',
+                    type: 'text',
+                    value: lastName,
+                    msg: 'Please insert last name'
+                },
+                {
+                    name: 'email',
+                    type: 'email',
+                    value: email,
+                },
+               
+            ]
+
+        const errors = validateForm(validateSchema)
+
+        if (Object.keys(errors).length > 0) {
+            return setErrors(prev => ({ ...prev, ...errors }))
+        }
+
+        updateAccount({
+          variables: {
+            input: {
+              firstName,
+              lastName,
+              email
+            }
+          }
+        })
+    }
+
     const { firstName, lastName, email } = formData
     return (
-        <form>
+        <form onSubmit={submitHandler}>
             <fieldset className='mb-6'>
                 <label htmlFor="firstName" className='font-medium block mb-1 text-slate-600 text-sm'>First name</label>
                 <input type="text" id="firstName" name='firstName' value={firstName} onChange={changeHandler} className='border-[1px] border-slate-300 rounded-md block text-sm text-black w-full py-2 px-4 ' />
@@ -50,7 +101,7 @@ const AccountDetailsForm = () => {
                 {errors.email && <span className='text-xs text-red-500'>{errors.email}</span>}
             </fieldset>
 
-            <button className="bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm">Save Changes</button>
+            <button className="bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm">{loading?'Saving':'Save Changes'}</button>
         </form>
     )
 }

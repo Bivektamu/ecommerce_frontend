@@ -110,10 +110,17 @@ export const ADD_TO_WISH_LIST = gql`
 `
 
 export const CHANGE_PASSWORD = gql`
+  mutation ChangePassWord($input: ChangePassword) {
+    changePassWord(input: $input)
+  }
+`
 
-mutation ChangePassWord($input: ChangePassword) {
-  changePassWord(input: $input)
-}
-
-
+export const UPDATE_ACCOUNT_DETAILS = gql`
+  mutation UpdateAccount($input: UpdateAccount) {
+    updateAccount(input: $input) {
+      firstName
+      lastName
+      email
+    }
+  }
 `
