@@ -2,17 +2,22 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { v4 as uuidv4 } from 'uuid';
 import { Action, Address, FormError, Toast, Toast_Vairant, ValidateSchema } from "../../store/types"
 import validateForm from "../../utils/validate"
-import { updateAddress, useCustomer } from "../../store/slices/customerSlice"
-import { useSelector } from "react-redux"
+import { updateAddress, useUser } from "../../store/slices/userSlice"
 import { useStoreDispatch } from "../../store"
 import { addToast } from "../../store/slices/toastSlice";
+import { useAuth } from "../../store/slices/authSlice";
+import { useLazyQuery } from "@apollo/client";
+import { GET_USER_ADDRESS } from "../../data/query";
 
 
 const ShippingForm = () => {
 
-    const { customer,  action} = useSelector(useCustomer)
-
+    const { authUser } = useAuth()
+    const {action} = useUser()
     const dispatch = useStoreDispatch()
+
+    const [fetchAddress, { data }] = useLazyQuery(GET_USER_ADDRESS)
+
 
     const [formData, setFormData] = useState<Address>({
         street: '',
@@ -26,17 +31,28 @@ const ShippingForm = () => {
 
     useEffect(() => {
 
-        if (customer && customer.address) {
-            setEdit(true)
-            setFormData({
-                street: customer.address.street || '',
-                postcode: customer.address.postcode || '',
-                city: customer.address.city || '',
-                state: customer.address.state || '',
-                country: customer.address.country || ''
+        if (authUser && authUser.id) {
+            fetchAddress({
+                variables: {
+                    userId: authUser.id
+                }
             })
         }
-    }, [customer])
+
+    }, [authUser, fetchAddress])
+
+    useEffect(() => {
+        if (data && data.user && data.user.address) {
+            setEdit(true)
+            setFormData({
+                street: data.user.address.street,
+                postcode: data.user.address.postcode,
+                city: data.user.address.city,
+                state: data.user.address.state,
+                country: data.user.address.country
+            })
+        }
+    }, [data])
 
     const [formErrors, setFormErrors] = useState<FormError>({})
 
@@ -51,14 +67,14 @@ const ShippingForm = () => {
         }
     }, [formData])
 
-    useEffect(()=> {
-        if(action === Action.EDIT) {
+    useEffect(() => {
+        if (action === Action.EDIT) {
             const newToast: Toast = {
-                    id: uuidv4(),
-                    variant: Toast_Vairant.SUCCESS,
-                    msg: 'Shipping address updated'
-                  }
-                  dispatch(addToast(newToast))
+                id: uuidv4(),
+                variant: Toast_Vairant.SUCCESS,
+                msg: 'Shipping address updated'
+            }
+            dispatch(addToast(newToast))
         }
     }, [action])
 

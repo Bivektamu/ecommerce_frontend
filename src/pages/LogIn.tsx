@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Cart, ErrorCode, LoginInput, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
-import { useAuth, logInCustomer, getAuthStatus } from '../store/slices/authSlice'
-import { useSelector } from 'react-redux'
+import { useAuth, logInUser, getAuthStatus } from '../store/slices/authSlice'
+
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import validateForm from '../utils/validate'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -18,22 +18,23 @@ const LogIn = () => {
   const navigate = useNavigate()
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn, user, error } = useSelector(useAuth)
-  const { cart } = useSelector(useCart)
+  const { isLoggedIn, authUser, error } = useAuth()
+  const { cart } = useCart()
 
   useEffect(()=> {
     dispatch(getAuthStatus())
   }, [])
   
   useEffect(() => {
-    if (isLoggedIn && user?.role === Role.CUSTOMER)
+    // console.log(isLoggedIn, authUser)
+    if (isLoggedIn && authUser?.role === Role.CUSTOMER)
       navigate('/')
-  }, [isLoggedIn, user])
+  }, [isLoggedIn, authUser])
 
     useEffect(()=> {
     if(searchParams.get('cart')) {
 
-       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || user?.id }))
+       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || authUser?.id }))
       dispatch(upDateCart(cartItems))
       navigate('/checkout')
     }
@@ -109,7 +110,7 @@ const LogIn = () => {
       return setErrors({ ...newErrors })
     }
 
-    dispatch(logInCustomer(formData))
+    dispatch(logInUser(formData))
 
   }
 

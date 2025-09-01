@@ -3,7 +3,7 @@ import austSlice from "./slices/authSlice";
 import { useDispatch } from "react-redux";
 import toastSlice from "./slices/toastSlice";
 import productSlice from "./slices/productSlice";
-import customerSlice from "./slices/customerSlice";
+import userSlice from "./slices/userSlice";
 import cartSlice from "./slices/cartSlice";
 import reviewSlice from "./slices/reviewSlice";
 
@@ -11,7 +11,7 @@ export const Store = configureStore ({
     reducer: {
         auth: austSlice,
         toasts: toastSlice,
-        customers:customerSlice,
+        user:userSlice,
         products: productSlice,
         cart: cartSlice,
         reviews: reviewSlice

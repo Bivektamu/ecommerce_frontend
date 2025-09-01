@@ -1,8 +1,10 @@
-import { ProductInput, ProductSlice, Status, RootState, Action, ProductEditInput, QueriedProduct, QueriedProductImage, Product } from "../types";
+import { ProductInput, ProductSlice, Status, RootState, Action, ProductEditInput, Product } from "../types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CREATE_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT } from "../../data/mutation";
 import client from "../../data/client";
 import { GET_PRODUCTS } from "../../data/query";
+import { useSelector } from "react-redux";
+import { stripTypename } from "@apollo/client/utilities";
 
 const initialState: ProductSlice = {
     status: Status.IDLE,
@@ -103,20 +105,7 @@ const productSlice = createSlice({
                 state.status = Status.FULFILLED
                 state.action = Action.FETCH
                 // const products:Product[]  = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => ({ imgs: imgs.map(({__typename, ...imgRest}):QueriedProductImage=>imgRest), ...rest }))
-                const products: Product[] = action.payload.map(({ __typename, imgs, ...rest }: QueriedProduct) => {
-                    // console.log(__typename);
-
-                    return {
-                        imgs: imgs.map(({ __typename, ...imgRest }): QueriedProductImage => {
-                            // console.log(__typename);
-                            return imgRest
-                        }),
-                        ...rest
-                    }
-                })
-
-
-
+                const products: Product[] = stripTypename(action.payload)
                 state.products = products
             })
             .addCase(getProducts.rejected, (state: ProductSlice, action) => {
@@ -167,4 +156,4 @@ const productSlice = createSlice({
 
 export default productSlice.reducer
 // export const {resetStatus} = productSlice.actions
-export const useProduct = (state: RootState) => state.products
+export const useProduct = () => useSelector((state: RootState) => state.products)

@@ -2,14 +2,12 @@ import { FormEvent, useEffect, useState } from 'react'
 import { Action, CreateUserForm,  FormError,  Toast, Toast_Vairant, Role } from '../store/types'
 import { Link, Navigate,  useNavigate,  useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
-
 import { useStoreDispatch } from '../store'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { ValidateSchema } from '../store/types'
 import validateForm from '../utils/validate'
-import { createCustomer, useCustomer } from '../store/slices/customerSlice'
+import { createUser,useUser } from '../store/slices/userSlice'
 import { addToast } from '../store/slices/toastSlice';
 import PageWrapper from '../components/ui/PageWrapper';
 
@@ -21,10 +19,9 @@ const SignUp = () => {
 
 
   const dispatch = useStoreDispatch()
-  const auth = useSelector(useAuth)
-  const { isLoggedIn,  user } = auth
+  const { isLoggedIn,  authUser } = useAuth()
 
-  const { customer,  error: customerError,  action} = useSelector(useCustomer)
+  const { user,  error: userError,  action} = useUser()
 
 
   useEffect(() => {
@@ -32,8 +29,8 @@ const SignUp = () => {
   }, [])
 
   useEffect(() => {
-    if (customer && action === Action.ADD) {
-      console.log(customer);
+    if (user && action === Action.ADD) {
+      // console.log(user);
       
       const newToast: Toast = {
         id: uuidv4(),
@@ -49,18 +46,18 @@ const SignUp = () => {
       return navigate('/login')
 
     }
-  }, [customer])
+  }, [user])
 
   useEffect(() => {
-    if (customerError) {
+    if (userError) {
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.DANGER,
-        msg: customerError
+        msg: userError
       }
       dispatch(addToast(newToast))
     }
-  }, [customerError])
+  }, [userError])
 
   const [userForm, setUserForm] = useState<CreateUserForm>({
     firstName: '',
@@ -129,7 +126,7 @@ const SignUp = () => {
       return setErrors({ ...newErrors })
     }
 
-    dispatch(createCustomer(userForm))
+    dispatch(createUser(userForm))
 
   }
 
@@ -137,7 +134,7 @@ const SignUp = () => {
     return <Navigate to="/checkout" />
   }
 
-  if ( isLoggedIn && user?.role === Role.CUSTOMER) {
+  if ( isLoggedIn && authUser?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
 

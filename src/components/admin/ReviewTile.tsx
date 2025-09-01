@@ -1,6 +1,6 @@
 import { MouseEvent, useEffect, useState } from 'react'
 
-import { Customer, Product, Review} from '../../store/types'
+import { User, Product, Review} from '../../store/types'
 import getMonth from '../../utils/getMonth'
 // import { useDispatch } from 'react-redux';
 import data from '../../data';
@@ -14,11 +14,11 @@ const ReviewTile = ({ review }: Props) => {
     // const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
     const [product, setProduct] = useState<Product | null>(null)
-    const [customer, setCustomer] = useState<Customer | null>(null)
+    const [user, setUser] = useState<User | null>(null)
 
     const {userId, productId} = review
 
-    const {products, customers} = data
+    const {products, users} = data
     useEffect(()=> {
         const productExists:Product |  null = products.filter(item=>item.id === productId)[0]
         if(productExists) {
@@ -27,22 +27,22 @@ const ReviewTile = ({ review }: Props) => {
     }, [productId])
 
     useEffect(()=> {
-        const customerExists:Customer | null = customers.filter(item=>item.id === userId)[0]
-        if(customerExists) {
-            setCustomer(customerExists)
+        const userExists:User | null = users.filter(item=>item.id === userId)[0]
+        if(userExists) {
+            setUser(userExists)
         }
     }, [userId])
 
     const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        console.log(review.id);
+        // console.log(review.id);
     }
 
     return (
         <div className='grid grid-cols-table-reviews px-8 py-4 border-b-[1px] items-center   gap-x-8'>
             <img src={product?.imgs[0].url as string} className='rounded w-16 h-16' />
             <span className='text-sm text-slate-500 '>
-                {customer?.firstName + ' ' + customer?.lastName}
+                {user?.firstName + ' ' + user?.lastName}
             </span>
 
             <span className='text-sm text-slate-500'>
@@ -54,7 +54,7 @@ const ReviewTile = ({ review }: Props) => {
             </span> 
 
             <span className='text-sm text-slate-500'>
-                {getMonth(review.timeStamp.getMonth()) + ', ' + review.timeStamp.getDate()}
+                {getMonth(review.createdAt.getMonth()) + ', ' + review.createdAt.getDate()}
             </span>
 
             <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>

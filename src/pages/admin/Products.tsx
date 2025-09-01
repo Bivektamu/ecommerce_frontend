@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Close from '../../components/ui/Close'
 import { useStoreDispatch } from '../../store'
 import { deleteProduct, getProducts, useProduct } from '../../store/slices/productSlice'
-import { useSelector } from 'react-redux'
+
 import { Action, Status, Toast, Toast_Vairant } from '../../store/types'
 import Check from '../../components/ui/Check'
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +17,7 @@ const Products = () => {
 
   const dispatch = useStoreDispatch()
 
-  const { products, status, action } = useSelector(useProduct)
+  const { products, status, action } = useProduct()
 
   const [actionId, setActionId] = useState('')
   const [modalContent, setModalContent] = useState<ReactElement | null>(null)

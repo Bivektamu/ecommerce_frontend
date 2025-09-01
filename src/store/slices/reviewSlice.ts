@@ -3,6 +3,7 @@ import { Action, ReviewInput, ReviewSlice, RootState, Status } from "../types";
 import client from "../../data/client";
 import { GET_REVIEWS_BY_PRODUCT_ID } from "../../data/query";
 import { CREATE_REVIEW } from "../../data/mutation";
+import { useSelector } from "react-redux";
 
 const initialState: ReviewSlice = {
     reviews: [],
@@ -88,6 +89,6 @@ const reviewSlice = createSlice({
     }
 })
 
-export const userReviews = (state: RootState) => state.reviews
+export const useReviews = ()=> useSelector((state: RootState) => state.reviews)
 
 export default reviewSlice.reducer

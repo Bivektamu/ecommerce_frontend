@@ -1,8 +1,8 @@
 import  { useState } from 'react'
-import { Product } from '../store/types'
-import StarIcon from './ui/StarIcon'
-import ParagraphLoader from './ui/ParagraphLoader'
-import Reviews from './Reviews'
+import { Product } from '../../store/types'
+import StarIcon from '../ui/StarIcon'
+import ParagraphLoader from '../ui/ParagraphLoader'
+import ProductReviews from './ProductReviews'
 
 type Props = {
     product: Product | null
@@ -34,7 +34,7 @@ const DetailsReviewsTab = ({ product }: Props) => {
 
                         </div>
                         :
-                        <Reviews productId={product?.id as string} />
+                        <ProductReviews productId={product?.id as string} />
                 }
 
             </div>

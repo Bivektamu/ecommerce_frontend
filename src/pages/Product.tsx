@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useStoreDispatch } from '../store'
-import { useSelector } from 'react-redux'
+
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Product, Status } from '../store/types'
 import StarIcon from '../components/ui/StarIcon'
 import Grids from '../components/ui/Grids'
 import GridLoader from '../components/ui/GridLoader'
-import AddToCartForm from '../components/AddToCartForm'
-import DetailsReviewsTab from '../components/DetailsReviewsTab'
+import AddToCartForm from '../components/forms/AddToCartForm'
+import DetailsReviewsTab from '../components/product/DetailsReviewsTab'
 import TextLoader from '../components/ui/TextLoader'
 import ButtonLoader from '../components/ui/ButtonLoader'
 import SquareLoader from '../components/ui/SquareLoader'
 import ProductCard from '../components/ui/ProductCard'
-import { getReviewsByProductId, userReviews } from '../store/slices/reviewSlice'
+import { getReviewsByProductId, useReviews } from '../store/slices/reviewSlice'
 import { getAverageRating } from '../utils/helpers'
 import PageWrapper from '../components/ui/PageWrapper'
 
@@ -26,8 +26,8 @@ const ProductComponent = () => {
   const [productItem, setProductItem] = useState<null | Product>(null)
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const dispatch = useStoreDispatch()
-  const { products, status } = useSelector(useProduct)
-  const { reviews } = useSelector(userReviews)
+  const { products, status } = useProduct()
+  const { reviews } = useReviews()
 
 
 
@@ -56,7 +56,6 @@ const ProductComponent = () => {
         setSimilarProducts(tempProducts)
       }
       else {
-        console.log(products);
         setSimilarProducts(products.slice(0, 4))
       }
     }

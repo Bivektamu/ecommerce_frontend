@@ -1,6 +1,5 @@
 import { MouseEvent, useEffect, useMemo } from 'react'
 import { LikedProduct, Status } from '../../store/types'
-import { useSelector } from 'react-redux'
 import { useStoreDispatch } from '../../store'
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 import getMonth from '../../utils/getMonth'
@@ -14,7 +13,7 @@ type Props = {
 const WishListItem = ({ item, removeFromWishList }: Props) => {
 
     const dispatch = useStoreDispatch()
-    const { products, status } = useSelector(useProduct)
+    const { products, status } = useProduct()
 
     useEffect(() => {
         if (status === Status.IDLE)

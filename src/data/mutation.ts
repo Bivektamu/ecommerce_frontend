@@ -9,17 +9,17 @@ export const LOGIN_ADMIN = gql`
 `;
 
 
-export const LOGIN_CUSTOMER = gql`
-mutation LogInCustomer($input: LogInInput!) {
-  logInCustomer(input: $input) {
-    token
+export const LOGIN_USER = gql`
+  mutation LogInUser($input: LogInInput!) {
+    logInUser(input: $input) {
+      token
+    }
   }
-}
 `
 
-export const CREATE_CUSTOMER = gql`
-  mutation Mutation($input: CustomerInput) {
-    createCustomer(input: $input) {
+export const CREATE_USER = gql`
+  mutation Mutation($input: UserInput) {
+    createUser(input: $input) {
       id
     }
   }
@@ -81,7 +81,7 @@ export const CREATE_REVIEW = gql`
   mutation CreateReview($input: CreateReview) {
     createReview(input: $input) {
       id
-      customerId
+      userId
       productId
       rating
       review

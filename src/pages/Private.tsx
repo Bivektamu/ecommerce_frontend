@@ -1,5 +1,4 @@
 import {  useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { getAuthStatus, useAuth } from '../store/slices/authSlice'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Status, Role } from '../store/types'
@@ -15,8 +14,7 @@ const Private = () => {
 
     const navigate = useNavigate()
 
-    const auth = useSelector(useAuth)
-    const { isLoggedIn, status, user } = auth
+    const { isLoggedIn, status, authUser } = useAuth()
     const dispatch = useStoreDispatch()
 
     useEffect(() => {
@@ -26,12 +24,12 @@ const Private = () => {
 
     useEffect(() => {
         if (status === Status.FULFILLED && !isLoggedIn) {
-            console.log('saf');
+            // console.log('saf');
 
             navigate('/')
         }
         else if (status === Status.REJECTED) {
-            console.log('saf');
+            // console.log('saf');
             navigate('/')
         }
 
@@ -39,10 +37,10 @@ const Private = () => {
 
     useEffect(() => {
 
-        if (user && user.role !== Role.CUSTOMER) {
+        if (authUser && authUser.role !== Role.CUSTOMER) {
             navigate('/')
         }
-    }, [user])
+    }, [authUser])
 
     return (
         <>

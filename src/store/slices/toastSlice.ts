@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState, ToastSlice } from "../types";
+import { useSelector } from "react-redux";
 
 const initialState: ToastSlice = {
     toasts: []
@@ -22,4 +23,4 @@ const toastSlice = createSlice({
 
 export default toastSlice.reducer
 export const { addToast, removeToast } = toastSlice.actions
-export const useToasts = (state: RootState) => state.toasts.toasts
+export const useToasts = () => useSelector((state: RootState) => state.toasts.toasts)

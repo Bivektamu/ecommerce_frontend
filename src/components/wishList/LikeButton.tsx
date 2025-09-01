@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { GET_WISH_LIST_BY_USER_ID } from '../../data/query'
 import { useAuth } from '../../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import { LikedProduct, WishList } from '../../store/types'
 import { stripTypename } from '@apollo/client/utilities'
 import { ADD_TO_WISH_LIST } from '../../data/mutation'
@@ -16,28 +15,25 @@ type Props = {
 const LikeButton = ({ productId }: Props) => {
     const [isLiked, setIsLiked] = useState(false)
     const [products, setProducts] = useState<LikedProduct[]>([])
-    const { user } = useSelector(useAuth)
+    const { authUser } = useAuth()
 
     const [addToWishList] = useMutation(ADD_TO_WISH_LIST)
 
 
     const { data, loading } = useQuery(GET_WISH_LIST_BY_USER_ID, {
         variables: {
-            userId: user?.id
+            userId: authUser?.id
         }
     })
 
-    const wishList: WishList = useMemo(() => {
-        if (!data) return {}
-        return stripTypename(data.wishListByUserId)
 
-    }, [data])
 
     useEffect(() => {
-        if (Object.keys(wishList).length > 0) {
+        if (data && data.wishListByUserId) {
+            const wishList: WishList = stripTypename(data.wishListByUserId)
             setProducts(wishList.products)
         }
-    }, [wishList])
+    }, [data])
 
     useEffect(() => {
         if (products.length > 0) {
@@ -47,7 +43,6 @@ const LikeButton = ({ productId }: Props) => {
             }
         }
 
-        console.log(products)
 
     }, [products])
 
@@ -57,8 +52,6 @@ const LikeButton = ({ productId }: Props) => {
 
         let toUpdateProducts: Omit<LikedProduct, 'createdAt'>[] = products.map(item => ({ id: item.id }))
 
-        console.log(toUpdateProducts)
-
 
         if (isLiked) {
             toUpdateProducts = toUpdateProducts.filter(item => item.id !== productId)
@@ -66,14 +59,12 @@ const LikeButton = ({ productId }: Props) => {
         else {
             toUpdateProducts = [...toUpdateProducts, { id: productId }]
         }
-        console.log(toUpdateProducts)
-
 
         addToWishList({
             variables: {
                 input: {
                     products: toUpdateProducts,
-                    userId: user?.id
+                    userId: authUser?.id
                 }
             }
         })
@@ -86,7 +77,7 @@ const LikeButton = ({ productId }: Props) => {
     }
 
     return (
-        <button type="button" className='ml-8' onClick={clickHandler}>
+        <button type="button" className={`ml-8 ${!authUser ? 'pointer-events-none' : ''}`} onClick={clickHandler}>
             {
                 isLiked ?
                     <FaHeart className='w-5 h-5 relative top-1' />

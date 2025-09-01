@@ -1,11 +1,11 @@
 // import React, { useState } from 'react'
 import data from '../../data'
-import CustomerTile from '../../components/admin/CustomerTile'
+import UserTile from '../../components/admin/UserTile'
 import SearchIcon from '../../components/ui/SearchIcons'
 
 const Customers = () => {
 
-    const { customers } = data
+    const { users } = data
 
 
     // const [actionId, setActionId] = useState('')
@@ -57,13 +57,13 @@ const Customers = () => {
             </div>
 
             {
-                customers.length < 1 ?
+                users.length < 1 ?
                     <p className='px-8 py-8 text-slate-500'>There are no customers yet.</p>
                     :
                     <div className="w-full">
                         {
-                            customers.map(customer =>
-                                <CustomerTile key={customer.id} customer={customer} />
+                            users.map(user =>
+                                <UserTile key={user.id} user={user} />
                             )
                         }
                     </div>

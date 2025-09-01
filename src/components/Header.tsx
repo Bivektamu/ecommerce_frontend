@@ -2,22 +2,22 @@ import Logo from './ui/Logo'
 import gravatar from 'gravatar'
 
 import CartIcon from './ui/CartIcon'
-import UserAvatar from './ui/UserAvatar'
+import AvatarPlaceholder from './ui/AvatarPlaceholder'
 import Search from './Search'
-import { useSelector } from 'react-redux'
+
 import { useProduct } from '../store/slices/productSlice'
 import { Role } from '../store/types'
 import { getAuthStatus, logOut, useAuth } from '../store/slices/authSlice'
 import { MouseEvent, useEffect, useState } from 'react'
 import { useStoreDispatch } from '../store'
-import { getCustomer, useCustomer } from '../store/slices/customerSlice'
+import { getUser, useUser } from '../store/slices/userSlice'
 import CustomNavLink from './CustomNavLink'
 import { NavLink } from 'react-router-dom'
 
 const Header = () => {
-  const { products } = useSelector(useProduct)
-  const { isLoggedIn, user } = useSelector(useAuth)
-  const { customer } = useSelector(useCustomer)
+  const { products } = useProduct()
+  const { isLoggedIn, authUser } = useAuth()
+  const { user } = useUser()
 
   const [gravatarUrl, setGravatarUrl] = useState('')
 
@@ -28,19 +28,19 @@ const Header = () => {
   }, [])
 
   useEffect(() => {
-    if (user && user.role === Role.CUSTOMER) {
-      dispatch(getCustomer(user.id))
+    if (authUser && authUser.role === Role.CUSTOMER) {
+      dispatch(getUser(authUser.id))
     }
-  }, [user])
+  }, [authUser])
 
 
   useEffect(() => {
-    if (customer) {
-      const link = gravatar.url(customer.email, { s: '200', r: 'pg', d: 'mp' });
+    if (user) {
+      const link = gravatar.url(user.email, { s: '200', r: 'pg', d: 'mp' });
       setGravatarUrl(link)
     }
 
-  }, [customer])
+  }, [user])
 
   const logOutHandler = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -68,12 +68,12 @@ const Header = () => {
           </CustomNavLink>
           <div className='relative group'>
             <button className='block'>
-              {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <UserAvatar />}
+              {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <AvatarPlaceholder />}
 
             </button>
             <div className="absolute top-7 -left-[10px] bg-white w-[90px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">
               {
-                isLoggedIn && user?.role !== Role.ADMIN ?
+                isLoggedIn && authUser?.role !== Role.ADMIN ?
                   <>
                     <NavLink to={'/account'} className='block min-w-full flex gap-2 text-xs font-normal text-left hover:bg-slate-100 px-2 py-2 items-center justify-between'   >
                       My Account

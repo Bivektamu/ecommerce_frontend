@@ -4,7 +4,6 @@ import PageWrapper from "../../components/ui/PageWrapper"
 import SubNav from "./SubNav"
 import { useEffect } from "react"
 import { Role, Status } from "../../store/types"
-import { useSelector } from "react-redux"
 import { useAuth } from "../../store/slices/authSlice"
 import Preloader from "../../components/ui/Preloader"
 
@@ -12,7 +11,7 @@ const Account = () => {
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { isLoggedIn, user, status } = useSelector(useAuth)
+  const { isLoggedIn, authUser, status } = useAuth()
 
   useEffect(() => {
 
@@ -23,7 +22,7 @@ const Account = () => {
       navigate('/login')
 
     }
-    else if (isLoggedIn && user && user.role !== Role.CUSTOMER) {
+    else if (isLoggedIn && authUser && authUser.role !== Role.CUSTOMER) {
       navigate('/login')
     }
     else if (pathname === '/account' || pathname === '/account/') {
@@ -31,7 +30,7 @@ const Account = () => {
     }
 
 
-  }, [user, isLoggedIn, status, pathname])
+  }, [authUser, isLoggedIn, status, pathname])
 
   if(!isLoggedIn) {
     return <Preloader />

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState, CartSlice, Action } from "../types";
+import { useSelector } from "react-redux";
 
 const initialState: CartSlice = {
     cart: JSON.parse(localStorage.getItem('cart') as string) || [],
@@ -50,6 +51,6 @@ const cartSlice = createSlice({
 
 export const { addToCart, removeFromCart, updateCartQuantity, upDateCart, deleteCart, deleteCartByCustomerId, resetCartAction } = cartSlice.actions;
 
-export const useCart = (state: RootState) => state.cart
+export const useCart = ()=> useSelector((state: RootState) => state.cart)
 
 export default cartSlice.reducer;

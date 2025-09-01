@@ -1,5 +1,5 @@
 import  {  MouseEvent, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+
 import { getAuthStatus, logOut, useAuth } from '../../store/slices/authSlice'
 import {  Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Sidebar from '../../components/ui/Sidebar'
@@ -17,10 +17,10 @@ const PrivateRoute = () => {
 
     const navigate = useNavigate()
 
-    const allToasts = useSelector(useToasts)
+    const allToasts = useToasts()
 
-    const auth = useSelector(useAuth)
-    const { isLoggedIn, status, user } = auth
+    const auth = useAuth()
+    const { isLoggedIn, status, authUser } = auth
     const dispatch = useStoreDispatch()
     const location = useLocation()
 
@@ -40,10 +40,10 @@ const PrivateRoute = () => {
 
     useEffect(()=> {
         
-        if(user && user.role !== Role.ADMIN) {
+        if(authUser && authUser.role !== Role.ADMIN) {
             navigate('/admin/login')
         }
-    }, [user])
+    }, [authUser])
 
     useEffect(()=> {
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
@@ -57,7 +57,7 @@ const PrivateRoute = () => {
         dispatch(logOut())
     }
 
-    if(status === Status.PENDING || !isLoggedIn || user?.role !== Role.ADMIN) {
+    if(status === Status.PENDING || !isLoggedIn || authUser?.role !== Role.ADMIN) {
         return <Preloader />
     }
     

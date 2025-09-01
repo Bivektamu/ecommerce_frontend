@@ -35,7 +35,7 @@ const CustomNavLink = ({ to, state, children, cssClass, isNavLink }: Props) => {
     }, 400)
   }
 
-  console.log(state);
+  // console.log(state);
   
 
   return (

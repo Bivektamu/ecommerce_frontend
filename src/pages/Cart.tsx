@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { useCart } from '../store/slices/cartSlice'
 import { Order_Status, Status, OrderInput, OrderItemInput, Colour, Size, Address } from '../store/types'
@@ -18,20 +17,35 @@ const TAX_RATE: number = 0.1
 const Cart = () => {
 
   const dispatch = useStoreDispatch()
-  const { user } = useSelector(useAuth)
-  const { cart: carts } = useSelector(useCart)
-  const { status } = useSelector(useProduct)
+  const { authUser, status: userStatus } = useAuth()
+  const { cart: carts } = useCart()
+  const { status } = useProduct()
   useEffect(() => {
-    dispatch(getAuthStatus())
     dispatch(getProducts())
   }, [])
 
-  const userCart = useMemo(() => carts.length > 0 && user ? [...carts.filter(cart => cart.userId === user?.id)] : [], [carts, user])
+  useEffect(() => {
+    if (userStatus === Status.IDLE)
+      dispatch(getAuthStatus())
+  }, [userStatus])
+
+  const userCart = useMemo(() => {
+
+    if (carts.length > 0) {
+      if (authUser) {
+        return [...carts.filter(cart => cart.userId === authUser?.id)]
+      }
+      return [...carts.filter(cart => !cart.userId)]
+    }
+    return []
+  },
+    [carts, authUser]
+  )
 
 
   const newOrder: OrderInput | null = useMemo(() => {
-    if (userCart.length > 0 && user) {
-      const subTotal = userCart.reduce((sum, item) => sum += ((item.price as number)  * item.quantity), 0)
+    if (userCart.length > 0 && authUser) {
+      const subTotal = userCart.reduce((sum, item) => sum += ((item.price as number) * item.quantity), 0)
       const tax = parseFloat((subTotal * TAX_RATE).toFixed(2))
 
       const items: OrderItemInput[] = userCart.map((item) => ({
@@ -43,8 +57,8 @@ const Cart = () => {
         imgUrl: item.imgUrl
       }))
 
-      const order:OrderInput = {
-        userId: user?.id,
+      const order: OrderInput = {
+        userId: authUser?.id,
         status: Order_Status.PENDING,
         items,
         subTotal: subTotal,
@@ -56,7 +70,7 @@ const Cart = () => {
       return order
     }
     else return null
-  }, [userCart, user])
+  }, [userCart, authUser])
 
 
   return (
@@ -102,7 +116,7 @@ const Cart = () => {
                   <span className='font-medium'>${newOrder.total}</span>
                 </p>
                 {
-                  user ?
+                  authUser ?
 
                     <CustomNavLink
                       to='/checkout'

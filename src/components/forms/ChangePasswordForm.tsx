@@ -1,17 +1,14 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import validateForm from '../../utils/validate'
 import { ErrorCode, FormError, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
 import { useMutation } from '@apollo/client'
 import { CHANGE_PASSWORD } from '../../data/mutation'
 import { useAuth } from '../../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import { v4 as uuidv4 } from 'uuid';
 import { addToast } from '../../store/slices/toastSlice'
 import { useStoreDispatch } from '../../store'
 
-
-type Props = {}
 
 type FormData = {
     currentPassword: string,
@@ -25,9 +22,9 @@ const INIT_FORM: FormData = {
     confirmNewPassword: ''
 }
 
-function ChangePasswordForm({ }: Props) {
+function ChangePasswordForm() {
 
-    const { user } = useSelector(useAuth)
+    const { authUser } = useAuth()
     const dispatch = useStoreDispatch()
 
 
@@ -126,7 +123,7 @@ const handleSubmit = (e: FormEvent) => {
     changePasword({
         variables: {
             input: {
-                id: user?.id,
+                id: authUser?.id,
                 currentPassword,
                 newPassword
             }

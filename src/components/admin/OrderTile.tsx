@@ -43,7 +43,7 @@ const OrderTile = ({ order }: Props) => {
     }
 
     useEffect(() => {
-        console.log(newStatus);
+        // console.log(newStatus);
     }, [newStatus])
 
     const statusHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {

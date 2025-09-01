@@ -12,9 +12,9 @@ export const GET_AUTH = gql`
   }
 `;
 
-export const GET_CUSTOMER = gql`
-  query Customer($customerId: ID) {
-  customer(id: $customerId) {
+export const GET_USER = gql`
+  query User($userId: ID) {
+  user(id: $userId) {
     id
     firstName
     lastName
@@ -30,20 +30,36 @@ export const GET_CUSTOMER = gql`
 }
 `;
 
-export const GET_CUSTOMER_EMAIL = gql`
-  query Query($customerEmailId: ID) {
-    customerEmail(id: $customerEmailId)
+export const GET_USER_EMAIL = gql`
+  query Query($userEmailId: ID) {
+    userEmail(id: $userEmailId)
   }
 `
 
-export const GET_CUSTOMER_NAME = gql`
-  query CustomerName($customerNameId: ID) {
-    customerName(id: $customerNameId) {
-      firstName
-      lastName
+export const GET_USER_NAME = gql`
+  query User($userId: ID) {
+  user(id: $userId) {
+    firstName
+    lastName
   }
 }
 `
+
+
+export const GET_USER_ADDRESS = gql`
+  query Address($userId: ID) {
+    user(id: $userId) {
+      address {
+        street
+        city
+        postcode
+        state
+        country
+      }
+    }
+  }
+`;
+
 
 export const GET_PRODUCTS = gql`
   query Products {
@@ -70,14 +86,14 @@ export const GET_PRODUCTS = gql`
 `
 
 export const GET_REVIEWS_BY_PRODUCT_ID = gql`
-  query ReviewsByProductId($reviewsByProductIdId: ID) {
-    reviewsByProductId(id: $reviewsByProductIdId) {
+  query ProductReviews($productReviewsId: ID) {
+    productReviews(id: $productReviewsId) {
       id
-      customerId
+      userId
       productId
-      timeStamp
       rating
       review
+      createdAt
     }
   }
 `
@@ -112,34 +128,35 @@ query Orders {
 }
 `
 
-export const GET_ORDERS_BY_CUSTOMER_ID = gql`
-query CustomerOrders($customerOrdersId: ID) {
-  customerOrders(id: $customerOrdersId) {
-    id
-    orderNumber
-    userId
-    status
-    total
-    subTotal
-    tax
-    items {
-      productId
-      color
-      quantity
-      size
-      price
-      imgUrl
+export const GET_ORDERS_BY_USER_ID = gql`
+  query UserOrders($userOrdersId: ID) {
+    userOrders(id: $userOrdersId) {
+      id
+      orderNumber
+      userId
+      status
+      total
+      subTotal
+      tax
+      items {
+        productId
+        color
+        quantity
+        size
+        price
+        imgUrl
+      }
+      shippingAddress {
+        street
+        city
+        postcode
+        state
+        country
+      }
+      orderPlaced
     }
-    shippingAddress {
-      street
-      city
-      postcode
-      state
-      country
-    }
-    orderPlaced
   }
-}
+
 `
 
 

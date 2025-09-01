@@ -1,20 +1,22 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { CreateUserForm, Customer, FormError, ValidateSchema } from '../../store/types'
+import { CreateUserForm, User, FormError, ValidateSchema } from '../../store/types'
 import validateForm from '../../utils/validate'
 import { ApolloQueryResult, useMutation } from '@apollo/client'
 import { UPDATE_ACCOUNT_DETAILS } from '../../data/mutation'
 
 
 type Prop = {
-  user: Customer,
-  refetchQuery: ()=>Promise<ApolloQueryResult<Customer>>
+  user: User,
+  refetchQuery: ()=>Promise<ApolloQueryResult<User>>
 }
 
 const AccountDetailsForm = ({user, refetchQuery}:Prop) => {
 
-  const [updateAccount, {loading, data}] = useMutation(UPDATE_ACCOUNT_DETAILS, {
+  const [updateAccount, {loading}] = useMutation(UPDATE_ACCOUNT_DETAILS, {
     onCompleted: ()=> refetchQuery()
   })
+
+  // console.log(user)
 
     const [formData, setFormData] = useState<Omit<CreateUserForm, 'password'>>({
         firstName: user?.firstName,

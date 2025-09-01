@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { RatingWidget } from '../ui/RatingWidget'
 import { FormError, Review, ReviewInput, ValidateSchema } from '../../store/types'
 import { useAuth } from '../../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import validateForm from '../../utils/validate'
 import { addReview } from '../../store/slices/reviewSlice'
 import { useStoreDispatch } from '../../store'
@@ -13,11 +12,11 @@ type Props = {
 const AddReviewForm = ({ productId }: Props) => {
 
   const dispatch = useStoreDispatch()
-  const { user } = useSelector(useAuth)
+  const { authUser } = useAuth()
 
   const [formData, setFormData] = useState<ReviewInput>({
     productId: productId,
-    userId: user?.id,
+    userId: authUser?.id,
     rating: null,
     review: '',
   } as Review)
@@ -53,7 +52,7 @@ const AddReviewForm = ({ productId }: Props) => {
   }
   const submitHandler = (e: FormEvent) => {
     e.preventDefault()
-    console.log(formData);
+    // console.log(formData);
 
     const validateSchema: ValidateSchema<unknown>[] =
       [

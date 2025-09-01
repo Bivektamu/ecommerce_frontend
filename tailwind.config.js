@@ -18,7 +18,7 @@ export default {
       colors: {
         'black': '#0E1422',
         'cultured': '#F5F5F5',
-        'regal-white': 'rgb(226, 226, 226)'
+        'regal-white': '#F6F6F6'
       },
       gridTemplateColumns: {
         'table': '1fr 3fr 1.5fr 1.5fr 1.5fr 2fr 1fr 1fr',

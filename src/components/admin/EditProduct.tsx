@@ -6,7 +6,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 // import data from '../../data'
 // import PageNotFound from '../../pages/admin/PageNotFound';
-import { useSelector } from 'react-redux';
+;
 import { editProduct, getProducts, useProduct } from '../../store/slices/productSlice';
 import { useStoreDispatch } from '../../store';
 import mongoose from 'mongoose';
@@ -28,7 +28,7 @@ const EditProduct = () => {
     const params = useParams()
     // const { products } = data
 
-    const { products, status, action } = useSelector(useProduct)
+    const { products, status, action } = useProduct()
 
 
     const [formData, setFormData] = useState<ProductEditInput>({} as ProductEditInput)
@@ -55,7 +55,7 @@ const EditProduct = () => {
 
             tempProduct = { ...rest, newImgs: [], oldImgs: imgs,  }
 
-            console.log(tempProduct);
+            // console.log(tempProduct);
 
             setFormData(tempProduct as ProductEditInput)
         }

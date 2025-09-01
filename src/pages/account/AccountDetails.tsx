@@ -1,25 +1,27 @@
 import { useQuery } from "@apollo/client"
 import AccountDetailsForm from "../../components/forms/AccountDetailsForm"
-import { GET_CUSTOMER } from "../../data/query"
-import { useSelector } from "react-redux"
+import { GET_USER } from "../../data/query"
 import { useAuth } from "../../store/slices/authSlice"
 import ProgressLoader from "../../components/ui/ProgressLoader"
+import { stripTypename } from "@apollo/client/utilities"
 
 const AccountDetails = () => {
 
-  const {user} = useSelector(useAuth)
+  const {authUser} = useAuth()
 
-  const {data, loading, refetch} = useQuery(GET_CUSTOMER, {
+  const {data, loading, refetch} = useQuery(GET_USER, {
     variables: {
-      customerId: user?.id
+      userId: authUser?.id
     }
   })
 
-  const userDetails = data?.customer
+  const userDetails = stripTypename(data?.user)
 
   if(loading) {
     return <ProgressLoader />
   }
+
+  // console.log(userDetails)
 
   return (
     <>

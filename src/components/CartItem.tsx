@@ -1,6 +1,5 @@
 import { ChangeEvent, MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { Cart, Colour, Product } from '../store/types'
-import { useSelector } from 'react-redux'
 import { getProducts, useProduct } from '../store/slices/productSlice'
 import { useStoreDispatch } from '../store'
 import SquareLoader from './ui/SquareLoader'
@@ -17,7 +16,7 @@ type Props = {
 const CartItem = ({ cartItem }: Props) => {
 
     const dispatch = useStoreDispatch()
-    const { products } = useSelector(useProduct)
+    const { products } = useProduct()
 
     const [product, setProduct] = useState<Product | null>(null)
     const [quantity, setQuantity] = useState<number>(cartItem.quantity)

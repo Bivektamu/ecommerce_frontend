@@ -3,13 +3,12 @@ const Header = lazy(() => import("../components/Header"))
 
 import Footer from '../components/Footer'
 import { Outlet, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { useToasts } from '../store/slices/toastSlice'
 import ToastComponent from '../components/ui/Toast'
 import { AnimatePresence } from 'framer-motion'
 
 const Layout = () => {
-  const allToasts = useSelector(useToasts)
+  const allToasts = useToasts()
 
   const location = useLocation()
 

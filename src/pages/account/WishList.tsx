@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client"
 import { GET_WISH_LIST_BY_USER_ID } from "../../data/query"
-import { useSelector } from "react-redux"
 import { useAuth } from "../../store/slices/authSlice"
 import ProgressLoader from "../../components/ui/ProgressLoader"
 import { MouseEvent, useMemo } from "react"
@@ -12,11 +11,11 @@ import { LikedProduct, WishList as WishListType } from "../../store/types"
 import { ADD_TO_WISH_LIST } from "../../data/mutation"
 
 const WishList = () => {
-  const { user } = useSelector(useAuth)
+  const { authUser } = useAuth()
 
   const { data, loading } = useQuery(GET_WISH_LIST_BY_USER_ID, {
     variables: {
-      userId: user?.id
+      userId: authUser?.id
     }
   })
 
@@ -30,10 +29,10 @@ const WishList = () => {
 
   const removeHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault()
-    console.log(id)
+    // console.log(id)
     let toUpdateProducts: Omit<LikedProduct, 'createdAt'>[] = wishList.products.map(item => ({ id: item.id }))
     toUpdateProducts = toUpdateProducts.filter(item => item.id !== id)
-    console.log(toUpdateProducts)
+    // console.log(toUpdateProducts)
 
     addToWishList({
       variables: {

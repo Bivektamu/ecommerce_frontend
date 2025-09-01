@@ -3,17 +3,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom'
 
 
-import { Action, Cart, Colour, FormError, Product, Role, Size, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
-import CircleLoader from './ui/CircleLoader'
-import getClasses from '../utils/getClasses'
-import validateForm from '../utils/validate'
-import SquareLoader from './ui/SquareLoader'
-import { useSelector } from 'react-redux'
-import { useAuth } from '../store/slices/authSlice'
-import { addToCart, resetCartAction, updateCartQuantity, useCart } from '../store/slices/cartSlice';
-import { useStoreDispatch } from '../store';
-import { addToast } from '../store/slices/toastSlice';
-import LikeButton from './wishList/LikeButton';
+import { Action, Cart, Colour, FormError, Product, Role, Size, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
+import CircleLoader from '../ui/CircleLoader'
+import getClasses from '../../utils/getClasses'
+import validateForm from '../../utils/validate'
+import SquareLoader from '../ui/SquareLoader'
+import { useAuth } from '../../store/slices/authSlice'
+import { addToCart, resetCartAction, updateCartQuantity, useCart } from '../../store/slices/cartSlice';
+import { useStoreDispatch } from '../../store';
+import { addToast } from '../../store/slices/toastSlice';
+import LikeButton from '../wishList/LikeButton';
 
 type Props = {
     product: Product | null
@@ -23,8 +22,8 @@ const ALL_SIZES = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.EXTRA_LARGE]
 
 function AddToCartForm({ product }: Props) {
     const dispatch = useStoreDispatch()
-    const { user } = useSelector(useAuth)
-    const { action, cart } = useSelector(useCart)
+    const { authUser } = useAuth()
+    const { action, cart } = useCart()
 
     const [formData, setFormData] = useState<Cart>({
         id: uuidv4(),
@@ -41,7 +40,6 @@ function AddToCartForm({ product }: Props) {
     const [itemExists, setItemExists] = useState<boolean>(false)
 
     const [formErrors, setFormErrors] = useState<FormError>({})
-    // console.log(product?.imgs[0].url);
 
     useEffect(() => {
         if (product && Object.keys(product).length > 0) {
@@ -51,27 +49,23 @@ function AddToCartForm({ product }: Props) {
 
     // code to set userId in cart items
     useEffect(() => {
-        if (user && user.role === Role.CUSTOMER) {
-            setFormData({ ...formData, userId: user.id })
+        if (authUser && authUser.role === Role.CUSTOMER) {
+            setFormData({ ...formData, userId: authUser.id })
         }
-    }, [user])
+    }, [authUser])
 
     //code to filter cart items specific to current user
     useEffect(() => {
         if (cart.length > 0) {
-
-
-
-            if (user) {
-
-                setUserCart(cart.filter(cartItem => cartItem.userId === user.id && cartItem.productId === formData.productId))
+            if (authUser) {
+                setUserCart(cart.filter(cartItem => cartItem.userId === authUser.id && cartItem.productId === formData.productId))
             }
             else {
                 setUserCart(cart.filter(CartItem => !CartItem.userId && CartItem.productId === formData.productId))
             }
 
         }
-    }, [user, cart, formData.productId])
+    }, [authUser, cart, formData.productId])
 
     // code to remove error info when fields are typed
     useEffect(() => {

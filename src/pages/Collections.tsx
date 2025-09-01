@@ -3,7 +3,6 @@ import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
 import { MouseEvent, useEffect, useState } from "react"
 import { useStoreDispatch } from "../store"
-import { useSelector } from "react-redux"
 import BreadCrumbs from "../components/ui/BreadCrumbs"
 import { Filters, Product, Status } from "../store/types"
 import ProductFilter from "../components/ProductFilter"
@@ -17,8 +16,8 @@ import PageWrapper from "../components/ui/PageWrapper"
 
 const Collections = () => {
   const dispatch = useStoreDispatch()
-  const { products, status } = useSelector(useProduct)
-  const { action } = useSelector(useCart)
+  const { products, status } = useProduct()
+  const { action } = useCart()
 
 
   const [filters, setFilters] = useState<Filters>({

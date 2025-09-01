@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { Link } from "react-router-dom"
-import {  GET_ORDERS_BY_CUSTOMER_ID } from "../../data/query"
+import {  GET_ORDERS_BY_USER_ID } from "../../data/query"
 import {  useMemo } from "react"
 import { stripTypename } from "@apollo/client/utilities"
 import ProgressLoader from "../../components/ui/ProgressLoader"
@@ -9,20 +9,19 @@ import Arrow from "../../components/ui/Arrow"
 import { Order } from "../../store/types"
 import getMonth from "../../utils/getMonth"
 import { useAuth } from "../../store/slices/authSlice"
-import { useSelector } from "react-redux"
 
 const UserOrders = () => {
 
-  const {user} = useSelector(useAuth)
+  const {authUser} = useAuth()
 
-  const { data, loading, error } = useQuery(GET_ORDERS_BY_CUSTOMER_ID, {
+  const { data, loading, error } = useQuery(GET_ORDERS_BY_USER_ID, {
     variables:{
-      customerOrdersId: user?.id
+      userOrdersId: authUser?.id
     } 
   })
   const refinedData = useMemo(() => {
-    if (data && data.customerOrders.length > 0) {
-      return stripTypename(data.customerOrders)
+    if (data && data.userOrders.length > 0) {
+      return stripTypename(data.userOrders)
     }
     return []
   }, [data])

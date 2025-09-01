@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Customer, Order, Product, Colour } from '../../store/types'
+import { User, Order, Product, Colour } from '../../store/types'
 import getMonth from '../../utils/getMonth'
 import data from '../../data'
 import gravatar from 'gravatar'
@@ -11,24 +11,24 @@ type Props = {
 
 const OrderDetails = ({ order }: Props) => {
     const [gravatarUrl, setGravatarUrl] = useState('')
-    const [customer, setCustomer] = useState<Customer>()
+    const [user, setUser] = useState<User>()
     const [orderedProducts, setOrderedProducts] = useState<Product[]>([])
 
 
-    const { customers, products } = data
+    const { users, products } = data
 
 
     useEffect(() => {
-        const customerExists = customers.filter(cs => cs.id === order.userId)[0]
-        if (customerExists) {
-            setCustomer({ ...customerExists })
-            setGravatarUrl(gravatar.url(customerExists.email, { s: '200', r: 'pg', d: '404' }))
+        const userExists = users.filter(cs => cs.id === order.userId)[0]
+        if (userExists) {
+            setUser({ ...userExists })
+            setGravatarUrl(gravatar.url(userExists.email, { s: '200', r: 'pg', d: '404' }))
         }
     }, [order.userId])
 
 
     useEffect(() => {
-        console.log(order.items);
+        // console.log(order.items);
 
         if (order.items.length > 0) {
             const productArray: Product[] = []
@@ -50,7 +50,7 @@ const OrderDetails = ({ order }: Props) => {
 
     useEffect(() => {
         if (orderedProducts.length > 0) {
-            console.log(orderedProducts);
+            // console.log(orderedProducts);
         }
     }, [orderedProducts])
 
@@ -71,13 +71,13 @@ const OrderDetails = ({ order }: Props) => {
                 <span className="text-sm font-medium capitalize">{order.status}</span>
             </div>
 
-            <p className="font-medium text-slate-900 mt-10 mb-6 pb-2 border-b-[1px] text-lg">Customer</p>
+            <p className="font-medium text-slate-900 mt-10 mb-6 pb-2 border-b-[1px] text-lg">User</p>
             <div className="flex items-center gap-4 mb-6">
                 <img src={gravatarUrl} alt="" className='w-14 h-14 rounded' />
                 <div className=''>
-                    <span className=" font-medium">{customer?.firstName + ' ' + customer?.lastName}</span>
+                    <span className=" font-medium">{user?.firstName + ' ' + user?.lastName}</span>
                     <br />
-                    <span className="text-xs text-slate-500 font-medium">{customer?.email}</span>
+                    <span className="text-xs text-slate-500 font-medium">{user?.email}</span>
                 </div>
             </div>
 

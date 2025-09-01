@@ -1,25 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Action, CustomerInput, CustomerSlice, Status, RootState, Address } from "../types";
+import { Action, UserInput, UserSlice, Status, RootState, Address } from "../types";
 import client from "../../data/client";
-import { CREATE_CUSTOMER, UPDATE_ADDRESS } from "../../data/mutation";
-import { GET_CUSTOMER } from "../../data/query";
+import { CREATE_USER, UPDATE_ADDRESS } from "../../data/mutation";
+import { GET_USER } from "../../data/query";
 import { stripTypename } from "@apollo/client/utilities";
+import { useSelector } from "react-redux";
 
-const initialState: CustomerSlice = {
+const initialState: UserSlice = {
     status: Status.IDLE,
     error: null,
-    customers: [],
-    customer: null,
+    users: [],
+    user: null,
     action: null
 }
 
-export const createCustomer = createAsyncThunk('/customer/add', async (formData: CustomerInput) => {
+export const createUser = createAsyncThunk('/user/add', async (formData: UserInput) => {
     try {
         const response = await client.mutate({
-            mutation: CREATE_CUSTOMER,
+            mutation: CREATE_USER,
             variables: { input: formData }
         })
-        return response.data.createCustomer.id
+        return response.data.createUser.id
 
     } catch (error) {
         if (error instanceof Error) {
@@ -29,14 +30,14 @@ export const createCustomer = createAsyncThunk('/customer/add', async (formData:
 })
 
 
-export const getCustomer = createAsyncThunk(`/customer/:id`, async (id: string) => {
+export const getUser = createAsyncThunk(`/user/:id`, async (id: string) => {
     try {
         const response = await client.query({
-            query: GET_CUSTOMER,
-            variables: { customerId: id }
+            query: GET_USER,
+            variables: { userId: id }
         })
 
-        return response.data.customer
+        return response.data.user
 
     } catch (error) {
         if (error instanceof Error) {
@@ -48,8 +49,8 @@ export const getCustomer = createAsyncThunk(`/customer/:id`, async (id: string) 
 
 
 
-export const updateAddress = createAsyncThunk('/customer/updateaddress', async (formData: Address) => {
-    console.log('response.data');
+export const updateAddress = createAsyncThunk('/user/updateaddress', async (formData: Address) => {
+    // console.log('response.data');
 
     try {
         const response = await client.mutate({
@@ -69,49 +70,49 @@ export const updateAddress = createAsyncThunk('/customer/updateaddress', async (
 })
 
 
-const customerSlice = createSlice({
-    name: 'customers',
+const userSlice = createSlice({
+    name: 'users',
     initialState: initialState,
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(getCustomer.fulfilled, (state, action) => {
-                state.customer = stripTypename(action.payload)
+            .addCase(getUser.fulfilled, (state, action) => {
+                state.user = stripTypename(action.payload)
                 state.action = Action.FETCH
                 state.error = null
                 state.status = Status.FULFILLED
             })
-            .addCase(getCustomer.pending, (state) => {
+            .addCase(getUser.pending, (state) => {
                 state.status = Status.PENDING
                 state.error = null
             })
 
-            .addCase(getCustomer.rejected, (state, action) => {
+            .addCase(getUser.rejected, (state, action) => {
                 state.error = action.error.message as string
                 state.status = Status.REJECTED
-                state.customer = null
+                state.user = null
             })
 
-            .addCase(createCustomer.fulfilled, (state, action) => {
-                state.customer = stripTypename(action.payload)
+            .addCase(createUser.fulfilled, (state, action) => {
+                state.user = stripTypename(action.payload)
                 state.action = Action.ADD
                 state.error = null
                 state.status = Status.FULFILLED
             })
-            .addCase(createCustomer.pending, (state) => {
+            .addCase(createUser.pending, (state) => {
                 state.status = Status.PENDING
                 state.error = null
             })
-            .addCase(createCustomer.rejected, (state, action) => {
+            .addCase(createUser.rejected, (state, action) => {
                 state.error = action.error.message as string
                 state.status = Status.REJECTED
-                state.customer = null
+                state.user = null
             })
 
             // Update Address
             .addCase(updateAddress.fulfilled, (state, action) => {
-                if (state.customer) {
-                    state.customer.address = stripTypename(action.payload)
+                if (state.user) {
+                    state.user.address = stripTypename(action.payload)
                 }
                 state.action = Action.EDIT
                 state.error = null
@@ -125,11 +126,11 @@ const customerSlice = createSlice({
                 state.error = action.error.message as string
                 state.status = Status.REJECTED
 
-                console.log(action.error);
+                // console.log(action.error);
 
 
-                if (state.customer) {
-                    state.customer.address = {} as Address
+                if (state.user) {
+                    state.user.address = {} as Address
                 }
 
             })
@@ -138,5 +139,5 @@ const customerSlice = createSlice({
     }
 })
 
-export const useCustomer = (state: RootState) => state.customers
-export default customerSlice.reducer;
+export const useUser = () => useSelector((state: RootState) => state.user)
+export default userSlice.reducer;

@@ -4,7 +4,7 @@ import HeroImg from '../assets/hero.png'
 
 const Hero = () => {
     return (
-        <section id="hero">
+        <section id="hero" className='bg-regal-white'>
             <div className="container flex justify-between items-center mx-auto">
                 <div className="flex flex-col items-start py-32 ">
                     <h1 className='mb-4 text-4xl font-semibold'>Fresh Arrivals Online</h1>

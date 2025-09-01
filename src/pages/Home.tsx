@@ -1,11 +1,9 @@
-import { useSelector } from "react-redux"
 import Hero from "../components/Hero"
 import Grids from "../components/ui/Grids"
 import { getProducts, useProduct } from "../store/slices/productSlice"
 import { useEffect } from "react"
 import { useStoreDispatch } from "../store"
 import HeroImg from '../assets/hero-2.png'
-
 
 import Arrow from "../components/ui/Arrow"
 import { Link } from "react-router-dom"
@@ -17,7 +15,7 @@ import PageWrapper from "../components/ui/PageWrapper"
 
 const Home = () => {
   const dispatch = useStoreDispatch()
-  const { products, status } = useSelector(useProduct)
+  const { products, status } = useProduct()
 
   useEffect(() => {
     dispatch(getProducts())
@@ -74,7 +72,7 @@ const Home = () => {
         }
       </section>
 
-      <section id="">
+      <section className="">
         <div className="container flex justify-between items-center mx-auto pb-12">
           <div className="flex flex-col items-start ">
             <h1 className='mb-4 text-4xl font-semibold'>Browse Our Fashion Paradise!</h1>

@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Auth, Status, RootState, User, Role, ErrorCode, LoginResponse, LoginInput, CustomJwtPayload } from "../types";
+import { Auth, Status, RootState, Role, ErrorCode, LoginResponse, LoginInput, CustomJwtPayload, AuthUser } from "../types";
 import client from "../../data/client";
-import { LOGIN_ADMIN, LOGIN_CUSTOMER } from "../../data/mutation";
+import { LOGIN_ADMIN, LOGIN_USER } from "../../data/mutation";
 import { GET_AUTH } from "../../data/query";
 import { jwtDecode } from "jwt-decode";
 import { stripTypename } from "@apollo/client/utilities";
+import { useSelector } from "react-redux";
 
 const initialState: Auth = {
     isLoggedIn: false,
-    user: null,
+    authUser: null,
     status: Status.IDLE,
     error: null,
 }
@@ -32,17 +33,18 @@ export const loginAdmin = createAsyncThunk('/admin/login', async ({ email, passw
 })
 
 
-export const logInCustomer = createAsyncThunk<LoginResponse, LoginInput>(
-    '/customer/login',
+export const logInUser = createAsyncThunk<LoginResponse, LoginInput>(
+    '/user/login',
     async ({ email, password }) => {
 
         try {
             const response = await client.mutate({
-                mutation: LOGIN_CUSTOMER,
+                mutation: LOGIN_USER,
                 variables: { input: { email, password } }
             })
 
-            const token = response.data?.logInCustomer?.token
+            const token = response.data?.logInUser?.token
+            // console.log(token)
             if (token) {
                 return token
             }
@@ -85,7 +87,7 @@ const authSlice = createSlice({
             client.resetStore()
             localStorage.setItem('token', '')
             state.isLoggedIn = false
-            state.user = null
+            state.authUser = null
             state.status = Status.FULFILLED
 
         },
@@ -99,11 +101,11 @@ const authSlice = createSlice({
                 client.resetStore()
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
-                const user: User = {
+                const authUser: AuthUser = {
                     role: Role.ADMIN,
                     id: ''
                 }
-                state.user = user
+                state.authUser = authUser
                 state.isLoggedIn = true
 
             })
@@ -111,16 +113,16 @@ const authSlice = createSlice({
                 localStorage.setItem('token', '')
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
-                state.user = null
+                state.authUser = null
                 state.error = {
                     msg: action.error.message as string
                 }
             })
 
-            .addCase(logInCustomer.pending, (state: Auth) => {
+            .addCase(logInUser.pending, (state: Auth) => {
                 state.status = Status.PENDING
             })
-            .addCase(logInCustomer.fulfilled, (state: Auth, action) => {
+            .addCase(logInUser.fulfilled, (state: Auth, action) => {
 
                 client.resetStore()
 
@@ -130,20 +132,20 @@ const authSlice = createSlice({
                     localStorage.setItem('token', action.payload)
                     state.status = Status.FULFILLED
                     state.isLoggedIn = true
-                    const user: User = {
+                    const authUser: AuthUser = {
                         role: decode_user.role,
                         id: decode_user.id
                     }
-                    state.user = user
+                    state.authUser = authUser
 
                 }
 
 
             })
-            .addCase(logInCustomer.rejected, (state: Auth, action) => {
+            .addCase(logInUser.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
-                state.user = null
+                state.authUser = null
                 state.error = {
                     msg: action.error.message as string
                 }
@@ -158,7 +160,7 @@ const authSlice = createSlice({
 
                 if (action.payload?.isLoggedIn) {
                     state.isLoggedIn = action.payload?.isLoggedIn
-                    state.user = stripTypename(action.payload?.user)
+                    state.authUser = stripTypename(action.payload?.user)
                     state.error = null
 
                 }
@@ -174,7 +176,7 @@ const authSlice = createSlice({
             .addCase(getAuthStatus.rejected, (state: Auth, action) => {
                 state.status = Status.REJECTED
                 state.isLoggedIn = false
-                state.user = null
+                state.authUser = null
                 state.error = {
                     msg: action.error as string
                 }
@@ -186,4 +188,4 @@ const authSlice = createSlice({
 export default authSlice.reducer
 export const { logOut } = authSlice.actions
 
-export const useAuth = (state: RootState) => state.auth
+export const useAuth = () => useSelector((state: RootState) => state.auth)

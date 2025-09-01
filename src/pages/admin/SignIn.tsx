@@ -3,14 +3,13 @@ import { CreateUserForm, Status, Role } from '../../store/types'
 import { useNavigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import Preloader from '../../components/ui/Preloader'
 
 const SignIn = () => {
 
   const dispatch = useStoreDispatch()
-  const auth = useSelector(useAuth)
-  const { isLoggedIn, status, user } = auth
+  const auth = useAuth()
+  const { isLoggedIn, status, authUser } = auth
 
   const navigate = useNavigate()
 
@@ -24,10 +23,10 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Partial<Pick<CreateUserForm, 'email' | 'password'>>>({})
 
   useEffect(() => {
-    if (status === Status.FULFILLED && isLoggedIn && user?.role === Role.ADMIN) {
+    if (status === Status.FULFILLED && isLoggedIn && authUser?.role === Role.ADMIN) {
       navigate('/admin/dashboard')
     }
-  }, [status, isLoggedIn, user])
+  }, [status, isLoggedIn, authUser])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -54,7 +53,7 @@ const SignIn = () => {
     dispatch(loginAdmin(data))
   }
 
-  // if (status === Status.PENDING || isLoggedIn || user) {
+  // if (status === Status.PENDING || isLoggedIn || authUser) {
   //   return <Preloader />
   // }
 

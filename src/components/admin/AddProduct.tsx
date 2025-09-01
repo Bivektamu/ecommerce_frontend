@@ -5,7 +5,7 @@ import Close from '../ui/Close';
 import { useStoreDispatch } from '../../store';
 import { addProduct, useProduct } from '../../store/slices/productSlice';
 import mongoose from 'mongoose';
-import { useSelector } from 'react-redux';
+;
 import { Navigate } from 'react-router-dom';
 
 
@@ -48,7 +48,7 @@ const AddProduct = () => {
 
     const dispatch = useStoreDispatch()
 
-    const { status, action } = useSelector(useProduct)
+    const { status, action } = useProduct()
 
 
     const [formData, setFormData] = useState<ProductInput>(initial)
@@ -229,7 +229,7 @@ const AddProduct = () => {
 
             const previews: PrviewImage[] = []
 
-            console.log(imgs);
+            // console.log(imgs);
             
 
 

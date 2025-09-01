@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@apollo/client';
-import { GET_CUSTOMER_NAME } from '../../data/query';
+import { GET_USER_NAME } from '../../data/query';
 import { Suspense } from 'react';
 import TextLoader from './TextLoader';
 
@@ -7,30 +7,30 @@ type Props = {
     id: string;
 };
 // Define the expected type for the GraphQL response
-type CustomerNameData = {
-    customerName: {
+type UserNameData = {
+    userName: {
         firstName: string;
         lastName: string;
     };
 };
 
-const CustomerNameContent = ({ id }: Props) => {
-    const { data } = useSuspenseQuery<CustomerNameData>(GET_CUSTOMER_NAME, {
-        variables: { customerNameId: id },
+const UserNameContent = ({ id }: Props) => {
+    const { data } = useSuspenseQuery<UserNameData>(GET_USER_NAME, {
+        variables: { userNameId: id },
     });
 
 
-    const { firstName, lastName } = data.customerName;
+    const { firstName, lastName } = data.userName;
 
     return <p>{firstName} {lastName}</p>;
 };
 
-const CustomerName = ({ id }: Props) => {
+const UserName = ({ id }: Props) => {
     return (
         <Suspense fallback={<TextLoader cssClass='gap-4 h-4 w-24 ml-0' col='2' />}>
-            <CustomerNameContent id={id} />
+            <UserNameContent id={id} />
         </Suspense>
     );
 };
 
-export default CustomerName;
+export default UserName;

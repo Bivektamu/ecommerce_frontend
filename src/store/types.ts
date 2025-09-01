@@ -7,7 +7,7 @@ export interface Address {
     country: string,
     state: string
 }
-export interface Customer {
+export interface User {
     id: string,
     firstName: string,
     lastName: string,
@@ -17,11 +17,11 @@ export interface Customer {
     isActive: boolean,
     isVerified: boolean
 }
-export type CustomerId = Customer['id']
+export type UserId = User['id']
 
-export type CustomerEmail = Customer['email']
+export type UserEmail = User['email']
 
-export interface CustomerInput {
+export interface UserInput {
     firstName: string,
     lastName: string,
     email: string,
@@ -31,8 +31,8 @@ export interface CustomerInput {
     isVerified?: boolean
 }
 
-export interface CustomerEditInput {
-    id: CustomerId
+export interface UserEditInput {
+    id: UserId
     firstName: string,
     lastName: string,
     email: string,
@@ -60,7 +60,7 @@ export enum Role {
     ADMIN = "admin",
     CUSTOMER = "customer"
 }
-export interface User {
+export interface AuthUser {
     role: Role,
     id: string
 }
@@ -78,7 +78,7 @@ export interface CustomError {
 }
 export interface Auth {
     isLoggedIn: boolean,
-    user: User | null,
+    authUser: AuthUser | null,
     status: Status,
     error: CustomError | null,
 }
@@ -97,11 +97,11 @@ export interface ProductSlice {
     action: Action | null
 }
 
-export interface CustomerSlice {
+export interface UserSlice {
     status: Status,
     error: string | null,
-    customers: Customer[],
-    customer: Customer | null,
+    users: User[],
+    user: User | null,
     action: Action | null
 }
 
@@ -109,7 +109,7 @@ export interface RootState {
     auth: Auth,
     toasts: ToastSlice,
     products: ProductSlice,
-    customers: CustomerSlice,
+    user: UserSlice,
     cart: CartSlice,
     reviews: ReviewSlice
 }
@@ -283,16 +283,16 @@ export interface OrderInput  extends Omit<Order, 'id' | 'items' | 'orderNumber' 
 
 export interface Review {
     id: string,
-    userId: CustomerId,
+    userId: UserId,
     productId: ProductId,
     review: string,
-    timeStamp: Date,
+    createdAt: Date,
     rating: null | number,
 }
 
 
 export interface ReviewInput {
-    userId: CustomerId,
+    userId: UserId,
     productId: ProductId,
     review: string,
     rating: null | number,
@@ -314,7 +314,7 @@ export interface LoginInput {
 
 export type LoginResponse = string
 
-export interface CustomJwtPayload extends User, JwtPayload  {}
+export interface CustomJwtPayload extends AuthUser, JwtPayload  {}
 
 export interface LikedProduct {
     id: ProductId,

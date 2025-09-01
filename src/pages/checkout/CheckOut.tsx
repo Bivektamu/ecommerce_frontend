@@ -1,7 +1,6 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useStoreDispatch } from '../../store/index'
 import { useAuth, getAuthStatus } from '../../store/slices/authSlice'
-import { useSelector } from 'react-redux'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,7 +16,7 @@ import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
 import PageWrapper from '../../components/ui/PageWrapper'
 import { addToast } from '../../store/slices/toastSlice'
-import { useCustomer } from '../../store/slices/customerSlice'
+import {  useUser } from '../../store/slices/userSlice'
 
 const Checkout = () => {
   const navigate = useNavigate()
@@ -26,15 +25,15 @@ const Checkout = () => {
   const [createOrder] = useMutation(CREATE_ORDER)
 
   const dispatch = useStoreDispatch()
-  const { user, status: authStatus } = useSelector(useAuth)
-  const { customer } = useSelector(useCustomer)
+  const { authUser, status: authStatus } = useAuth()
+  const { user } = useUser()
   const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
 
   useEffect(() => {
     if (authStatus === Status.IDLE) {
       dispatch(getAuthStatus())
     }
-    else if (authStatus !== Status.PENDING && user?.role !== Role.CUSTOMER) {
+    else if (authStatus !== Status.PENDING && authUser?.role !== Role.CUSTOMER) {
       navigate('/')
     }
   }, [authStatus])
@@ -42,12 +41,12 @@ const Checkout = () => {
 
   const newOrder: OrderInput | null = useMemo(() => {
     const order = location.state?.order ? location.state.order as OrderInput : null
-    if (order && customer?.address) {
-      order.shippingAddress = customer.address
+    if (order && user?.address) {
+      order.shippingAddress = user.address
     }
     return order
   }
-    , [location, customer])
+    , [location, user])
 
   const uniqueCartItems = useMemo(() => newOrder?.items ? [...new Map(newOrder.items.map(item => [item.productId, item])).values()] : [], [newOrder])
 
@@ -63,7 +62,7 @@ const Checkout = () => {
     e.preventDefault()
     let addressValid: boolean
     const { shippingAddress } = newOrder as OrderInput
-    console.log(shippingAddress)
+    // console.log(shippingAddress)
     if (Object.keys(shippingAddress).length < 1) {
       addressValid = false
     }
@@ -90,7 +89,7 @@ const Checkout = () => {
         }
       })
 
-      dispatch(deleteCartByCustomerId(user?.id))
+      dispatch(deleteCartByCustomerId(authUser?.id))
       navigate(`/checkout/success/${data.createOrder}`, {
         state: {
           fromCheckout: true
@@ -114,7 +113,7 @@ const Checkout = () => {
   return (
     <PageWrapper>
       {
-        authStatus !== Status.FULFILLED && user?.role !== Role.CUSTOMER && <Preloader />
+        authStatus !== Status.FULFILLED && authUser?.role !== Role.CUSTOMER && <Preloader />
       }
 
       <section id="breadcrums" className="">
