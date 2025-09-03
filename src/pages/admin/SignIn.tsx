@@ -1,9 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { CreateUserForm, Status, Role } from '../../store/types'
+import { CreateUserForm, Status, Role, Toast, Toast_Vairant } from '../../store/types'
 import { useNavigate } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { useAuth, loginAdmin, getAuthStatus } from '../../store/slices/authSlice'
 import Preloader from '../../components/ui/Preloader'
+import { v4 as uuidv4 } from 'uuid';
+import { addToast } from '../../store/slices/toastSlice'
+
 
 const SignIn = () => {
 
@@ -50,7 +53,23 @@ const SignIn = () => {
       password
     }
 
-    dispatch(loginAdmin(data))
+     const toast: Toast = {
+          id: uuidv4(),
+          variant: Toast_Vairant.SUCCESS,
+          msg: 'Sign In successful'
+        }
+    
+        dispatch(loginAdmin(data))
+          .unwrap()
+          .then(() => {
+            dispatch(addToast(toast))
+    
+          })
+          .catch((error) => {
+            toast.variant = Toast_Vairant.WARNING
+            toast.msg = error.message.replaceAll('_', ' ')
+            dispatch(addToast(toast))
+          })
   }
 
   // if (status === Status.PENDING || isLoggedIn || authUser) {
@@ -99,3 +118,4 @@ const SignIn = () => {
 }
 
 export default SignIn
+

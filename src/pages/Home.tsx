@@ -72,7 +72,7 @@ const Home = () => {
         }
       </section>
 
-      <section className="">
+      <section className="bg-regal-white">
         <div className="container flex justify-between items-center mx-auto pb-12">
           <div className="flex flex-col items-start ">
             <h1 className='mb-4 text-4xl font-semibold'>Browse Our Fashion Paradise!</h1>

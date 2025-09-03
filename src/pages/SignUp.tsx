@@ -1,15 +1,16 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Action, CreateUserForm,  FormError,  Toast, Toast_Vairant, Role } from '../store/types'
-import { Link, Navigate,  useNavigate,  useSearchParams } from 'react-router-dom'
+import { Action, CreateUserForm, FormError, Toast, Toast_Vairant, Role } from '../store/types'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 import { useStoreDispatch } from '../store'
 import { useAuth, getAuthStatus } from '../store/slices/authSlice'
 import BreadCrumbs from '../components/ui/BreadCrumbs'
 import { ValidateSchema } from '../store/types'
 import validateForm from '../utils/validate'
-import { createUser,useUser } from '../store/slices/userSlice'
+import { createUser, useUser } from '../store/slices/userSlice'
 import { addToast } from '../store/slices/toastSlice';
 import PageWrapper from '../components/ui/PageWrapper';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignUp = () => {
 
@@ -19,9 +20,9 @@ const SignUp = () => {
 
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn,  authUser } = useAuth()
+  const { isLoggedIn, authUser } = useAuth()
 
-  const { user,  error: userError,  action} = useUser()
+  const { user, error: userError, action } = useUser()
 
 
   useEffect(() => {
@@ -31,18 +32,18 @@ const SignUp = () => {
   useEffect(() => {
     if (user && action === Action.ADD) {
       // console.log(user);
-      
+
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.SUCCESS,
         msg: 'Your account has been created succesfully. Please login now.'
       }
 
-      if(searchParams.get('cart')) newToast.msg = 'Your accound has been created.'
+      if (searchParams.get('cart')) newToast.msg = 'Your accound has been created.'
 
       dispatch(addToast(newToast))
 
-      if(searchParams.get('cart')) return navigate('/checkout')
+      if (searchParams.get('cart')) return navigate('/checkout')
       return navigate('/login')
 
     }
@@ -66,6 +67,7 @@ const SignUp = () => {
     password: '',
   })
   const [errors, setErrors] = useState<FormError>({})
+  const [showPass, setShowPass] = useState(false)
 
 
   // code to remove error info when fields are typed
@@ -120,7 +122,7 @@ const SignUp = () => {
       ]
 
 
-    const newErrors:FormError = validateForm(validateSchema)
+    const newErrors: FormError = validateForm(validateSchema)
 
     if (Object.keys(newErrors).length > 0) {
       return setErrors({ ...newErrors })
@@ -130,11 +132,11 @@ const SignUp = () => {
 
   }
 
-  if(searchParams.get('cart') && isLoggedIn) {
+  if (searchParams.get('cart') && isLoggedIn) {
     return <Navigate to="/checkout" />
   }
 
-  if ( isLoggedIn && authUser?.role === Role.CUSTOMER) {
+  if (isLoggedIn && authUser?.role === Role.CUSTOMER) {
     return <Navigate to="/" />
   }
 
@@ -169,9 +171,19 @@ const SignUp = () => {
               {errors.email && <span className='text-xs text-red-500'>{errors.email}</span>}
             </fieldset>
 
-            <fieldset className='mb-6'>
+            <fieldset className='mb-6 relative'>
               <label htmlFor="password" className='font-medium block w-full mb-1 text-sm text-slate-600'>Password</label>
-              <input type="password" id="password" name='password' value={password} onChange={changeHandler} className='border-[1px] border-slate-300 rounded-md block text-sm text-black w-full py-2 px-4' />
+              <input
+                type={`${showPass ? 'text' : 'password'}`}
+                id="password"
+                name='password'
+                value={password}
+                onChange={changeHandler}
+                className='border-[1px] border-slate-300 rounded-md block text-sm text-black w-full py-2 px-4' />
+              <button type='button' className='absolute right-0 -translate-y-7 right-3 opacity-50' onClick={() => setShowPass(!showPass)}>
+                {!showPass ? <FaEye /> : <FaEyeSlash />}
+              </button>
+
               {errors.password && <span className='text-xs text-red-500'>{errors.password}</span>}
             </fieldset>
 

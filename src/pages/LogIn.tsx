@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
-import { Cart, ErrorCode, LoginInput, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
+import { Cart, LoginInput, FormError, Role, Toast, Toast_Vairant, ValidateSchema } from '../store/types'
 import { useStoreDispatch } from '../store/index'
 import { useAuth, logInUser, getAuthStatus } from '../store/slices/authSlice'
 
@@ -12,46 +12,15 @@ import CustomNavLink from '../components/CustomNavLink'
 import { upDateCart, useCart } from '../store/slices/cartSlice'
 import PageWrapper from '../components/ui/PageWrapper'
 import { addToast } from '../store/slices/toastSlice';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const LogIn = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
   const dispatch = useStoreDispatch()
-  const { isLoggedIn, authUser, error } = useAuth()
+  const { isLoggedIn, authUser } = useAuth()
   const { cart } = useCart()
-
-  useEffect(()=> {
-    dispatch(getAuthStatus())
-  }, [])
-  
-  useEffect(() => {
-    // console.log(isLoggedIn, authUser)
-    if (isLoggedIn && authUser?.role === Role.CUSTOMER)
-      navigate('/')
-  }, [isLoggedIn, authUser])
-
-    useEffect(()=> {
-    if(searchParams.get('cart')) {
-
-       const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || authUser?.id }))
-      dispatch(upDateCart(cartItems))
-      navigate('/checkout')
-    }
-  }, [searchParams])
-
-
-
-  useEffect(() => {
-    if (error && error?.code === ErrorCode.USER_NOT_FOUND) {
-      const toast: Toast = {
-        id: uuidv4(),
-        variant: Toast_Vairant.WARNING,
-        msg: error.msg as string
-      }
-      dispatch(addToast(toast))
-    }
-  }, [error])
 
 
   const [formData, setFormData] = useState<LoginInput>({
@@ -59,6 +28,7 @@ const LogIn = () => {
     password: ''
   })
   const [errors, setErrors] = useState<FormError>({} as FormError)
+  const [showPass, setShowPass] = useState(false)
 
 
   // code to remove error info when fields are typed
@@ -72,6 +42,26 @@ const LogIn = () => {
       })
     }
   }, [formData])
+
+
+  useEffect(() => {
+    dispatch(getAuthStatus())
+  }, [])
+
+  useEffect(() => {
+    // console.log(isLoggedIn, authUser)
+    if (isLoggedIn && authUser?.role === Role.CUSTOMER)
+      navigate('/')
+  }, [isLoggedIn, authUser])
+
+  useEffect(() => {
+    if (searchParams.get('cart')) {
+
+      const cartItems = cart.map((item: Cart) => ({ ...item, customerId: item.userId || authUser?.id }))
+      dispatch(upDateCart(cartItems))
+      navigate('/checkout')
+    }
+  }, [searchParams])
 
 
   const { email, password } = formData
@@ -110,8 +100,23 @@ const LogIn = () => {
       return setErrors({ ...newErrors })
     }
 
-    dispatch(logInUser(formData))
+    const toast: Toast = {
+      id: uuidv4(),
+      variant: Toast_Vairant.SUCCESS,
+      msg: 'Sign In successful'
+    }
 
+    dispatch(logInUser(formData))
+      .unwrap()
+      .then(() => {
+        dispatch(addToast(toast))
+
+      })
+      .catch((error) => {
+        toast.variant = Toast_Vairant.WARNING
+        toast.msg = error.message.replaceAll('_', ' ')
+        dispatch(addToast(toast))
+      })
   }
 
 
@@ -136,9 +141,16 @@ const LogIn = () => {
               {errors.email && <span className='text-sm text-red-500'>{errors.email}</span>}
             </fieldset>
 
-            <fieldset className='mb-6'>
+            <fieldset className='mb-6 relative'>
               <label htmlFor="password" className='font-medium block w-full mb-1'>Password</label>
-              <input type="password" id="password" name='password' value={password} onChange={changeHandler} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4' />
+              <input
+                type={`${showPass ? 'text' : 'password'}`}
+                id="password"
+                name='password'
+                value={password} onChange={changeHandler} className='border-[1px] border-slate-300 rounded-md block w-full py-2 px-4' />
+              <button type='button' className='absolute right-0 -translate-y-7 right-3 opacity-50' onClick={() => setShowPass(!showPass)}>
+                {!showPass ? <FaEye /> : <FaEyeSlash />}
+              </button>
               {errors.password && <span className='text-sm text-red-500'>{errors.password}</span>}
             </fieldset>
             <button type="submit" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer w-full'>Login</button>

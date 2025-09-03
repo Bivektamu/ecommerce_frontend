@@ -101,6 +101,8 @@ const authSlice = createSlice({
                 client.resetStore()
                 localStorage.setItem('token', action.payload)
                 state.status = Status.FULFILLED
+                state.error = null
+
                 const authUser: AuthUser = {
                     role: Role.ADMIN,
                     id: ''
@@ -137,6 +139,7 @@ const authSlice = createSlice({
                         id: decode_user.id
                     }
                     state.authUser = authUser
+                    state.error = null
 
                 }
 

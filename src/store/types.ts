@@ -43,10 +43,10 @@ export interface UserEditInput {
 
 
 export interface CreateUserForm {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
 }
 
 export enum Status {
