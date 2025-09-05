@@ -6,7 +6,6 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { useToasts } from '../store/slices/toastSlice'
 import ToastComponent from '../components/ui/Toast'
 import { AnimatePresence } from 'framer-motion'
-import Seo from '../components/Seo'
 
 const Layout = () => {
   const allToasts = useToasts()
@@ -19,13 +18,6 @@ const Layout = () => {
 
   return (
     <>
-
-    <Seo
-      description="Shop the latest fashion products online with ease. Browse collections, add to wishlist, and enjoy a seamless shopping experience with fast checkout."
-        lang="eng-Au"
-        title="Mobje Commerce | Shop Online, Add to Wishlist & Enjoy Seamless Checkout"
-        author="Bivek Jang Gurung"
-    />
 
       {
         allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
