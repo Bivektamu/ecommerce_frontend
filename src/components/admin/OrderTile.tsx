@@ -24,7 +24,7 @@ const OrderTile = ({ order }: Props) => {
     const saveHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
         console.log(id);
-        
+
         if (!newStatus) {
             const newToast: Toast = {
                 id: uuidv4(),
@@ -33,7 +33,7 @@ const OrderTile = ({ order }: Props) => {
             }
             dispatch(addToast(newToast))
 
-            
+
         }
         else {
             setShowModal(false)
@@ -53,7 +53,7 @@ const OrderTile = ({ order }: Props) => {
             <div className='text-left'>
                 <p className="mb-6 font-medium text-sm">Change the order status to:</p>
                 <div className="grid grid-cols-3 items-center justify-between  gap-6">
-                    <select name="status" id="status" className='py-2 col-span-2 px-4 border-[1px] border-slate-600 text-sm rounded outline-none appearance-none' onChange={e => {e.preventDefault(), e.stopPropagation(), setNewStatus(e.target.value as Order_Status)}}>
+                    <select name="status" id="status" className='py-2 col-span-2 px-4 border-[1px] border-slate-600 text-sm rounded outline-none appearance-none' onChange={e => { e.preventDefault(), e.stopPropagation(), setNewStatus(e.target.value as Order_Status) }}>
                         <option value="" hidden>Choose a new status</option>
                         {
                             Object.keys(Order_Status).map(key =>
@@ -68,14 +68,14 @@ const OrderTile = ({ order }: Props) => {
         setModalContent({ ...render })
     }
 
-    
+
     const detailsHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
         console.log(id);
-        
+
         setModalContent(<OrderDetails order={order} />)
     }
-    
+
 
     const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
@@ -94,25 +94,31 @@ const OrderTile = ({ order }: Props) => {
 
     return (
         <div className='grid grid-cols-table-order px-8 py-4 border-b-[1px] items-center gap-x-8'>
-            <img src="https://zwgxcetfcxbhggokckkn.supabase.co/storage/v1/object/public/ecommerce/sleek-cozy-black.png" />
+     
+            <span className='text-sm text-slate-500 '>
+                {order.orderNumber}
+            </span>
 
             <span className='text-sm text-slate-500 '>
-                asdasdf
+                {order.items.length}
             </span>
 
             <span className='text-sm text-slate-500'>
-                {order.orderPlaced? getMonth(order.orderPlaced.getMonth()) + ', ' + order.orderPlaced.getDate() : 'NA'}
+                {
+                    
+                     (new Date(order.orderPlaced)).getDate() + ' ' +  getMonth((new Date(order.orderPlaced)).getMonth()) + ' ' + (new Date(order.orderPlaced).getFullYear())
+                }
             </span>
 
             <span className='text-sm text-slate-500'>
                 $ {order.total}
             </span>
 
-            <span className='text-sm text-slate-500'>
-                {order.status}
+            <span className='text-sm text-slate-500 capitalize'>
+                {order.status.toLocaleLowerCase()}
             </span>
 
-            <button onClick={e=>detailsHandler(e, order.id)} className='text-sm text-slate-600 border-[1px] p-2  border-slate-600 font-medium w-[130px] rounded'>
+            <button onClick={e => detailsHandler(e, order.id)} className='text-sm text-slate-600 border-[1px] p-2  border-slate-600 font-medium w-[130px] rounded'>
                 View Details
             </button>
 

@@ -1,79 +1,67 @@
-import { useEffect, useState } from 'react'
-import { User, Order, Product, Colour } from '../../store/types'
+import {  Order, Colour } from '../../store/types'
 import getMonth from '../../utils/getMonth'
-import data from '../../data'
 import gravatar from 'gravatar'
 import Tooltip from '../ui/Tooltip'
+import { useQuery } from '@apollo/client'
+import { GET_USER } from '../../data/query'
+import ProgressLoader from '../ui/ProgressLoader'
+import { useEffect, useState } from 'react'
+import AvatarPlaceholder from '../ui/AvatarPlaceholder'
 type Props = {
     order: Order
 }
 
 
 const OrderDetails = ({ order }: Props) => {
-    const [gravatarUrl, setGravatarUrl] = useState('')
-    const [user, setUser] = useState<User>()
-    const [orderedProducts, setOrderedProducts] = useState<Product[]>([])
+
+  const [gravatarUrl, setGravatarUrl] = useState('')
+ 
+
+    const {loading, data} = useQuery(GET_USER, {
+        variables: {
+            userId: order.userId
+        }
+    })
 
 
-    const { users, products } = data
 
+    const user = data?.user
 
     useEffect(() => {
-        const userExists = users.filter(cs => cs.id === order.userId)[0]
-        if (userExists) {
-            setUser({ ...userExists })
-            setGravatarUrl(gravatar.url(userExists.email, { s: '200', r: 'pg', d: '404' }))
+        if (user) {
+          const link = gravatar.url(user.email, { s: '200', r: 'pg', d: 'mp' });
+          setGravatarUrl(link)
         }
-    }, [order.userId])
+    
+      }, [user])
 
 
-    useEffect(() => {
-        // console.log(order.items);
-
-        if (order.items.length > 0) {
-            const productArray: Product[] = []
-            order.items.map(pr => {
-                const productExists = products.find(item => item.id === pr.productId)
-
-                if (productExists) {
-                    productExists.colors = [pr.color]
-                    productExists.sizes = [pr.size]
-                    productExists.quantity = pr.quantity
-                    productArray.push(productExists)
-                }
-            }
-            )
-            setOrderedProducts([...productArray])
-        }
-
-    }, [order.items])
-
-    useEffect(() => {
-        if (orderedProducts.length > 0) {
-            // console.log(orderedProducts);
-        }
-    }, [orderedProducts])
-
-
+    if(loading) {
+        return <ProgressLoader />
+    }
     return (
         <section className='text-left'>
             <p className="font-medium text-slate-900 mb-6 pb-2 border-b-[1px] text-lg">Order Detail</p>
             <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-slate-500">Ordered on:</span>
                 {
-                    order?.orderPlaced && <span className="text-sm font-medium">{getMonth(order.orderPlaced.getMonth()) + ', ' + order.orderPlaced.getDay()}</span>
+                    (new Date(order.orderPlaced)).getDate() + ' ' +  getMonth((new Date(order.orderPlaced)).getMonth()) + ' ' + (new Date(order.orderPlaced).getFullYear())
                 }
 
-            </div>xxx
+            </div>
 
             <div className="flex items-center justify-between ">
                 <span className="text-sm font-medium text-slate-500">Status:</span>
-                <span className="text-sm font-medium capitalize">{order.status}</span>
+                <span className="text-sm font-medium capitalize">{order.status.toLocaleLowerCase()}</span>
             </div>
 
             <p className="font-medium text-slate-900 mt-10 mb-6 pb-2 border-b-[1px] text-lg">User</p>
             <div className="flex items-center gap-4 mb-6">
-                <img src={gravatarUrl} alt="" className='w-14 h-14 rounded' />
+                
+                {
+                    gravatarUrl ? <img src={gravatarUrl} alt="" className='w-14 h-14 rounded' /> : <AvatarPlaceholder />
+                }
+                
                 <div className=''>
                     <span className=" font-medium">{user?.firstName + ' ' + user?.lastName}</span>
                     <br />
@@ -83,19 +71,19 @@ const OrderDetails = ({ order }: Props) => {
 
             <p className="font-medium text-slate-900 mt-10 mb-6 pb-2 border-b-[1px] text-lg">Ordered Items</p>
             {
-                orderedProducts.map(item =>
+                order.items.map(item =>
                     <div key={item.id} className="flex items-center gap-4 mb-6">
-                        <img src={item.imgs[0].url as string} alt="" className='w-14 h-14' />
+                         <img src={item.imgUrl as string} alt="" className='w-14 h-14' />
                         <div className='grow'>
                             <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{item.title}</span>
+                                <span className="text-sm font-medium">blah blah</span>
                                 <div className='flex items-center gap-2'>
-                                    <span className={`w-3 h-3 rounded-full relative group bg-${item.colors[0].toLowerCase()}${item.colors[0] === Colour.BLACK ? '' : '-600'} block`}>
+                                    <span className={`w-3 h-3 rounded-full relative group bg-${item.color.toLowerCase()}${item.color === Colour.BLACK ? '' : '-600'} block`}>
                                         <Tooltip title='color' />
                                     </span>
                                     <span className='w-3 h-[1px] bg-black text-sm'></span>
                                     <span className='text-xs relative group'>
-                                        {item.sizes[0]}
+                                        {item.size}
                                         <Tooltip title='size' />
                                     </span>
                                 </div>

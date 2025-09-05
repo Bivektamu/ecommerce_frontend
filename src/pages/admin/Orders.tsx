@@ -1,13 +1,29 @@
 // import React, { useState } from 'react'
-import data from '../../data'
 import OrderTile from '../../components/admin/OrderTile'
+import { useQuery } from '@apollo/client'
+import { GET_ORDERS } from '../../data/query'
+import { stripTypename } from '@apollo/client/utilities'
+import { Order } from '../../store/types'
+import ProgressLoader from '../../components/ui/ProgressLoader'
 
 const Orders = () => {
 
-    const { orders } = data
+    const {data, loading, error} = useQuery(GET_ORDERS)
+
+    // if(error) {
+    //     console.log(error)
+    // }
 
 
+
+    if(loading) {
+        return <ProgressLoader />
+    }
+
+    const orders = stripTypename(data.orders)
     // const [actionId, setActionId] = useState('')
+
+    console.log(orders)
 
     return (
 
@@ -19,13 +35,12 @@ const Orders = () => {
 
 
             <div className='grid grid-cols-table-order gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
-                <button>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 3.3087L3.37549 1.00035M3.37549 1.00035L5.75246 3.30726M3.37549 1.00035L3.37935 13M13 10.692L10.6238 12.9997M10.6238 12.9997L8.24754 10.692M10.6238 12.9997V1" stroke="#474B57" strokeWidth="1.14286" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </button>
+                
                 <span className='text-sm text-slate-500 font-medium '>
-                    Ordered Item
+                    Order Number
+                </span>
+                <span className='text-sm text-slate-500 font-medium '>
+                    Items
                 </span>
 
                 <span className='text-sm text-slate-500 font-medium'>
@@ -55,7 +70,7 @@ const Orders = () => {
                     :
                     <div className="w-full">
                         {
-                            orders.map(order =>
+                            orders.map((order:Order) =>
                                 <OrderTile key={order.id} order={order} />
                             )
                         }
