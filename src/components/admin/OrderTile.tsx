@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Order, Order_Status, Toast, Toast_Vairant } from '../../store/types'
 import getMonth from '../../utils/getMonth'
 import Modal from '../ui/Modal'
-import OrderDetails from './OrderDetails';
+import OrderDetails from './order/OrderDetails';
 import { useDispatch } from 'react-redux';
 import { addToast } from '../../store/slices/toastSlice';
 
@@ -23,7 +23,8 @@ const OrderTile = ({ order }: Props) => {
 
     const saveHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.preventDefault()
-        console.log(id);
+
+        console.log(newStatus)
 
         if (!newStatus) {
             const newToast: Toast = {
@@ -32,8 +33,6 @@ const OrderTile = ({ order }: Props) => {
                 msg: 'Please select a status'
             }
             dispatch(addToast(newToast))
-
-
         }
         else {
             setShowModal(false)
@@ -43,8 +42,9 @@ const OrderTile = ({ order }: Props) => {
     }
 
     useEffect(() => {
-        // console.log(newStatus);
+        console.log(newStatus);
     }, [newStatus])
+
 
     const statusHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
@@ -71,9 +71,7 @@ const OrderTile = ({ order }: Props) => {
 
     const detailsHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
         e.stopPropagation();
-        console.log(id);
-
-        setModalContent(<OrderDetails order={order} />)
+        setModalContent(<OrderDetails key={order.id} order={order} />)
     }
 
 
@@ -89,8 +87,6 @@ const OrderTile = ({ order }: Props) => {
         }
 
     }, [modalContent])
-
-
 
     return (
         <div className='grid grid-cols-table-order px-8 py-4 border-b-[1px] items-center gap-x-8'>

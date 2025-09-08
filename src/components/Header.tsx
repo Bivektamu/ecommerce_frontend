@@ -1,25 +1,23 @@
 import Logo from './ui/Logo'
-import gravatar from 'gravatar'
-
 import CartIcon from './ui/CartIcon'
-import AvatarPlaceholder from './ui/AvatarPlaceholder'
 import Search from './Search'
 
 import { useProduct } from '../store/slices/productSlice'
 import { Role } from '../store/types'
 import { getAuthStatus, logOut, useAuth } from '../store/slices/authSlice'
-import { MouseEvent, useEffect, useState } from 'react'
+import { MouseEvent, useEffect } from 'react'
 import { useStoreDispatch } from '../store'
 import { getUser, useUser } from '../store/slices/userSlice'
 import CustomNavLink from './CustomNavLink'
 import { NavLink } from 'react-router-dom'
+import useAvatar from './hooks/useAvatar'
 
 const Header = () => {
   const { products } = useProduct()
   const { isLoggedIn, authUser } = useAuth()
+  const {setAvatarEmail, avatar} = useAvatar()
   const { user } = useUser()
 
-  const [gravatarUrl, setGravatarUrl] = useState('')
 
   const dispatch = useStoreDispatch()
 
@@ -36,8 +34,7 @@ const Header = () => {
 
   useEffect(() => {
     if (user) {
-      const link = gravatar.url(user.email, { s: '200', r: 'pg', d: 'mp' });
-      setGravatarUrl(link)
+      setAvatarEmail(user.email)
     }
 
   }, [user])
@@ -47,7 +44,7 @@ const Header = () => {
     e.stopPropagation()
 
     dispatch(logOut())
-    setGravatarUrl('')
+    setAvatarEmail('')
   }
 
   return (
@@ -68,7 +65,7 @@ const Header = () => {
           </CustomNavLink>
           <div className='relative group'>
             <button className='block'>
-              {gravatarUrl ? <img className='w-7 h-7 rounded-full' src={gravatarUrl} /> : <AvatarPlaceholder />}
+              {avatar}
 
             </button>
             <div className="absolute top-7 -left-[10px] bg-white w-[90px] rounded shadow-md z-10 flex flex-col group-hover:visible invisible">

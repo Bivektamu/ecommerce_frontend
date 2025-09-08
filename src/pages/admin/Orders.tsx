@@ -23,7 +23,6 @@ const Orders = () => {
     const orders = stripTypename(data.orders)
     // const [actionId, setActionId] = useState('')
 
-    console.log(orders)
 
     return (
 
