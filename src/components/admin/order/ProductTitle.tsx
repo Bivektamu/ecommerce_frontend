@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { getProducts, useProduct } from '../../../store/slices/productSlice'
 import { Status } from '../../../store/types'
 import { useStoreDispatch } from '../../../store'

@@ -19,18 +19,18 @@ type Props = {
 const ProductReviews = ({ productId }: Props) => {
 
     const { authUser } = useAuth()
-    const {action} = useReviews()
+    const { action } = useReviews()
 
     const REVIEWS_PER_PAGE = 3
 
-    const {data} = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
+    const { data } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
         variables: {
             productReviewsId: productId
         }
     })
 
-    const reviews = useMemo(()=> {
-        if(data && data?.productReviews) {
+    const reviews = useMemo(() => {
+        if (data && data?.productReviews) {
             return (data.productReviews)
         }
         return []
@@ -114,12 +114,6 @@ const ProductReviews = ({ productId }: Props) => {
         setModalContent(<AddReviewForm productId={productId} />)
     }
 
-    const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation()
-        setShowModal(false)
-        setModalContent(null)
-    }
-
 
     return (
         <div id='reviews-tab'>
@@ -147,7 +141,7 @@ const ProductReviews = ({ productId }: Props) => {
                     </div>
 
                     <div className="wrapper pb-8">
-                        {reviewsPerPage.map((review:Review, i:string) =>
+                        {reviewsPerPage.map((review: Review, i: string) =>
 
                             <div key={i} className="flex items-start justify-between mb-12 gap-10">
                                 <div className="flex items-start justify-between gap-4 w-full">
@@ -183,7 +177,7 @@ const ProductReviews = ({ productId }: Props) => {
             }
 
             {
-                showModal && <Modal close={closeModal}>
+                <Modal isOpen={showModal} close={() => setShowModal(false)} >
                     {modalContent!}
                 </Modal>
             }

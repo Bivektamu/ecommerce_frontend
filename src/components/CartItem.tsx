@@ -10,7 +10,7 @@ import { deleteCart, updateCartQuantity } from '../store/slices/cartSlice'
 import Modal from './ui/Modal'
 
 type Props = {
-    cartItem: Cart ,
+    cartItem: Cart,
 }
 
 const CartItem = ({ cartItem }: Props) => {
@@ -160,7 +160,7 @@ const CartItem = ({ cartItem }: Props) => {
             </div>
 
             {
-                showModal && <Modal close={closeModal}>
+                <Modal isOpen={showModal} close={() => setShowModal(false)} >
                     {modalContent!}
                 </Modal>
             }

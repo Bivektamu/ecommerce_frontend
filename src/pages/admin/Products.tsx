@@ -1,4 +1,4 @@
-import  { MouseEvent,  useEffect, useState, ReactElement } from 'react'
+import { MouseEvent, useEffect, useState, ReactElement } from 'react'
 import { Link } from 'react-router-dom'
 import Close from '../../components/ui/Close'
 import { useStoreDispatch } from '../../store'
@@ -33,7 +33,7 @@ const Products = () => {
   useEffect(() => {
     if (action) {
 
-      let variant:Toast_Vairant = '' as Toast_Vairant, msg = ''
+      let variant: Toast_Vairant = '' as Toast_Vairant, msg = ''
       switch (action) {
         case Action.EDIT:
           msg = 'Product updated successfully.'
@@ -119,7 +119,7 @@ const Products = () => {
         <div className="flex gap-x-4 ">
 
           <div className='relative'>
-          <SearchIcon />
+            <SearchIcon />
 
             <input type='text' readOnly className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10' value={''} placeholder='Search products' />
           </div>
@@ -218,7 +218,7 @@ const Products = () => {
 
 
       {
-        showModal && <Modal close={closeModal}>
+        <Modal isOpen={showModal} close={() => setShowModal(false)} >
           {modalContent!}
         </Modal>
       }
