@@ -8,7 +8,7 @@ import ProgressLoader from '../../components/ui/ProgressLoader'
 
 const Orders = () => {
 
-    const {data, loading, error} = useQuery(GET_ORDERS)
+    const {data, loading, refetch} = useQuery(GET_ORDERS)
 
     // if(error) {
     //     console.log(error)
@@ -70,7 +70,7 @@ const Orders = () => {
                     <div className="w-full">
                         {
                             orders.map((order:Order) =>
-                                <OrderTile key={order.id} order={order} />
+                                <OrderTile key={order.id} order={order} refetchOrders={refetch} />
                             )
                         }
                     </div>

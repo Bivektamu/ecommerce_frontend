@@ -96,6 +96,12 @@ export const CREATE_ORDER = gql`
   }
 `
 
+export const UPDATE_ORDER_STATUS = gql`
+  mutation UpdateOrderStatus($input: OrderStatus) {
+    updateOrderStatus(input: $input)
+  }
+`
+
 export const ADD_TO_WISH_LIST = gql`
  mutation AddToWishList($input: WishListInput) {
   addToWishList(input: $input) {

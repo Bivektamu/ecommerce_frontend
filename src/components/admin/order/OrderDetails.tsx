@@ -76,7 +76,7 @@ const OrderDetails = ({ order }: Props) => {
 
 
                     return (
-                        <div key={item.id + item.color} className="flex items-center gap-4 mb-6">
+                        <div key={item.productId + item.size + item.color} className="flex items-center gap-4 mb-6">
                             <img src={item.imgUrl as string} alt="" className='w-14 h-14' />
                             <div className='grow'>
                                 <div className="flex items-center justify-between">
