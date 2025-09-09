@@ -8,7 +8,7 @@ const useAvatar = () => {
     const avatar:ReactNode = useMemo(() => {
         return  avatarEmail ?
 
-            <img className='w-7 h-7 rounded-full' src={gravatar.url(avatarEmail, { s: '200', r: 'pg', d: 'mp' })} />
+            <img className='w-full h-full object-cover' src={gravatar.url(avatarEmail, { s: '200', r: 'pg', d: 'mp' })} />
 
             : <AvatarPlaceholder />
     }, [avatarEmail])

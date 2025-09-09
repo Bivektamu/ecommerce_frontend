@@ -1,23 +1,21 @@
-import  { MouseEvent, useEffect, useState } from 'react'
-import gravatar from 'gravatar'
-
-import { User} from '../../store/types'
+import { MouseEvent, useEffect, useState } from 'react'
+import { User } from '../../store/types'
 import getMonth from '../../utils/getMonth'
 import Check from '../ui/Check';
 import Close from '../ui/Close';
+import useAvatar from '../hooks/useAvatar';
 type Props = {
     user: User
 }
 
 const UserTile = ({ user }: Props) => {
     const [actionId, setActionId] = useState('')
-    const [gravatarUrl, setGravatarUrl] = useState('')
+    const { avatar, setAvatarEmail } = useAvatar()
 
     useEffect(() => {
 
         if (user.email) {
-            const link = gravatar.url(user.email, { s: '200', r: 'pg', d: 'mp' });
-            setGravatarUrl(link)
+            setAvatarEmail(user.email)
         }
     }, [user.email])
 
@@ -40,7 +38,10 @@ const UserTile = ({ user }: Props) => {
 
     return (
         <div className='grid grid-cols-table-users px-8 py-4 border-b-[1px] items-start gap-x-8'>
-            <img src={gravatarUrl} className='rounded w-16 h-16' />
+            {/* <img src={gravatarUrl} className='rounded w-16 h-16' /> */}
+            <div className="rounded w-16 h-16">
+                {avatar}
+            </div>
             <span className='text-sm text-slate-500 '>
                 {user.firstName + ' ' + user.lastName}
             </span>
@@ -50,11 +51,20 @@ const UserTile = ({ user }: Props) => {
             </span>
 
             <span className='text-sm text-slate-500 capitalize'>
-                {user.address.street}, {user.address.city}, {user.address.city}, {user.address.state.toUpperCase()}, {user.address.postcode}
+                {
+                    user.address.street ? `${user.address.street}, ${user.address.city}, ${user.address.city}, ${user.address.state.toUpperCase()}, ${user.address.postcode} ` : 'Not Available'
+                }
             </span>
 
             <span className='text-sm text-slate-500'>
-                {getMonth(user.timeStamp.getMonth()) + ', ' + user.timeStamp.getDate()}
+                {
+                    (new Date(user.registeredDate)).getDate()
+                    + ' ' +
+                    getMonth((new Date(user.registeredDate)).getMonth())
+                    + ' ' +
+                    (new Date(user.registeredDate)).getFullYear()
+
+                }
             </span>
 
             <span className='relative text-center'>

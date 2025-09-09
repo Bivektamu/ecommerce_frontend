@@ -12,7 +12,7 @@ export interface User {
     firstName: string,
     lastName: string,
     email: string,
-    timeStamp: Date,
+    registeredDate: Date,
     address: Address,
     isActive: boolean,
     isVerified: boolean

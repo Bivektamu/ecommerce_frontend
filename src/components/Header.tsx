@@ -64,7 +64,7 @@ const Header = () => {
             <CartIcon />
           </CustomNavLink>
           <div className='relative group'>
-            <button className='block'>
+            <button className='block rounded-full w-8 h-8 overflow-hidden'>
               {avatar}
 
             </button>

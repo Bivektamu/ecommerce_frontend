@@ -23,7 +23,6 @@ const Orders = () => {
     const orders = stripTypename(data.orders)
     // const [actionId, setActionId] = useState('')
 
-
     return (
 
         <div className='bg-white rounded-lg'>

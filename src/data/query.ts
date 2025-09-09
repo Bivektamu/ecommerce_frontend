@@ -30,6 +30,27 @@ export const GET_USER = gql`
 }
 `;
 
+export const GET_USERS = gql`
+  query Users {
+    users {
+      id
+      firstName
+      lastName
+      email
+      address {
+        street
+        city
+        postcode
+        state
+        country
+      }
+      role
+      registeredDate
+    }
+  }
+`;
+
+
 export const GET_USER_EMAIL = gql`
   query Query($userEmailId: ID) {
     userEmail(id: $userEmailId)

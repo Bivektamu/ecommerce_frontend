@@ -1,14 +1,36 @@
 // import React, { useState } from 'react'
-import data from '../../data'
+import { v4 as uuidv4 } from 'uuid';
+
 import UserTile from '../../components/admin/UserTile'
 import SearchIcon from '../../components/ui/SearchIcons'
+import { useQuery } from '@apollo/client'
+import { GET_USERS } from '../../data/query'
+import { Toast, Toast_Vairant, User } from '../../store/types'
+import { addToast } from '../../store/slices/toastSlice';
+import { useDispatch } from 'react-redux';
+import ProgressLoader from '../../components/ui/ProgressLoader';
+import { stripTypename } from '@apollo/client/utilities';
 
 const Customers = () => {
+    const dispatch = useDispatch()
 
-    const { users } = data
+    const { data, loading, error } = useQuery(GET_USERS)
 
+    if (error) {
+        const newToast: Toast = {
+            id: uuidv4(),
+            variant: Toast_Vairant.DANGER,
+            msg: error.message
+        }
+        console.log(error)
+        dispatch(addToast(newToast))
+    }
 
-    // const [actionId, setActionId] = useState('')
+    const users:User[]  = data?.users?stripTypename(data.users): [];
+    console.log(users)
+    if (loading)
+         return <ProgressLoader />
+
     return (
 
         <div className='bg-white rounded-lg'>
@@ -20,7 +42,7 @@ const Customers = () => {
                 </div>
             </div>
 
-            <div className='grid grid-cols-table-customers gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
+            <div className='grid grid-cols-table-users gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
                 <button>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 3.3087L3.37549 1.00035M3.37549 1.00035L5.75246 3.30726M3.37549 1.00035L3.37935 13M13 10.692L10.6238 12.9997M10.6238 12.9997L8.24754 10.692M10.6238 12.9997V1" stroke="#474B57" strokeWidth="1.14286" strokeLinecap="round" strokeLinejoin="round" />
@@ -39,14 +61,14 @@ const Customers = () => {
                 </span>
 
                 <span className='text-sm text-slate-500 font-medium'>
-                    Created at
+                    Registered at
                 </span>
 
                 <span className='text-sm text-slate-500 font-medium'>
                     Active
                 </span>
 
-                
+
                 <span className='text-sm text-slate-500 font-medium'>
                     Verified
                 </span>
