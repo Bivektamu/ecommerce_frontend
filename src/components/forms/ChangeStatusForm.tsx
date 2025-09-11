@@ -1,10 +1,10 @@
 import { MouseEvent, useState } from 'react'
 import { Order_Status, Toast, Toast_Vairant } from '../../store/types'
 import { v4 as uuidv4 } from 'uuid';
-import { useDispatch } from 'react-redux';
 import { addToast } from '../../store/slices/toastSlice';
 import { useMutation } from '@apollo/client';
 import { UPDATE_ORDER_STATUS } from '../../data/mutation';
+import { useStoreDispatch } from '../../store';
 
 type Props = {
     id: string,
@@ -15,7 +15,7 @@ const ChangeStatusForm = ({ id, refetch, closeModal }: Props) => {
 
     const [updateStatus, { loading }] = useMutation(UPDATE_ORDER_STATUS)
 
-    const dispatch = useDispatch()
+    const dispatch = useStoreDispatch()
 
     const [newStatus, setNewStatus] = useState<Order_Status | null>(null)
 

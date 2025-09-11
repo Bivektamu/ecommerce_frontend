@@ -25,6 +25,15 @@ export const CREATE_USER = gql`
   }
 `
 
+export const DELETE_USER = gql`
+  mutation DeleteUser($deleteUserId: ID) {
+    deleteUser(id: $deleteUserId) {
+      success
+      message
+    }
+  }
+`
+
 export const UPDATE_ADDRESS = gql`
   mutation UpdateAddress($input: AddressInput) {
     updateAddress(input: $input) {

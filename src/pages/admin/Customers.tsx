@@ -14,7 +14,7 @@ import { stripTypename } from '@apollo/client/utilities';
 const Customers = () => {
     const dispatch = useDispatch()
 
-    const { data, loading, error } = useQuery(GET_USERS)
+    const { data, loading, error, refetch } = useQuery(GET_USERS)
 
     if (error) {
         const newToast: Toast = {
@@ -22,7 +22,6 @@ const Customers = () => {
             variant: Toast_Vairant.DANGER,
             msg: error.message
         }
-        console.log(error)
         dispatch(addToast(newToast))
     }
 
@@ -64,10 +63,6 @@ const Customers = () => {
                     Registered at
                 </span>
 
-                <span className='text-sm text-slate-500 font-medium'>
-                    Active
-                </span>
-
 
                 <span className='text-sm text-slate-500 font-medium'>
                     Verified
@@ -85,7 +80,7 @@ const Customers = () => {
                     <div className="w-full">
                         {
                             users.map(user =>
-                                <UserTile key={user.id} user={user} />
+                                <UserTile key={user.id} user={user} refetchUsers = {refetch} />
                             )
                         }
                     </div>

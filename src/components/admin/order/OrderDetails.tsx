@@ -59,9 +59,11 @@ const OrderDetails = ({ order }: Props) => {
             <p className="font-medium text-slate-900 mt-10 mb-6 pb-2 border-b-[1px] text-lg">User</p>
             <div className="flex items-center gap-4 mb-6">
 
-                {
-                    avatar
-                }
+                <span className='w-20 h-20'>
+                    {
+                        avatar
+                    }
+                </span>
 
                 <div className=''>
                     <span className=" font-medium">{user?.firstName + ' ' + user?.lastName}</span>
