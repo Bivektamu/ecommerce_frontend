@@ -1,14 +1,35 @@
 // import { useState } from 'react'
-import data from '../../data'
+import { v4 as uuidv4 } from 'uuid';
+
+import { stripTypename } from '@apollo/client/utilities'
 import ReviewTile from '../../components/admin/ReviewTile'
 import SearchIcon from '../../components/ui/SearchIcons'
+import { GET_REVIEWS } from '../../data/query'
+import { useStoreDispatch } from '../../store'
+import { Review, Toast, Toast_Vairant } from '../../store/types'
+import { useQuery } from '@apollo/client'
+import { addToast } from '../../store/slices/toastSlice';
+import ProgressLoader from '../../components/ui/ProgressLoader';
 
 const Reviews = () => {
 
-    const { reviews } = data
+    const dispatch = useStoreDispatch()
 
+    const { data, loading, error, refetch } = useQuery(GET_REVIEWS)
 
-    // const [actionId, setActionId] = useState('')
+    if (error) {
+        const newToast: Toast = {
+            id: uuidv4(),
+            variant: Toast_Vairant.DANGER,
+            msg: error.message
+        }
+        dispatch(addToast(newToast))
+    }
+
+    const reviews:Review[]  = data?.reviews? stripTypename(data.reviews): [];
+    console.log(reviews)
+    if (loading)
+         return <ProgressLoader />
     return (
 
         <div className='bg-white rounded-lg'>
@@ -54,7 +75,7 @@ const Reviews = () => {
                     <div className="w-full">
                         {
                             reviews.map(review =>
-                                <ReviewTile key={review.id} review={review} />
+                                <ReviewTile key={review.id} review={review} reFetch={refetch} />
                             )
                         }
                     </div>

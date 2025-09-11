@@ -7,10 +7,11 @@ import data from '../../data';
 import getExcerpt from '../../utils/getExcerpt';
 
 type Props = {
-    review: Review
+    review: Review,
+    reFetch: ()=> void
 }
 
-const ReviewTile = ({ review }: Props) => {
+const ReviewTile = ({ review, reFetch }: Props) => {
     // const dispatch = useDispatch()
     const [actionId, setActionId] = useState('')
     const [product, setProduct] = useState<Product | null>(null)
@@ -54,7 +55,7 @@ const ReviewTile = ({ review }: Props) => {
             </span> 
 
             <span className='text-sm text-slate-500'>
-                {getMonth(review.createdAt.getMonth()) + ', ' + review.createdAt.getDate()}
+                {getMonth((new Date(review.createdAt)).getMonth()) + ', ' + (new Date(review.createdAt)).getDate()}
             </span>
 
             <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>

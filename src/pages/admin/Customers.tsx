@@ -7,12 +7,12 @@ import { useQuery } from '@apollo/client'
 import { GET_USERS } from '../../data/query'
 import { Toast, Toast_Vairant, User } from '../../store/types'
 import { addToast } from '../../store/slices/toastSlice';
-import { useDispatch } from 'react-redux';
 import ProgressLoader from '../../components/ui/ProgressLoader';
 import { stripTypename } from '@apollo/client/utilities';
+import { useStoreDispatch } from '../../store';
 
 const Customers = () => {
-    const dispatch = useDispatch()
+    const dispatch = useStoreDispatch()
 
     const { data, loading, error, refetch } = useQuery(GET_USERS)
 

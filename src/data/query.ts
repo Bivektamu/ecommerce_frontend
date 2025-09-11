@@ -119,6 +119,20 @@ export const GET_REVIEWS_BY_PRODUCT_ID = gql`
   }
 `
 
+export const GET_REVIEWS = gql`
+  query Reviews {
+    reviews {
+      id
+      userId
+      productId
+      rating
+      review
+      createdAt
+      updateAt
+    }
+  }
+`
+
 export const GET_ORDERS = gql`
 query Orders {
   orders {

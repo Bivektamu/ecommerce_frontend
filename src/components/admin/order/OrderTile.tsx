@@ -1,10 +1,10 @@
 import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 
-import { Order } from '../../store/types'
-import getMonth from '../../utils/getMonth'
-import Modal from '../ui/Modal'
-import OrderDetails from './order/OrderDetails';
-import ChangeStatusForm from '../forms/ChangeStatusForm';
+import { Order } from '../../../store/types'
+import getMonth from '../../../utils/getMonth'
+import Modal from '../../ui/Modal'
+import OrderDetails from './OrderDetails';
+import ChangeStatusForm from '../../forms/ChangeStatusForm';
 
 type Props = {
     order: Order,

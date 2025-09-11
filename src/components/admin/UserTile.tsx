@@ -97,7 +97,7 @@ const UserTile = ({ user, refetchUsers }: Props) => {
         <>
             <div className='grid grid-cols-table-users px-8 py-4 border-b-[1px] items-start gap-x-8'>
                 {/* <img src={gravatarUrl} className='rounded w-16 h-16' /> */}
-                <div className="rounded w-16 h-16">
+                <div className="rounded w-16 h-16 overflow-hidden">
                     {avatar}
                 </div>
                 <span className='text-sm text-slate-500 '>
