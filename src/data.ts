@@ -80,7 +80,7 @@ const data: Data =
             },
             isActive: true,
             isVerified: false,
-            timeStamp: new Date,
+            registeredDate: new Date,
         },
     ],
     reviews: [

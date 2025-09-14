@@ -23,7 +23,7 @@ const ProductReviews = ({ productId }: Props) => {
 
     const REVIEWS_PER_PAGE = 3
 
-    const { data } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
+    const { data, refetch } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
         variables: {
             productReviewsId: productId
         }
@@ -111,7 +111,7 @@ const ProductReviews = ({ productId }: Props) => {
 
     const createReviewHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
-        setModalContent(<AddReviewForm productId={productId} />)
+        setModalContent(<AddReviewForm productId={productId} refetchReviews = {refetch} />)
     }
 
 

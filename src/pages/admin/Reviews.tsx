@@ -15,7 +15,7 @@ const Reviews = () => {
 
     const dispatch = useStoreDispatch()
 
-    const { data, loading, error, refetch } = useQuery(GET_REVIEWS)
+    const { data, loading, error } = useQuery(GET_REVIEWS)
 
     if (error) {
         const newToast: Toast = {
@@ -75,7 +75,7 @@ const Reviews = () => {
                     <div className="w-full">
                         {
                             reviews.map(review =>
-                                <ReviewTile key={review.id} review={review} reFetch={refetch} />
+                                <ReviewTile key={review.id} review={review}  />
                             )
                         }
                     </div>

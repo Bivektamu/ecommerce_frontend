@@ -94,7 +94,8 @@ export const CREATE_REVIEW = gql`
       productId
       rating
       review
-      timeStamp
+      createdAt
+      updateAt
     }
   }
 `

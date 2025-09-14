@@ -1,17 +1,25 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { RatingWidget } from '../ui/RatingWidget'
-import { FormError, Review, ReviewInput, ValidateSchema } from '../../store/types'
+import { FormError, Review, ReviewInput, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
 import { useAuth } from '../../store/slices/authSlice'
 import validateForm from '../../utils/validate'
-import { addReview } from '../../store/slices/reviewSlice'
+import { v4 as uuidv4 } from 'uuid';
+
 import { useStoreDispatch } from '../../store'
+import { useMutation } from '@apollo/client'
+import { CREATE_REVIEW } from '../../data/mutation'
+import { addToast } from '../../store/slices/toastSlice'
 
 type Props = {
-  productId: string
+  productId: string,
+  refetchReviews: () => void
 }
-const AddReviewForm = ({ productId }: Props) => {
+const AddReviewForm = ({ productId, refetchReviews }: Props) => {
+    const dispatch = useStoreDispatch()
 
-  const dispatch = useStoreDispatch()
+  const [addReview, { loading, error }] = useMutation(CREATE_REVIEW, {
+    onCompleted: refetchReviews
+  })
   const { authUser } = useAuth()
 
   const [formData, setFormData] = useState<ReviewInput>({
@@ -77,8 +85,23 @@ const AddReviewForm = ({ productId }: Props) => {
 
     console.log(formData)
 
-    dispatch(addReview(formData))
+    addReview({
+      variables: {
+        input: formData
+      }
+    })
+
   }
+
+  if (error) {
+    const newToast: Toast = {
+      id: uuidv4(),
+      variant: Toast_Vairant.DANGER,
+      msg: error.message
+    }
+    dispatch(addToast(newToast))
+  }
+
   return (
     <div className="bg-white rounded-lg">
       <p className="px-8 py-2 border-b-[1px] font-semibold">Create Review</p>
@@ -103,7 +126,7 @@ const AddReviewForm = ({ productId }: Props) => {
               {formErrors.review && <span className='text-red-500 text-xs'>{formErrors.review}</span>}
 
             </fieldset>
-            <button type="submit" className="w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer">Submit</button>
+            <button type="submit" className="w-[200px] bg-black text-white py-2 px-4 rounded text-center cursor-pointer">{!loading?"Submit":'Submitting...'}</button>
           </div>
 
         </form>

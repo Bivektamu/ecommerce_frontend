@@ -1,9 +1,9 @@
 import  { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Colour, Filters, PriceRange, Product, Size, Status } from '../store/types'
-import TextLoader from './ui/TextLoader'
-import CircleLoader from './ui/CircleLoader'
-import SquareLoader from './ui/SquareLoader'
-import getClasses from '../utils/getClasses'
+import { Colour, Filters, PriceRange, Product, Size, Status } from '../../store/types'
+import TextLoader from '../ui/TextLoader'
+import CircleLoader from '../ui/CircleLoader'
+import SquareLoader from '../ui/SquareLoader'
+import getClasses from '../../utils/getClasses'
 type Props = {
     products: Product[],
     status: Status,
