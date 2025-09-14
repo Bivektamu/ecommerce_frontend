@@ -22,18 +22,20 @@ const ProductComponent = () => {
 
   const params = useParams()
   const navigate = useNavigate()
+  const dispatch = useStoreDispatch()
 
   const [productItem, setProductItem] = useState<null | Product>(null)
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
-  const dispatch = useStoreDispatch()
   const { products, status } = useProduct()
   const { reviews } = useReviews()
 
 
 
   useEffect(() => {
-    dispatch(getProducts())
-  }, [])
+    if (status === Status.IDLE) {
+      dispatch(getProducts())
+    }
+  }, [dispatch])
 
   useEffect(() => {
     if (products.length > 0) {
@@ -107,7 +109,7 @@ const ProductComponent = () => {
 
               <p className="text-xl font-semibold mb-8">${productItem?.price}</p>
               <AddToCartForm product={productItem} />
-             
+
 
             </div>
           </div>

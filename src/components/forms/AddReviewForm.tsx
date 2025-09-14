@@ -75,6 +75,8 @@ const AddReviewForm = ({ productId }: Props) => {
       return setFormErrors(prev => ({ ...prev, ...errors }))
     }
 
+    console.log(formData)
+
     dispatch(addReview(formData))
   }
   return (

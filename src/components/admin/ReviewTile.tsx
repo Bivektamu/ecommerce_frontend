@@ -1,58 +1,69 @@
-import { MouseEvent, useEffect, useState } from 'react'
+import { MouseEvent, useState } from 'react'
 
-import { User, Product, Review} from '../../store/types'
+import { Review, Toast, Toast_Vairant } from '../../store/types'
 import getMonth from '../../utils/getMonth'
-// import { useDispatch } from 'react-redux';
-import data from '../../data';
+import { v4 as uuidv4 } from 'uuid';
 import getExcerpt from '../../utils/getExcerpt';
+import { GET_PRODUCT_AND_USER } from '../../data/query';
+import { useQuery } from '@apollo/client';
+import { useStoreDispatch } from '../../store';
+import { addToast } from '../../store/slices/toastSlice';
+import TileLoader from '../ui/TileLoader';
 
 type Props = {
     review: Review,
-    reFetch: ()=> void
+    // reFetch: ()=> void
 }
 
-const ReviewTile = ({ review, reFetch }: Props) => {
-    // const dispatch = useDispatch()
+const ReviewTile = ({ review }: Props) => {
+    const dispatch = useStoreDispatch()
+
+    const { data, loading, error } = useQuery(GET_PRODUCT_AND_USER, {
+        variables: {
+            productId: review.productId,
+            userId: review.userId
+        }
+    })
+
+
+
     const [actionId, setActionId] = useState('')
-    const [product, setProduct] = useState<Product | null>(null)
-    const [user, setUser] = useState<User | null>(null)
 
-    const {userId, productId} = review
-
-    const {products, users} = data
-    useEffect(()=> {
-        const productExists:Product |  null = products.filter(item=>item.id === productId)[0]
-        if(productExists) {
-            setProduct(productExists)
-        }
-    }, [productId])
-
-    useEffect(()=> {
-        const userExists:User | null = users.filter(item=>item.id === userId)[0]
-        if(userExists) {
-            setUser(userExists)
-        }
-    }, [userId])
 
     const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        // console.log(review.id);
+    }
+
+    if (error) {
+        const newToast: Toast = {
+            id: uuidv4(),
+            variant: Toast_Vairant.INFO,
+            msg: error.message
+        }
+        dispatch(addToast(newToast))
+    }
+
+    const product = data?.product
+    const user = data?.user
+
+    if (loading) {
+        return <TileLoader cssClass='mb-8' />
     }
 
     return (
         <div className='grid grid-cols-table-reviews px-8 py-4 border-b-[1px] items-center   gap-x-8'>
             <img src={product?.imgs[0].url as string} className='rounded w-16 h-16' />
             <span className='text-sm text-slate-500 '>
-                {user?.firstName + ' ' + user?.lastName}
+                {user? user.firstName + ' ' + user.lastName : 'Inactive User'}
             </span>
 
             <span className='text-sm text-slate-500'>
-                {review.review.length > 100? getExcerpt(review.review, 10):review.review}
+                {review.review.length > 100 ? getExcerpt(review.review, 10) : review.review}
             </span>
 
             <span className='relative'>
                 {review.rating} / 5
-            </span> 
+            </span>
 
             <span className='text-sm text-slate-500'>
                 {getMonth((new Date(review.createdAt)).getMonth()) + ', ' + (new Date(review.createdAt)).getDate()}

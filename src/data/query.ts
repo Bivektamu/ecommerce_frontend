@@ -57,11 +57,11 @@ export const GET_USER_EMAIL = gql`
   }
 `
 
-export const GET_USER_NAME = gql`
-  query User($userId: ID) {
-  user(id: $userId) {
-    firstName
-    lastName
+export const GET_PUBLIC_USER_DETAILS = gql`
+  query PublicUserDetails($userId: ID) {
+    publicUserDetails(id: $userId) {
+      firstName
+      lastName
   }
 }
 `
@@ -234,6 +234,23 @@ export const GET_WISH_LIST_BY_USER_ID = gql`
         id
         createdAt
       }
+    }
+  }
+`
+
+export const GET_PRODUCT_AND_USER = gql`
+  query ProductAndUser($productId: ID, $userId: ID) {
+    product(id: $productId) {
+      imgs {
+        url
+      }
+      id
+      title
+    }
+    user(id: $userId) {
+      firstName
+      email
+      lastName
     }
   }
 `
