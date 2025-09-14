@@ -1,7 +1,7 @@
 import { lazy } from 'react'
-const Header = lazy(() => import("../components/Header"))
+const Header = lazy(() => import("../components/layout/Header"))
 
-import Footer from '../components/Footer'
+import Footer from '../components/layout/Footer'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useToasts } from '../store/slices/toastSlice'
 import ToastComponent from '../components/ui/Toast'

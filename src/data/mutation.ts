@@ -100,6 +100,29 @@ export const CREATE_REVIEW = gql`
   }
 `
 
+
+export const EDIT_REVIEW = gql`
+  mutation EditReview($input: EditReview) {
+    editReview(input: $input) {
+      id
+      userId
+      productId
+      rating
+      review
+      createdAt
+      updateAt
+    }
+  }
+`
+
+export const DELETE_REVIEW = gql`
+mutation DeleteReview($reviewId: ID) {
+  deleteReview(id: $reviewId) {
+    success
+  }
+}
+`
+
 export const CREATE_ORDER = gql`
   mutation CreateOrder($input: OrderInput) {
     createOrder(input: $input)

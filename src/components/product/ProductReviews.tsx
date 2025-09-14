@@ -1,17 +1,15 @@
-import { MouseEvent, ReactElement, useEffect, useMemo, useState } from 'react'
-import { formatDistanceToNow } from 'date-fns'
-import StarIcon from '../ui/StarIcon'
+import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../store/slices/authSlice'
-import { Action, Review, Role } from '../../store/types'
+import { Review, Role } from '../../store/types'
 
 import Modal from '../ui/Modal'
 import AddReviewForm from '../forms/AddReviewForm'
 import { getAverageRating } from '../../utils/helpers'
-import AvatarPlaceholder from '../ui/AvatarPlaceholder'
-import UserName from '../ui/UserName'
 import { useQuery } from '@apollo/client'
 import { GET_REVIEWS_BY_PRODUCT_ID } from '../../data/query'
-import { useReviews } from '../../store/slices/reviewSlice'
+import ProgressLoader from '../ui/ProgressLoader'
+import { stripTypename } from '@apollo/client/utilities'
+import ReviewTile from './ReviewTile'
 
 type Props = {
     productId: string
@@ -19,11 +17,10 @@ type Props = {
 const ProductReviews = ({ productId }: Props) => {
 
     const { authUser } = useAuth()
-    const { action } = useReviews()
 
     const REVIEWS_PER_PAGE = 3
 
-    const { data, refetch } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
+    const { data, loading, error, refetch } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
         variables: {
             productReviewsId: productId
         }
@@ -31,7 +28,10 @@ const ProductReviews = ({ productId }: Props) => {
 
     const reviews = useMemo(() => {
         if (data && data?.productReviews) {
-            return (data.productReviews)
+            const reviews = stripTypename(data.productReviews).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
+            console.log()
+
+            return (reviews)
         }
         return []
     }, [data])
@@ -43,7 +43,6 @@ const ProductReviews = ({ productId }: Props) => {
     })
 
     const [showModal, setShowModal] = useState(false)
-    const [modalContent, setModalContent] = useState<ReactElement | null>(null)
 
     useEffect(() => {
         if (reviews && reviews.length > 0) {
@@ -54,22 +53,6 @@ const ProductReviews = ({ productId }: Props) => {
             }))
         }
     }, [reviews])
-
-    useEffect(() => {
-        if (modalContent) {
-            setShowModal(true)
-        }
-    }, [modalContent])
-
-
-    useEffect(() => {
-        if (action === Action.ADD) {
-            setShowModal(false)
-            setModalContent(null)
-            setModalContent(null)
-        }
-    }, [action])
-
 
 
     const { reviewsPerPage, currentPage, lastPage } = pagination
@@ -108,10 +91,13 @@ const ProductReviews = ({ productId }: Props) => {
 
     }
 
+    if (loading) {
+        return <ProgressLoader />
+    }
 
-    const createReviewHandler = (e: MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation()
-        setModalContent(<AddReviewForm productId={productId} refetchReviews = {refetch} />)
+
+    if (error) {
+        return <p>Sorry, there was a problem loading reviews. Please refresh the page again.</p>
     }
 
 
@@ -130,7 +116,7 @@ const ProductReviews = ({ productId }: Props) => {
 
             </div>
             {
-                authUser?.role === Role.CUSTOMER && <button onClick={createReviewHandler} className="border-[1px] border-slate-600 py-2 px-4 rounded text-center cursor-pointer text-sm font-medium mb-2">Write a review</button>
+                authUser?.role === Role.CUSTOMER && <button onClick={() => setShowModal(true)} className="border-[1px] border-slate-600 py-2 px-4 rounded text-center cursor-pointer text-sm font-medium mb-2">Write a review</button>
             }
 
             {
@@ -141,32 +127,8 @@ const ProductReviews = ({ productId }: Props) => {
                     </div>
 
                     <div className="wrapper pb-8">
-                        {reviewsPerPage.map((review: Review, i: string) =>
-
-                            <div key={i} className="flex items-start justify-between mb-12 gap-10">
-                                <div className="flex items-start justify-between gap-4 w-full">
-
-                                    <div className="basis-1/12">
-                                        <AvatarPlaceholder />
-                                    </div>
-
-                                    <div className='basis-11/12'>
-                                        <div className="mb-2 capitalize">
-                                            <UserName id={review.userId} />
-                                        </div>
-                                        <p className="mb-4 text-slate-600 uppercase text-sm">{formatDistanceToNow(review.createdAt, { addSuffix: true })}</p>
-                                        <p className="text-slate-600  text-sm">
-                                            {review.review}
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div className='flex gap-1'>
-                                    {new Array(review.rating as number).fill('*').map((_, i) =>
-                                        <StarIcon key={i} />
-                                    )}
-                                </div>
-                            </div>
+                        {reviewsPerPage.map((review: Review) =>
+                            <ReviewTile key={review.id} review={review} refetchReview={refetch} />
                         )}
                     </div>
                     <button
@@ -178,7 +140,7 @@ const ProductReviews = ({ productId }: Props) => {
 
             {
                 <Modal isOpen={showModal} close={() => setShowModal(false)} >
-                    {modalContent!}
+                    <AddReviewForm productId={productId} refetchReviews={refetch} closeModal={() => setShowModal(false)} />
                 </Modal>
             }
         </div>

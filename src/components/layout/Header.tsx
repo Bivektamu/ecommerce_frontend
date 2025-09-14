@@ -1,16 +1,16 @@
-import Logo from './ui/Logo'
-import CartIcon from './ui/CartIcon'
-import Search from './Search'
+import Logo from '../ui/Logo'
+import CartIcon from '../ui/CartIcon'
+import Search from '../Search'
 
-import { useProduct } from '../store/slices/productSlice'
-import { Role } from '../store/types'
-import { getAuthStatus, logOut, useAuth } from '../store/slices/authSlice'
+import { useProduct } from '../../store/slices/productSlice'
+import { Role } from '../../store/types'
+import { logOut, useAuth } from '../../store/slices/authSlice'
 import { MouseEvent, useEffect } from 'react'
-import { useStoreDispatch } from '../store'
-import { getUser, useUser } from '../store/slices/userSlice'
-import CustomNavLink from './CustomNavLink'
+import { useStoreDispatch } from '../../store'
+import { getUser, useUser } from '../../store/slices/userSlice'
+import CustomNavLink from '../CustomNavLink'
 import { NavLink } from 'react-router-dom'
-import useAvatar from './hooks/useAvatar'
+import useAvatar from '../hooks/useAvatar'
 
 const Header = () => {
   const { products } = useProduct()
@@ -21,9 +21,6 @@ const Header = () => {
 
   const dispatch = useStoreDispatch()
 
-  useEffect(() => {
-      dispatch(getAuthStatus())
-  }, [])
 
   useEffect(() => {
     if (authUser && authUser.role === Role.CUSTOMER) {

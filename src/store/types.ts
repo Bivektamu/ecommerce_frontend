@@ -289,11 +289,18 @@ export interface Review {
     createdAt: Date,
     rating: null | number,
 }
+export type ReviewId = Review['id']
 
 
 export interface ReviewInput {
     userId: UserId,
     productId: ProductId,
+    review: string,
+    rating: null | number,
+}
+
+export interface EditReviewInput {
+    id: ReviewId,
     review: string,
     rating: null | number,
 }

@@ -13,8 +13,6 @@ const UserName = ({ id }: Props) => {
     });
 
     if(loading) return <TextLoader cssClass='gap-4 h-4 w-24 ml-0' col='2' />
-console.log(data)
-
     if(error || !data) {
         return <p>Inactive User</p>
     }

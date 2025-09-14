@@ -1,48 +1,47 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { RatingWidget } from '../ui/RatingWidget'
-import { FormError, Review, ReviewInput, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
-import { useAuth } from '../../store/slices/authSlice'
+import { EditReviewInput, FormError, Review, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
 import validateForm from '../../utils/validate'
 import { v4 as uuidv4 } from 'uuid';
-
 import { useStoreDispatch } from '../../store'
 import { useMutation } from '@apollo/client'
-import { CREATE_REVIEW } from '../../data/mutation'
+import { EDIT_REVIEW } from '../../data/mutation'
 import { addToast } from '../../store/slices/toastSlice'
+import { GET_REVIEWS_BY_PRODUCT_ID } from '../../data/query';
 
 type Props = {
-  productId: string,
-  refetchReviews: () => void,
+  review: Review
   closeModal: () => void
+  refetchReview: () => void
+
 }
-const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
+const EditReviewForm = ({ review, closeModal, refetchReview}: Props) => {
   const dispatch = useStoreDispatch()
 
-  const [addReview, { loading, error }] = useMutation(CREATE_REVIEW, {
+  const [editReview, { loading, error }] = useMutation(EDIT_REVIEW, {
+   
     onCompleted: () => {
-      refetchReviews();
       closeModal();
+      refetchReview();
 
       const newToast: Toast = {
         id: uuidv4(),
         variant: Toast_Vairant.SUCCESS,
-        msg: 'Review submitted successfully'
+        msg: 'Review updated successfully'
       }
       dispatch(addToast(newToast))
     }
   })
-  const { authUser } = useAuth()
 
-  const [formData, setFormData] = useState<ReviewInput>({
-    productId: productId,
-    userId: authUser?.id,
-    rating: null,
-    review: '',
+  const [formData, setFormData] = useState<EditReviewInput>({
+    id: review.id,
+    rating: review.rating,
+    review: review.review,
   } as Review)
 
   const [formErrors, setFormErrors] = useState<FormError>({})
 
-  const [stars, setStars] = useState<number | null>(null)
+  const [stars, setStars] = useState<number | null>(review.rating)
 
   // const {rating, review} = formData
   useEffect(() => {
@@ -57,7 +56,7 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
   useEffect(() => {
     if (Object.keys(formData).length > 0) {
       Object.keys(formData).map(key => {
-        if (formData[key as keyof ReviewInput]) {
+        if (formData[key as keyof EditReviewInput]) {
           setFormErrors(prev => ({ ...prev, [key]: '' }))
         }
       })
@@ -71,7 +70,6 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
   }
   const submitHandler = (e: FormEvent) => {
     e.preventDefault()
-    // console.log(formData);
 
     const validateSchema: ValidateSchema<unknown>[] =
       [
@@ -94,9 +92,7 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
       return setFormErrors(prev => ({ ...prev, ...errors }))
     }
 
-    console.log(formData)
-
-    addReview({
+    editReview({
       variables: {
         input: formData
       }
@@ -113,7 +109,6 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
       msg: error.message
     }
     dispatch(addToast(newToast))
-
   }
 
   return (
@@ -135,7 +130,7 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
               <label htmlFor="description" className=" font-medium text-slate-600 text-sm block mb-4 w-full">Add a written review</label>
               <textarea
                 onChange={onChangeHandler}
-                id="description" name="description" className="border-[1px] outline-none text-sm block px-4 py-2 rounded w-full max-w-full h-40"></textarea>
+                id="description" name="description" className="border-[1px] outline-none text-sm block px-4 py-2 rounded w-full max-w-full h-40">{formData.review}</textarea>
 
               {formErrors.review && <span className='text-red-500 text-xs'>{formErrors.review}</span>}
 
@@ -149,4 +144,4 @@ const AddReviewForm = ({ productId, refetchReviews, closeModal }: Props) => {
   )
 }
 
-export default AddReviewForm
+export default EditReviewForm

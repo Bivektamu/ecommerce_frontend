@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import Logo from './ui/Logo'
-import GithubIcon from './ui/GithubIcon'
-import InstagramIcon from './ui/InstagramIcon'
-import YoutubeIcon from './ui/YoutubeIcon'
+import Logo from '../ui/Logo'
+import GithubIcon from '../ui/GithubIcon'
+import InstagramIcon from '../ui/InstagramIcon'
+import YoutubeIcon from '../ui/YoutubeIcon'
 
 const Footer = () => {
   return (
