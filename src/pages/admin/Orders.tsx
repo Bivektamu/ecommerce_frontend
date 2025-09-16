@@ -8,7 +8,7 @@ import ProgressLoader from '../../components/ui/ProgressLoader'
 
 const Orders = () => {
 
-    const {data, loading, refetch} = useQuery(GET_ORDERS)
+    const { data, loading, refetch } = useQuery(GET_ORDERS)
 
     // if(error) {
     //     console.log(error)
@@ -16,7 +16,7 @@ const Orders = () => {
 
 
 
-    if(loading) {
+    if (loading) {
         return <ProgressLoader />
     }
 
@@ -33,7 +33,7 @@ const Orders = () => {
 
 
             <div className='grid grid-cols-table-order gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
-                
+
                 <span className='text-sm text-slate-500 font-medium '>
                     Order Number
                 </span>
@@ -68,7 +68,7 @@ const Orders = () => {
                     :
                     <div className="w-full">
                         {
-                            orders.map((order:Order) =>
+                            orders.map((order: Order) =>
                                 <OrderTile key={order.id} order={order} refetchOrders={refetch} />
                             )
                         }

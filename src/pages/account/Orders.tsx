@@ -17,7 +17,7 @@ const UserOrders = () => {
   const { data, loading, error } = useQuery(GET_ORDERS_BY_USER_ID, {
     variables:{
       userOrdersId: authUser?.id
-    } 
+    },
   })
   const refinedData = useMemo(() => {
     if (data && data.userOrders.length > 0) {

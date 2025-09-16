@@ -133,7 +133,7 @@ const UserTile = ({ user, refetchUsers }: Props) => {
                     <button onClick={() => setActionId(user.id)} >...</button>
                     {actionId === user.id &&
                         <div className='absolute  bg-white border-[1px] rounded-lg shadow w-[140px]  -translate-x-[75px] translate-y-[85px] after:content-[""] after:w-7 after:h-7  after:absolute after:z-10 after:-right-5 after:-top-4' onMouseLeave={() => setActionId('')}>
-                            <button onClick={updateVerification} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{user.isVerified ? 'Unverify' : 'Verifiy'}</button>
+                            <button onClick={updateVerification} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{user.isVerified ? 'Unverify' : 'Verify'}</button>
                             {/* <button onClick={e => updateStatus(e)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>{user.isActive ? 'Deactivate' : 'Activate'}</button> */}
                             <button onClick={() => setShowModal(true)} className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-4'>Delete</button>
                         </div>

@@ -26,44 +26,38 @@ type Props = {
 const ReviewTile = ({ review, refetchReview }: Props) => {
     const dispatch = useStoreDispatch()
     const { authUser } = useAuth()
-    const [deleteReview] = useMutation(DELETE_REVIEW)
+    const [deleteReview] = useMutation(DELETE_REVIEW, {
+        onCompleted: () => {
+            refetchReview?.()
+            const newToast: Toast = {
+                id: v4(),
+                variant: Toast_Vairant.SUCCESS,
+                msg: 'Review successfully deleted'
+            }
+            dispatch(addToast(newToast))
+            setShowModal({ flag: false, content: '' })
+        },
+        onError: (error) => {
+            const newToast: Toast = {
+                id: v4(),
+                variant: Toast_Vairant.INFO,
+                msg: error.message
+            }
+            dispatch(addToast(newToast))
+        }
+    })
     const [showModal, setShowModal] = useState({
         flag: false,
         content: ''
     })
 
-    const deleteHandler = async (e: MouseEvent<HTMLButtonElement>) => {
+    const deleteHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        try {
-            const { data } = await deleteReview({
-                variables: {
-                    reviewId: review.id
-                }
-            })
-            if (data?.deleteReview) {
-                console.log(data)
-                if(data.deleteReview.success) {
-                    refetchReview?.()
-                     const newToast: Toast = {
-                        id: v4(),
-                        variant: Toast_Vairant.SUCCESS,
-                        msg: 'Review successfully deleted'
-                    }
-                     dispatch(addToast(newToast))
-                    setShowModal({flag:false, content:''})
-
-                }
+        deleteReview({
+            variables: {
+                reviewId: review.id
             }
-        } catch (error) {
-            if (error instanceof Error) {
-                const newToast: Toast = {
-                    id: v4(),
-                    variant: Toast_Vairant.INFO,
-                    msg: error.message
-                }
-                dispatch(addToast(newToast))
-            }
-        }
+        })
     }
 
     return (

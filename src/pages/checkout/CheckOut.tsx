@@ -16,13 +16,41 @@ import { useMutation } from '@apollo/client'
 import { CREATE_ORDER } from '../../data/mutation'
 import PageWrapper from '../../components/ui/PageWrapper'
 import { addToast } from '../../store/slices/toastSlice'
-import {  useUser } from '../../store/slices/userSlice'
+import { useUser } from '../../store/slices/userSlice'
+import { GET_ORDERS_BY_USER_ID } from '../../data/query';
+import client from '../../data/client';
 
 const Checkout = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [createOrder] = useMutation(CREATE_ORDER)
+  const [createOrder] = useMutation(CREATE_ORDER, {
+    onCompleted: (data) => {
+      client.query({
+        query: GET_ORDERS_BY_USER_ID,
+        variables: {
+          userOrdersId: authUser?.id
+        },
+        fetchPolicy: "network-only", // force fresh fetch
+      })
+
+      dispatch(deleteCartByCustomerId(authUser?.id))
+      navigate(`/checkout/success/${data.createOrder}`, {
+        state: {
+          fromCheckout: true
+        }
+      })
+
+    },
+    onError: (error) => {
+      console.error("Error creating order", error);
+      navigate('/checkout/fail', {
+        state: {
+          order: newOrder as OrderInput
+        }
+      })
+    }
+  })
 
   const dispatch = useStoreDispatch()
   const { authUser, status: authStatus } = useAuth()
@@ -30,13 +58,10 @@ const Checkout = () => {
   const [preloaderFlag, setPreloaderFlag] = useState<boolean>(false)
 
   useEffect(() => {
-    if (authStatus === Status.IDLE) {
-      dispatch(getAuthStatus())
-    }
-    else if (authStatus !== Status.PENDING && authUser?.role !== Role.CUSTOMER) {
+    if (authStatus !== Status.PENDING && authUser?.role !== Role.CUSTOMER) {
       navigate('/')
     }
-  }, [authStatus])
+  }, [authUser, authStatus])
 
 
   const newOrder: OrderInput | null = useMemo(() => {
@@ -58,7 +83,7 @@ const Checkout = () => {
   }, [newOrder])
 
 
-  const placeHandler = async (e: MouseEvent<HTMLButtonElement>) => {
+  const placeHandler = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     let addressValid: boolean
     const { shippingAddress } = newOrder as OrderInput
@@ -82,29 +107,13 @@ const Checkout = () => {
     setPreloaderFlag(true)
 
 
-    try {
-      const { data } = await createOrder({
-        variables: {
-          input: newOrder
-        }
-      })
-
-      dispatch(deleteCartByCustomerId(authUser?.id))
-      navigate(`/checkout/success/${data.createOrder}`, {
-        state: {
-          fromCheckout: true
-        }
-      })
-
-    } catch (error) {
-      console.error("Error creating order", error);
-      navigate('/checkout/fail', {
-        state: {
-          order: newOrder as OrderInput
-        }
-      })
-    }
+    createOrder({
+      variables: {
+        input: newOrder
+      }
+    })
   }
+
 
   if (preloaderFlag || !newOrder)
     return <Preloader />
