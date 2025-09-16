@@ -40,9 +40,9 @@ const Customers = () => {
                     <SearchIcon />
                     <input
                         type='text'
-                        className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10'
+                        className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10 w-[260px]'
                         value={params}
-                        placeholder='Search users by email'
+                        placeholder='Search user by name or email'
                         onChange={(e) => setParams(e.target.value)}
                     />                </div>
             </div>

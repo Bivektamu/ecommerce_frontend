@@ -4,20 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { stripTypename } from '@apollo/client/utilities'
 import ReviewTile from '../../components/admin/ReviewTile'
 import SearchIcon from '../../components/ui/SearchIcons'
-import { GET_PRODUCT_AND_USER, GET_REVIEWS } from '../../data/query'
+import { GET_REVIEWS } from '../../data/query'
 import { useStoreDispatch } from '../../store'
-import { DetailedReview, Review, Toast, Toast_Vairant, User } from '../../store/types'
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { DetailedReview, Toast, Toast_Vairant } from '../../store/types'
+import { useQuery } from '@apollo/client'
 import { addToast } from '../../store/slices/toastSlice';
 import ProgressLoader from '../../components/ui/ProgressLoader';
-import { useMemo } from 'react';
+import useSearch from '../../components/hooks/useSearch';
 
 const Reviews = () => {
 
     const dispatch = useStoreDispatch()
-    // const [queryProductUser] = useLazyQuery(GET_PRODUCT_AND_USER)
 
     const { data, loading, error, refetch } = useQuery(GET_REVIEWS)
+  const {filteredData, setParams, params} = useSearch(stripTypename(data?.reviews))
+
 
     if (error) {
         console.log(error)
@@ -28,9 +29,7 @@ const Reviews = () => {
         }
         dispatch(addToast(newToast))
     }
-    const reviews: DetailedReview[] = stripTypename(data?.reviews) ||  []
-
-    console.log(reviews)
+    const reviews: DetailedReview[] = filteredData as DetailedReview[]
 
     if (loading)
         return <ProgressLoader />
@@ -41,8 +40,13 @@ const Reviews = () => {
                 <p className="font-semibold">Reviews</p>
                 <div className='relative'>
                     <SearchIcon />
-                    <input type='text' className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10' value={''} placeholder='Search reviews' />
-                </div>
+                    <input
+                        type='text'
+                        className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-xs text-left outline-none pl-10 w-[270px]'
+                        value={params}
+                        placeholder='Search by username or product title'
+                        onChange={(e) => setParams(e.target.value)}
+                    />                </div>
             </div>
 
             <div className='grid grid-cols-table-reviews gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
