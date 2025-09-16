@@ -7,7 +7,6 @@ import { useStoreDispatch } from '../../store'
 import { useMutation } from '@apollo/client'
 import { EDIT_REVIEW } from '../../data/mutation'
 import { addToast } from '../../store/slices/toastSlice'
-import { GET_REVIEWS_BY_PRODUCT_ID } from '../../data/query';
 
 type Props = {
   review: Review

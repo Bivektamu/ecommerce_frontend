@@ -1,6 +1,6 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useStoreDispatch } from '../../store/index'
-import { useAuth, getAuthStatus } from '../../store/slices/authSlice'
+import { useAuth } from '../../store/slices/authSlice'
 import BreadCrumbs from '../../components/ui/BreadCrumbs'
 import { v4 as uuidv4 } from 'uuid';
 

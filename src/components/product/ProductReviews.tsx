@@ -28,7 +28,7 @@ const ProductReviews = ({ productId }: Props) => {
 
     const reviews = useMemo(() => {
         if (data && data?.productReviews) {
-            const reviews = stripTypename(data.productReviews).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
+            const reviews = stripTypename(data.productReviews as Review[]).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
             console.log()
 
             return (reviews)

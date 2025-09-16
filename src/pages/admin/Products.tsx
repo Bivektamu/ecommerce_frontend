@@ -1,14 +1,15 @@
-import { MouseEvent, useEffect, useState, ReactElement } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useStoreDispatch } from '../../store'
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 
-import { Action, Status, Toast, Toast_Vairant } from '../../store/types'
+import { Action, Product, Status, Toast, Toast_Vairant } from '../../store/types'
 import { v4 as uuidv4 } from 'uuid';
 import { addToast } from '../../store/slices/toastSlice'
 import SearchIcon from '../../components/ui/SearchIcons'
 import ProgressLoader from '../../components/ui/ProgressLoader'
 import ProductTile from '../../components/admin/ProductTile'
+import useSearch from '../../components/hooks/useSearch'
 
 
 const Products = () => {
@@ -17,10 +18,14 @@ const Products = () => {
 
   const { products, status, action } = useProduct()
 
+  const {filteredData, setParams, params} = useSearch(products)
 
   useEffect(() => {
-    dispatch(getProducts())
+    if (status === Status.IDLE) {
+      dispatch(getProducts())
+    }
   }, [])
+
 
 
   useEffect(() => {
@@ -80,7 +85,13 @@ const Products = () => {
           <div className='relative'>
             <SearchIcon />
 
-            <input type='text' readOnly className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10' value={''} placeholder='Search products' />
+            <input 
+            type='text'
+             className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10'
+              value={params} 
+              placeholder='Search products'
+              onChange={(e)=>setParams(e.target.value)}
+              />
           </div>
 
           <Link to="/admin/products/add" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm'>Add Product</Link>
@@ -129,17 +140,11 @@ const Products = () => {
 
       <div className="w-full">
 
-        {products && products.length > 0 && products.map(product =>
+        {filteredData && filteredData.length > 0 && (filteredData as Product[]).map(product =>
           <ProductTile key={product.id} product={product} />
         )}
 
       </div>
-
-
-
-      {
-       
-      }
 
     </div>
   )

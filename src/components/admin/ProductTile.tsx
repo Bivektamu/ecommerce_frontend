@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react'
+import { MouseEvent, useState } from 'react'
 import { Product } from '../../store/types'
 import { Link } from 'react-router-dom'
 import Check from '../../components/ui/Check'
