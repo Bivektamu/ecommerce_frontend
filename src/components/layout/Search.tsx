@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import SearchIcon from './ui/SearchIcons'
+import SearchIcon from '../ui/SearchIcons'
 import { Link } from 'react-router-dom'
 
 type Props = {

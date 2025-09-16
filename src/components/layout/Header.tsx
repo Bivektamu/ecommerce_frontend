@@ -1,6 +1,6 @@
 import Logo from '../ui/Logo'
 import CartIcon from '../ui/CartIcon'
-import Search from '../Search'
+import Search from './Search'
 
 import { useProduct } from '../../store/slices/productSlice'
 import { Role } from '../../store/types'

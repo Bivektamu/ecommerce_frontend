@@ -1,16 +1,14 @@
 import { MouseEvent, useEffect, useState, ReactElement } from 'react'
 import { Link } from 'react-router-dom'
-import Close from '../../components/ui/Close'
 import { useStoreDispatch } from '../../store'
-import { deleteProduct, getProducts, useProduct } from '../../store/slices/productSlice'
+import { getProducts, useProduct } from '../../store/slices/productSlice'
 
 import { Action, Status, Toast, Toast_Vairant } from '../../store/types'
-import Check from '../../components/ui/Check'
 import { v4 as uuidv4 } from 'uuid';
 import { addToast } from '../../store/slices/toastSlice'
-import Modal from '../../components/ui/Modal'
 import SearchIcon from '../../components/ui/SearchIcons'
 import ProgressLoader from '../../components/ui/ProgressLoader'
+import ProductTile from '../../components/admin/ProductTile'
 
 
 const Products = () => {
@@ -18,11 +16,6 @@ const Products = () => {
   const dispatch = useStoreDispatch()
 
   const { products, status, action } = useProduct()
-
-  const [actionId, setActionId] = useState('')
-  const [modalContent, setModalContent] = useState<ReactElement | null>(null)
-
-  const [showModal, setShowModal] = useState(false)
 
 
   useEffect(() => {
@@ -46,7 +39,7 @@ const Products = () => {
           break;
 
         case Action.DELETE:
-          variant = Toast_Vairant.DANGER,
+          variant = Toast_Vairant.SUCCESS,
             msg = 'Product deleted successfully.'
           break;
 
@@ -68,40 +61,6 @@ const Products = () => {
 
   }, [action])
 
-  useEffect(() => {
-    if (modalContent) {
-      setShowModal(true)
-    }
-  }, [modalContent])
-
-
-  const deleteProductFunc = (id: string) => {
-    setShowModal(false)
-    setModalContent(null)
-    dispatch(deleteProduct(id))
-  }
-
-  const openDeleteProductHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
-    e.stopPropagation()
-    const content = (
-      <div className='text-center'>
-        <p className="mb-6 font-medium text-sm">Are you sure you want to delete this product?</p>
-        <div className="flex gap-x-4 justify-center">
-          <button className='bg-red-500 text-white px-4 py-2 rounded' onClick={e => closeModal(e)}>Cancel</button>
-          <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={() => deleteProductFunc(id)}>Delete</button>
-        </div>
-      </div>
-    )
-
-    setModalContent(content)
-
-  }
-
-  const closeModal = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    setShowModal(false)
-    setModalContent(null)
-  }
 
   if (status == Status.IDLE || status == Status.PENDING) {
     return <ProgressLoader />
@@ -171,46 +130,7 @@ const Products = () => {
       <div className="w-full">
 
         {products && products.length > 0 && products.map(product =>
-          <div key={product.id} className='grid grid-cols-table px-8 py-4 border-b-[1px] items-center gap-x-4'>
-            <Link to={`/admin/products/${product.slug}`}>
-              <img src={product.imgs[0].url} alt="" />
-            </Link>
-            <Link to={`/admin/products/${product.slug}`} className='text-sm text-slate-500'>{product.title}</Link>
-            <span className='text-sm text-slate-500 uppercase'>
-              {product.sku}
-            </span>
-
-            <span className='text-sm text-slate-500'>
-              {product.price}
-            </span>
-
-            <span className='text-sm text-slate-500'>
-              {product.stockStatus ? 'In Stock' : 'Out of Stock'}
-            </span>
-
-            <span className='text-sm text-slate-500 capitalize'>
-              {product.category}
-            </span>
-
-
-            <span className='relative'>
-              {product.featured ? <Check classN='' /> : <Close classN='w-4 bg-black' />}
-            </span>
-
-
-            <div className='text-lg text-slate-500 font-semibold relative flex items-center justify-center pb-2'>
-              <button onClick={() => setActionId(product.id)} >...</button>
-              {actionId === product.id &&
-                <div className='absolute bg-white border-[1px] rounded-lg shadow w-[100px]  -translate-x-[55px] translate-y-[45px]' onMouseLeave={() => setActionId('')}>
-                  <Link className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2' to={`/admin/products/${product.slug}`}>Edit</Link>
-
-                  <button className='block w-full text-sm font-normal text-left hover:bg-slate-100 px-4 py-2 pb-4' onClick={e => openDeleteProductHandler(e, product.id)} >Delete</button>
-                </div>
-              }
-
-            </div>
-
-          </div>
+          <ProductTile key={product.id} product={product} />
         )}
 
       </div>
@@ -218,9 +138,7 @@ const Products = () => {
 
 
       {
-        <Modal isOpen={showModal} close={() => setShowModal(false)} >
-          {modalContent!}
-        </Modal>
+       
       }
 
     </div>
