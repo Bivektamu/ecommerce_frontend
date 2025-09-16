@@ -1,6 +1,6 @@
 import {  ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import Close from './Close'
+import Close from '../ui/Close'
 
 type Props = {
     close: () => void

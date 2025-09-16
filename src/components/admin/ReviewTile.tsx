@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from 'react'
 
-import { Review, Toast, Toast_Vairant } from '../../store/types'
+import { DetailedReview, Review, Toast, Toast_Vairant } from '../../store/types'
 import getMonth from '../../utils/getMonth'
 import { v4 as uuidv4, v4 } from 'uuid';
 import getExcerpt from '../../utils/getExcerpt';
@@ -9,11 +9,11 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useStoreDispatch } from '../../store';
 import { addToast } from '../../store/slices/toastSlice';
 import TileLoader from '../ui/TileLoader';
-import Modal from '../ui/Modal';
+import Modal from '../layout/Modal';
 import { DELETE_REVIEW } from '../../data/mutation';
 
 type Props = {
-    review: Review,
+    review: DetailedReview,
     refetchReview: ()=> void
 }
 
@@ -41,12 +41,6 @@ const ReviewTile = ({ review, refetchReview }: Props) => {
             }
         })
 
-    const { data, loading, error } = useQuery(GET_PRODUCT_AND_USER, {
-        variables: {
-            productId: review.productId,
-            userId: review.userId
-        }
-    })
 
     const [actionId, setActionId] = useState('')
 
@@ -62,21 +56,11 @@ const ReviewTile = ({ review, refetchReview }: Props) => {
         })
     }
 
-    if (error) {
-        const newToast: Toast = {
-            id: uuidv4(),
-            variant: Toast_Vairant.INFO,
-            msg: error.message
-        }
-        dispatch(addToast(newToast))
-    }
+   
 
-    const product = data?.product
-    const user = data?.user
+    const product = review.productId
+    const user = review.userId
 
-    if (loading) {
-        return <TileLoader cssClass='mb-8' />
-    }
 
     return (
         <div className='grid grid-cols-table-reviews px-8 py-4 border-b-[1px] items-center   gap-x-8'>

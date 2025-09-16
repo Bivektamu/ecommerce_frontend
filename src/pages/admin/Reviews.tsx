@@ -4,20 +4,23 @@ import { v4 as uuidv4 } from 'uuid';
 import { stripTypename } from '@apollo/client/utilities'
 import ReviewTile from '../../components/admin/ReviewTile'
 import SearchIcon from '../../components/ui/SearchIcons'
-import { GET_REVIEWS } from '../../data/query'
+import { GET_PRODUCT_AND_USER, GET_REVIEWS } from '../../data/query'
 import { useStoreDispatch } from '../../store'
-import { Review, Toast, Toast_Vairant } from '../../store/types'
-import { useQuery } from '@apollo/client'
+import { DetailedReview, Review, Toast, Toast_Vairant, User } from '../../store/types'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import { addToast } from '../../store/slices/toastSlice';
 import ProgressLoader from '../../components/ui/ProgressLoader';
+import { useMemo } from 'react';
 
 const Reviews = () => {
 
     const dispatch = useStoreDispatch()
+    // const [queryProductUser] = useLazyQuery(GET_PRODUCT_AND_USER)
 
     const { data, loading, error, refetch } = useQuery(GET_REVIEWS)
 
     if (error) {
+        console.log(error)
         const newToast: Toast = {
             id: uuidv4(),
             variant: Toast_Vairant.DANGER,
@@ -25,11 +28,12 @@ const Reviews = () => {
         }
         dispatch(addToast(newToast))
     }
+    const reviews: DetailedReview[] = stripTypename(data?.reviews) ||  []
 
-    const reviews:Review[]  = data?.reviews? stripTypename(data.reviews): [];
     console.log(reviews)
+
     if (loading)
-         return <ProgressLoader />
+        return <ProgressLoader />
     return (
 
         <div className='bg-white rounded-lg'>
@@ -75,7 +79,7 @@ const Reviews = () => {
                     <div className="w-full">
                         {
                             reviews.map(review =>
-                                <ReviewTile key={review.id} review={review} refetchReview={refetch}  />
+                                <ReviewTile key={review.id} review={review} refetchReview={refetch} />
                             )
                         }
                     </div>

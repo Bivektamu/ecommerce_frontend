@@ -14,14 +14,22 @@ const useSearch = (data: DType[]) => {
             else if ((firstItem as Order).orderNumber) {
                 args = 'orderNumber'
             }
+            else if ((firstItem as User).email) {
+                args = 'email'
+            }
+
             // @ts-ignore
-            const filtered = data.filter((item) => (item[args]).toLowerCase().includes(params.toLowerCase()))
+            let filtered = data.filter(item => item[args].toLowerCase().includes(params.toLowerCase()))
 
 
-            return (filtered)
+            if (args === 'orderNumber') {
+                // @ts-ignore
+                filtered = data.filter(item => item[args].toLowerCase().indexOf(params.toLowerCase()) === 0)
+            }
 
-
+            return filtered
         }
+
         return data
     }, [params, data])
 

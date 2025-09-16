@@ -111,7 +111,6 @@ export interface RootState {
     products: ProductSlice,
     user: UserSlice,
     cart: CartSlice,
-    reviews: ReviewSlice
 }
 
 export enum Colour {
@@ -291,6 +290,27 @@ export interface Review {
 }
 export type ReviewId = Review['id']
 
+export type ImgUrl = {
+    url: string
+}
+
+export interface ProductDetailsForReview {
+    _id: ProductId,
+    title: string,
+    imgs: [ImgUrl]
+}
+
+export interface UserDetailsForReview {
+    _id: UserId,
+    firstName: string,
+    lastName: string,
+    email: string,
+}
+
+export interface DetailedReview extends Omit<Review, 'productId'| 'userId'> {
+    productId: ProductDetailsForReview,
+    userId:UserDetailsForReview
+}
 
 export interface ReviewInput {
     userId: UserId,

@@ -2,7 +2,7 @@ import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 
 import { Order } from '../../../store/types'
 import getMonth from '../../../utils/getMonth'
-import Modal from '../../ui/Modal'
+import Modal from '../../layout/Modal'
 import OrderDetails from './OrderDetails';
 import ChangeStatusForm from '../../forms/ChangeStatusForm';
 

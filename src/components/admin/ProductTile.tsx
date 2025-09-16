@@ -3,7 +3,7 @@ import { Product } from '../../store/types'
 import { Link } from 'react-router-dom'
 import Check from '../../components/ui/Check'
 import Close from '../ui/Close'
-import Modal from '../ui/Modal'
+import Modal from '../layout/Modal'
 import { deleteProduct } from '../../store/slices/productSlice'
 import { useStoreDispatch } from '../../store'
 

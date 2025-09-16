@@ -2,7 +2,7 @@ import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../store/slices/authSlice'
 import { Review, Role } from '../../store/types'
 
-import Modal from '../ui/Modal'
+import Modal from '../layout/Modal'
 import AddReviewForm from '../forms/AddReviewForm'
 import { getAverageRating } from '../../utils/helpers'
 import { useQuery } from '@apollo/client'

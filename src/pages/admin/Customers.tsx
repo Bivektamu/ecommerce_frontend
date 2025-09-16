@@ -10,11 +10,13 @@ import { addToast } from '../../store/slices/toastSlice';
 import ProgressLoader from '../../components/ui/ProgressLoader';
 import { stripTypename } from '@apollo/client/utilities';
 import { useStoreDispatch } from '../../store';
+import useSearch from '../../components/hooks/useSearch';
 
 const Customers = () => {
     const dispatch = useStoreDispatch()
 
     const { data, loading, error, refetch } = useQuery(GET_USERS)
+    const { filteredData, setParams, params } = useSearch(stripTypename(data?.users))
 
     if (error) {
         const newToast: Toast = {
@@ -25,10 +27,9 @@ const Customers = () => {
         dispatch(addToast(newToast))
     }
 
-    const users:User[]  = data?.users?stripTypename(data.users): [];
-    console.log(users)
+    const users: User[] = filteredData as User[]
     if (loading)
-         return <ProgressLoader />
+        return <ProgressLoader />
 
     return (
 
@@ -37,8 +38,13 @@ const Customers = () => {
                 <p className="font-semibold">Customers</p>
                 <div className='relative'>
                     <SearchIcon />
-                    <input type='text' className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10' value={''} placeholder='Search customers' />
-                </div>
+                    <input
+                        type='text'
+                        className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10'
+                        value={params}
+                        placeholder='Search users by email'
+                        onChange={(e) => setParams(e.target.value)}
+                    />                </div>
             </div>
 
             <div className='grid grid-cols-table-users gap-x-8 px-8 py-4 border-t-[1px] border-b-[1px] mb-6'>
@@ -80,7 +86,7 @@ const Customers = () => {
                     <div className="w-full">
                         {
                             users.map(user =>
-                                <UserTile key={user.id} user={user} refetchUsers = {refetch} />
+                                <UserTile key={user.id} user={user} refetchUsers={refetch} />
                             )
                         }
                     </div>

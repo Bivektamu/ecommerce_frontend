@@ -9,7 +9,7 @@ import { useMutation } from '@apollo/client';
 import { DELETE_USER } from '../../data/mutation';
 import { addToast } from '../../store/slices/toastSlice';
 import { useStoreDispatch } from '../../store';
-import Modal from '../ui/Modal';
+import Modal from '../layout/Modal';
 type Props = {
     user: User,
     refetchUsers: ()=>void

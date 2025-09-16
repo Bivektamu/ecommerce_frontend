@@ -7,7 +7,7 @@ import TextLoader from './ui/TextLoader'
 import Close from './ui/Close'
 import getClasses from '../utils/getClasses'
 import { deleteCart, updateCartQuantity } from '../store/slices/cartSlice'
-import Modal from './ui/Modal'
+import Modal from './layout/Modal'
 
 type Props = {
     cartItem: Cart,
