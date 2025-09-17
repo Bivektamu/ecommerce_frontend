@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { stripTypename } from '@apollo/client/utilities'
-import ReviewTile from '../../components/admin/ReviewTile'
+import ReviewTile from '../../components/admin/review/ReviewTile'
 import SearchIcon from '../../components/ui/SearchIcons'
 import { GET_REVIEWS } from '../../data/query'
 import { useStoreDispatch } from '../../store'
@@ -17,7 +17,7 @@ const Reviews = () => {
     const dispatch = useStoreDispatch()
 
     const { data, loading, error, refetch } = useQuery(GET_REVIEWS)
-  const {filteredData, setParams, params} = useSearch(stripTypename(data?.reviews))
+    const { filteredData, setParams, params } = useSearch(stripTypename(data?.reviews))
 
 
     if (error) {
@@ -59,7 +59,7 @@ const Reviews = () => {
                     Name
                 </span>
 
-                <span className='text-sm text-slate-500 font-medium'>
+                <span className='text-sm text-slate-500 font-medium text-left'>
                     Review
                 </span>
 
@@ -69,6 +69,9 @@ const Reviews = () => {
 
                 <span className='text-sm text-slate-500 font-medium'>
                     Submitted at
+                </span>
+                <span className='text-sm text-slate-500 font-medium'>
+                    Details
                 </span>
 
                 <span className='text-sm text-slate-500 font-medium'>
@@ -80,15 +83,20 @@ const Reviews = () => {
                 reviews.length < 1 ?
                     <p className='px-8 py-8 text-slate-500'>There are no reviews yet.</p>
                     :
-                    <div className="w-full">
+                    <div className=''>
                         {
                             reviews.map(review =>
-                                <ReviewTile key={review.id} review={review} refetchReview={refetch} />
+                                <>
+                                    <ReviewTile key={review.id} review={review} refetchReview={refetch}/>
+
+                                    
+                                </>
                             )
                         }
                     </div>
 
             }
+
 
 
         </div>

@@ -4,7 +4,7 @@ import { useStoreDispatch } from '../../store'
 
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Product, Status } from '../../store/types'
+import { Product, Review, Status } from '../../store/types'
 import StarIcon from '../../components/ui/StarIcon'
 import Grids from '../../components/ui/Grids'
 import GridLoader from '../../components/ui/GridLoader'
@@ -14,9 +14,11 @@ import TextLoader from '../../components/ui/TextLoader'
 import ButtonLoader from '../../components/ui/ButtonLoader'
 import SquareLoader from '../../components/ui/SquareLoader'
 import ProductCard from '../../components/ui/ProductCard'
-import { getReviewsByProductId, useReviews } from '../../store/slices/reviewSlice'
 import { getAverageRating } from '../../utils/helpers'
 import PageWrapper from '../../components/ui/PageWrapper'
+import { useLazyQuery } from '@apollo/client'
+import { GET_REVIEWS_BY_PRODUCT_ID } from '../../data/query'
+import { stripTypename } from '@apollo/client/utilities'
 
 const ProductComponent = () => {
 
@@ -27,8 +29,17 @@ const ProductComponent = () => {
   const [productItem, setProductItem] = useState<null | Product>(null)
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const { products, status } = useProduct()
-  const { reviews } = useReviews()
+  const [reviews, setReviews] = useState<Review[]>()
 
+
+  const [queryReviews] = useLazyQuery(GET_REVIEWS_BY_PRODUCT_ID, {
+    onCompleted: (data) => {
+      if (data && data?.productReviews) {
+        const tempReviews = stripTypename(data.productReviews as Review[]).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
+        setReviews([...tempReviews])
+      }
+    }
+  })
 
 
   useEffect(() => {
@@ -50,8 +61,13 @@ const ProductComponent = () => {
   useEffect(() => {
     if (productItem) {
 
-
-      dispatch(getReviewsByProductId(productItem.id))
+      queryReviews({
+        variables: {
+          variables: {
+            productReviewsId: productItem.id
+          }
+        }
+      })
 
       const tempProducts = products.filter(product => product.category === productItem.category && product.id !== productItem.id)
       if (tempProducts.length > 0) {
@@ -109,8 +125,6 @@ const ProductComponent = () => {
 
               <p className="text-xl font-semibold mb-8">${productItem?.price}</p>
               <AddToCartForm product={productItem} />
-
-
             </div>
           </div>
 
