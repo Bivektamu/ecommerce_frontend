@@ -1,5 +1,7 @@
-import { Review } from "../store/types"
 
-export const getAverageRating = (reviews: Review[]) => {
-    return Number((reviews.reduce((sum, review) => review.rating as number + sum, 0) / reviews.length).toFixed(1))
+export const getAverageRating = ( ratings : number[]) => {
+    if (ratings) {
+        return Number((ratings.reduce((sum, rating) => rating as number + sum, 0) / ratings.length).toFixed(1))
+    }
+    return 0
 }

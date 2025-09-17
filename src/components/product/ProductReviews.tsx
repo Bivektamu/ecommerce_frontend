@@ -1,40 +1,22 @@
-import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import { useAuth } from '../../store/slices/authSlice'
-import { Review, Role } from '../../store/types'
+import { ReviewUserOnly, Role } from '../../store/types'
 
 import Modal from '../layout/Modal'
 import AddReviewForm from '../forms/AddReviewForm'
 import { getAverageRating } from '../../utils/helpers'
-import { useQuery } from '@apollo/client'
-import { GET_REVIEWS_BY_PRODUCT_ID } from '../../data/query'
-import ProgressLoader from '../ui/ProgressLoader'
-import { stripTypename } from '@apollo/client/utilities'
 import ReviewTile from './ReviewTile'
 
 type Props = {
-    productId: string
+    productId: string,
+    reviews: ReviewUserOnly[],
+    refetch: () => void
 }
-const ProductReviews = ({ productId }: Props) => {
+const ProductReviews = ({ productId, reviews, refetch }: Props) => {
 
     const { authUser } = useAuth()
 
     const REVIEWS_PER_PAGE = 3
-
-    const { data, loading, error, refetch } = useQuery(GET_REVIEWS_BY_PRODUCT_ID, {
-        variables: {
-            productReviewsId: productId
-        }
-    })
-
-    const reviews = useMemo(() => {
-        if (data && data?.productReviews) {
-            const reviews = stripTypename(data.productReviews as Review[]).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
-            console.log()
-
-            return (reviews)
-        }
-        return []
-    }, [data])
 
     const [pagination, setPagination] = useState({
         currentPage: 1,
@@ -91,16 +73,6 @@ const ProductReviews = ({ productId }: Props) => {
 
     }
 
-    if (loading) {
-        return <ProgressLoader />
-    }
-
-
-    if (error) {
-        return <p>Sorry, there was a problem loading reviews. Please refresh the page again.</p>
-    }
-
-
     return (
         <div id='reviews-tab'>
             <p className="font-semibold mb-4">Reviews</p>
@@ -108,7 +80,10 @@ const ProductReviews = ({ productId }: Props) => {
             <div className='flex gap-4 items-center mb-10'>
                 {reviews && reviews.length > 0 ?
                     <>
-                        <h2 className="text-3xl font-bold">{getAverageRating(reviews)}</h2><span className="w-4 h-[2px] bg-slate-400"></span> <p className='text-slate-500 text-xs'>{reviews.length} Reviews</p>
+                        <h2 className="text-3xl font-bold">
+                            {getAverageRating(reviews.map(review => review.rating) as number[])}
+
+                        </h2><span className="w-4 h-[2px] bg-slate-400"></span> <p className='text-slate-500 text-xs'>{reviews.length} Reviews</p>
                     </>
                     :
                     <p className="">There are no reviews for this product</p>
@@ -127,7 +102,7 @@ const ProductReviews = ({ productId }: Props) => {
                     </div>
 
                     <div className="wrapper pb-8">
-                        {reviewsPerPage.map((review: Review) =>
+                        {reviewsPerPage.map((review: ReviewUserOnly) =>
                             <ReviewTile key={review.id} review={review} refetchReview={refetch} />
                         )}
                     </div>

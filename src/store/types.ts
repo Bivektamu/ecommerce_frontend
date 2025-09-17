@@ -312,6 +312,10 @@ export interface DetailedReview extends Omit<Review, 'productId'| 'userId'> {
     userId:UserDetailsForReview
 }
 
+export interface ReviewUserOnly extends Omit<DetailedReview, 'productId'> {
+    productId: ProductId,
+}
+
 export interface ReviewInput {
     userId: UserId,
     productId: ProductId,

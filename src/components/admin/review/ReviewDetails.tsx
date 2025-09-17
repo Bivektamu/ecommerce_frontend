@@ -1,13 +1,6 @@
-import { DetailedReview, Colour } from '../../../store/types'
+import { DetailedReview } from '../../../store/types'
 import getMonth from '../../../utils/getMonth'
-import Tooltip from '../../ui/Tooltip'
-import { useQuery } from '@apollo/client'
-import { GET_USER } from '../../../data/query'
-import ProgressLoader from '../../ui/ProgressLoader'
-import { useEffect } from 'react'
-import useAvatar from '../../hooks/useAvatar'
 import StarIcon from '../../ui/StarIcon'
-import { RatingWidget } from '../../ui/RatingWidget'
 
 type Props = {
     review: DetailedReview
@@ -17,17 +10,9 @@ type Props = {
 const ReviewDetails = ({ review }: Props) => {
 
 
-    const { avatar, setAvatarEmail } = useAvatar()
 
     const { firstName, lastName, email, _id: id } = review.userId
-    const { title, imgs, _id } = review.productId
-
-    useEffect(() => {
-        if (email) {
-            setAvatarEmail(email)
-        }
-
-    }, [email])
+    const { title, _id } = review.productId
 
 
 
@@ -72,14 +57,15 @@ const ReviewDetails = ({ review }: Props) => {
 
                 <span className=" font-medium ">Rating</span>
                 <span className='flex gap-2 col-span-2'>
-                    {Array(review.rating).fill("*").map(i => <StarIcon key={i} />)}
+                    {
+                        // @ts-ignore
+                        Array(review.rating).fill('*').map((i) => <StarIcon key={i} />)
+                    }
                 </span>
 
                 <span className=" font-medium ">Review</span>
                 <span className="col-span-2">{review.review}</span>
             </div>
-
-
         </section>
     )
 }

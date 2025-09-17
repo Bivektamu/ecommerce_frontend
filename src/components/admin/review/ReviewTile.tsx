@@ -1,14 +1,12 @@
 import { MouseEvent, useState } from 'react'
 
-import { DetailedReview, Review, Toast, Toast_Vairant } from '../../../store/types'
+import { DetailedReview, Toast, Toast_Vairant } from '../../../store/types'
 import getMonth from '../../../utils/getMonth'
-import { v4 as uuidv4, v4 } from 'uuid';
+import { v4 } from 'uuid';
 import getExcerpt from '../../../utils/getExcerpt';
-import { GET_PRODUCT_AND_USER } from '../../../data/query';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useStoreDispatch } from '../../../store';
 import { addToast } from '../../../store/slices/toastSlice';
-import TileLoader from '../../ui/TileLoader';
 import Modal from '../../layout/Modal';
 import { DELETE_REVIEW } from '../../../data/mutation';
 import ReviewDetails from './ReviewDetails';
@@ -129,7 +127,10 @@ const ReviewTile = ({ review, refetchReview }: Props) => {
                     <div className='text-center'>
                         <p className="mb-6 font-medium text-sm">Are you sure you want to delete the review ?</p>
                         <div className="flex gap-x-4 justify-center">
-                            <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className='bg-green-500 text-white px-4 py-2 rounded' onClick={() => setShowModal({
+                                isOpen: false,
+                                content: ''
+                            })}>Cancel</button>
                             <button className='bg-red-500 text-white px-4 py-2 rounded' onClick={deleteHandler}>Delete</button>
                         </div>
                     </div>

@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Product } from '../../store/types'
+import { Product, ReviewUserOnly } from '../../store/types'
 import StarIcon from '../ui/StarIcon'
 import ParagraphLoader from '../ui/ParagraphLoader'
 import ProductReviews from './ProductReviews'
 
 type Props = {
-    product: Product | null
+    product: Product | null,
+    reviews: ReviewUserOnly[],
+    refetch: () => void
 }
 
-const DetailsReviewsTab = ({ product }: Props) => {
+const DetailsReviewsTab = ({ product, reviews, refetch }: Props) => {
     const [isReview, setIsReview] = useState(false)
 
     return (
@@ -34,7 +36,7 @@ const DetailsReviewsTab = ({ product }: Props) => {
 
                         </div>
                         :
-                        <ProductReviews productId={product?.id as string} />
+                        <ProductReviews reviews={reviews} productId={product?.id as string} refetch={refetch} />
                 }
 
             </div>

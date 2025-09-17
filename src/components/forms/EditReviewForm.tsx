@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { RatingWidget } from '../ui/RatingWidget'
-import { EditReviewInput, FormError, Review, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
+import { EditReviewInput, FormError, Review, ReviewUserOnly, Toast, Toast_Vairant, ValidateSchema } from '../../store/types'
 import validateForm from '../../utils/validate'
 import { v4 as uuidv4 } from 'uuid';
 import { useStoreDispatch } from '../../store'
@@ -9,7 +9,7 @@ import { EDIT_REVIEW } from '../../data/mutation'
 import { addToast } from '../../store/slices/toastSlice'
 
 type Props = {
-  review: Review
+  review: ReviewUserOnly
   closeModal: () => void
   refetchReview: () => void
 
@@ -21,7 +21,7 @@ const EditReviewForm = ({ review, closeModal, refetchReview}: Props) => {
    
     onCompleted: () => {
       closeModal();
-      refetchReview();
+      refetchReview?.();
 
       const newToast: Toast = {
         id: uuidv4(),

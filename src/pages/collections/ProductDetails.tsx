@@ -4,7 +4,7 @@ import { useStoreDispatch } from '../../store'
 
 import { getProducts, useProduct } from '../../store/slices/productSlice'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Product, Review, Status } from '../../store/types'
+import { Product, ReviewUserOnly, Status } from '../../store/types'
 import StarIcon from '../../components/ui/StarIcon'
 import Grids from '../../components/ui/Grids'
 import GridLoader from '../../components/ui/GridLoader'
@@ -29,18 +29,17 @@ const ProductComponent = () => {
   const [productItem, setProductItem] = useState<null | Product>(null)
   const [similarProducts, setSimilarProducts] = useState<Product[]>([])
   const { products, status } = useProduct()
-  const [reviews, setReviews] = useState<Review[]>()
+  const [reviews, setReviews] = useState<ReviewUserOnly[]>([])
 
 
-  const [queryReviews] = useLazyQuery(GET_REVIEWS_BY_PRODUCT_ID, {
-    onCompleted: (data) => {
-      if (data && data?.productReviews) {
-        const tempReviews = stripTypename(data.productReviews as Review[]).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
+  const [queryReviews, {refetch, data}] = useLazyQuery(GET_REVIEWS_BY_PRODUCT_ID)
+
+  useEffect(()=> {
+    if (data && data?.productReviews) {
+        const tempReviews = stripTypename(data.productReviews as ReviewUserOnly[]).sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime())
         setReviews([...tempReviews])
       }
-    }
-  })
-
+  }, [data])
 
   useEffect(() => {
     if (status === Status.IDLE) {
@@ -62,10 +61,8 @@ const ProductComponent = () => {
     if (productItem) {
 
       queryReviews({
-        variables: {
           variables: {
             productReviewsId: productItem.id
-          }
         }
       })
 
@@ -79,8 +76,6 @@ const ProductComponent = () => {
     }
 
   }, [productItem])
-
-
 
   return (
     <PageWrapper>
@@ -109,7 +104,8 @@ const ProductComponent = () => {
 
                   <p className="bg-cultured text-slate-600 font-medium flex items-center gap-2 py-2 px-6 rounded-full text-xs">
                     <StarIcon />
-                    {getAverageRating(reviews)} <span className="w-4 h-[2px] bg-slate-600"></span>
+                    {getAverageRating(reviews.map(review=>review.rating) as number[])} 
+                    <span className="w-4 h-[2px] bg-slate-600"></span>
                     {reviews.length} Reviews
                   </p>
                 }
@@ -128,7 +124,7 @@ const ProductComponent = () => {
             </div>
           </div>
 
-          <DetailsReviewsTab product={productItem} />
+          <DetailsReviewsTab product={productItem} reviews={reviews} refetch={refetch} />
 
 
           <div className="pb-32">

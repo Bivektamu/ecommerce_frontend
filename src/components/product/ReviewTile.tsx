@@ -1,29 +1,29 @@
-import { Review, Toast, Toast_Vairant } from '../../store/types'
+import { ReviewUserOnly, Toast, Toast_Vairant } from '../../store/types'
 
 import { formatDistanceToNow } from 'date-fns'
 import StarIcon from '../ui/StarIcon'
 
-import AvatarPlaceholder from '../ui/AvatarPlaceholder'
-import UserName from '../ui/UserName'
 import { FaRegEdit } from 'react-icons/fa'
 import { AiTwotoneDelete } from 'react-icons/ai'
 import { useAuth } from '../../store/slices/authSlice'
 import Modal from '../layout/Modal'
 import EditReviewForm from '../forms/EditReviewForm'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { DELETE_REVIEW } from '../../data/mutation'
 import { v4 } from 'uuid'
 import { useStoreDispatch } from '../../store'
 import { addToast } from '../../store/slices/toastSlice'
+import useAvatar from '../hooks/useAvatar'
 
 
 type Props = {
-    review: Review,
+    review: ReviewUserOnly,
     refetchReview: () => void
 }
 
 const ReviewTile = ({ review, refetchReview }: Props) => {
+    const {avatar, setAvatarEmail} = useAvatar()
     const dispatch = useStoreDispatch()
     const { authUser } = useAuth()
     const [deleteReview] = useMutation(DELETE_REVIEW, {
@@ -60,18 +60,28 @@ const ReviewTile = ({ review, refetchReview }: Props) => {
         })
     }
 
+    const {firstName, lastName, email} = review.userId
+
+    useEffect(()=> {
+        if(email) {
+            setAvatarEmail(email)
+        }
+    }, [email])
+
     return (
 
         <div className="wrapper border-b pb-6 mb-6">
             <div className="grid grid-cols-16 items-start justify-between">
 
                 <p className="col-span-1">
-                    <AvatarPlaceholder />
+                    <span className='w-12 h-12 overflow-hidden rounded-full block'>
+                    {avatar}
+                    </span>
                 </p>
 
                 <div className='col-span-12'>
                     <div className="mb-2 capitalize">
-                        <UserName id={review.userId} />
+                        <p>{firstName} {lastName}</p>
                     </div>
                     <p className="mb-4 text-slate-600 uppercase text-xs">{formatDistanceToNow(review.createdAt, { addSuffix: true })}</p>
 
@@ -97,7 +107,7 @@ const ReviewTile = ({ review, refetchReview }: Props) => {
                 </p>
 
                 {
-                    authUser?.id === review.userId &&
+                    authUser?.id === review.userId._id &&
                     (
                         <div className="col-span-3 place-self-end flex gap-4">
                             <button type="button" onClick={() => setShowModal({ flag: true, content: 'edit' })}><FaRegEdit /></button>

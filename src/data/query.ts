@@ -110,11 +110,17 @@ export const GET_REVIEWS_BY_PRODUCT_ID = gql`
   query ProductReviews($productReviewsId: ID) {
     productReviews(id: $productReviewsId) {
       id
-      userId
-      productId
-      rating
-      review
-      createdAt
+    userId {
+      _id
+      firstName
+      lastName
+      email
+    }
+    productId
+    rating
+    review
+    createdAt
+    updateAt
     }
   }
 `
