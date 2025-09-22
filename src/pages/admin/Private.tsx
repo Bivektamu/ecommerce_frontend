@@ -62,7 +62,7 @@ const PrivateRoute = () => {
     }
     
     return (
-        <>
+        <div className='admin-wrapper'>
        
             {
                 allToasts?.length > 0 && <ToastComponent toasts={allToasts} />
@@ -87,7 +87,7 @@ const PrivateRoute = () => {
 
             </section>
 
-        </>
+        </div>
     )
 }
 

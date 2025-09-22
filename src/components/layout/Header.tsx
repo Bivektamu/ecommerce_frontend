@@ -1,5 +1,4 @@
 import Logo from '../ui/Logo'
-import CartIcon from '../ui/CartIcon'
 import Search from './Search'
 
 import { useProduct } from '../../store/slices/productSlice'
@@ -11,6 +10,8 @@ import { getUser, useUser } from '../../store/slices/userSlice'
 import CustomNavLink from '../CustomNavLink'
 import { NavLink } from 'react-router-dom'
 import useAvatar from '../hooks/useAvatar'
+import { FaShoppingCart } from 'react-icons/fa'
+
 
 const Header = () => {
   const { products } = useProduct()
@@ -24,12 +25,14 @@ const Header = () => {
 
   useEffect(() => {
     if (authUser && authUser.role === Role.CUSTOMER) {
+      
       dispatch(getUser(authUser.id))
     }
   }, [authUser])
 
 
   useEffect(() => {
+    console.log(user)
     if (user) {
       setAvatarEmail(user.email)
     }
@@ -58,7 +61,7 @@ const Header = () => {
           <Search data={products} />
 
           <CustomNavLink to='/cart'>
-            <CartIcon />
+            <FaShoppingCart />
           </CustomNavLink>
           <div className='relative group'>
             <button className='block rounded-full w-8 h-8 overflow-hidden'>
