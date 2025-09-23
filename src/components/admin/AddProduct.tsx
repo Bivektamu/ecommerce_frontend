@@ -16,35 +16,35 @@ interface PrviewImage {
     src: string
 }
 
-// const initial: ProductInput = {
-//     title: 'Test',
-//     sku: 'TETS123',
-//     price: 987,
-//     imgs: [],
-//     slug: 'test',
-//     colors: [Colour.BLACK],
-//     stockStatus: true,
-//     sizes: [Size.LARGE],
-//     quantity: 980,
-//     description: 'test',
-//     featured: false,
-//     category: 'test'
-// }
-
 const initial: ProductInput = {
-    title: '',
-    sku: '',
-    price: null,
+    title: 'Test',
+    sku: 'TETS123',
+    price: 987,
     imgs: [],
-    slug: '',
-    colors: [],
-    stockStatus: false,
-    sizes: [],
-    quantity: null,
-    description: '',
+    slug: 'test',
+    colors: [Colour.BLACK],
+    stockStatus: true,
+    sizes: [Size.LARGE],
+    quantity: 980,
+    description: 'test',
     featured: false,
-    category: ''
+    category: 'test'
 }
+
+// const initial: ProductInput = {
+//     title: '',
+//     sku: '',
+//     price: null,
+//     imgs: [],
+//     slug: '',
+//     colors: [],
+//     stockStatus: false,
+//     sizes: [],
+//     quantity: null,
+//     description: '',
+//     featured: false,
+//     category: ''
+// }
 
 const MAX_FILE_SIZE = 1
 

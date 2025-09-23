@@ -5,6 +5,7 @@ import { FaShoppingCart } from 'react-icons/fa'
 import { IoPeople } from 'react-icons/io5'
 import { GoAlertFill } from 'react-icons/go'
 import useAvatar from '../../components/hooks/useAvatar'
+import SalesChart from '../../components/admin/dashboard/SalesChart'
 
 const DashBoard = () => {
   const { avatar } = useAvatar()
@@ -66,6 +67,7 @@ const DashBoard = () => {
               Sales (AUD)
             </span>
           </p>
+            <SalesChart />
         </div>
 
         <div className="col-span-3 bg-white rounded-xl">
