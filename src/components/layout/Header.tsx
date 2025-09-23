@@ -10,7 +10,6 @@ import { getUser, useUser } from '../../store/slices/userSlice'
 import CustomNavLink from '../CustomNavLink'
 import { NavLink } from 'react-router-dom'
 import useAvatar from '../hooks/useAvatar'
-import { FaShoppingCart } from 'react-icons/fa'
 import { GiShoppingCart } from 'react-icons/gi'
 
 
