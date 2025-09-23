@@ -13,9 +13,8 @@ import mongoose from 'mongoose';
 import ProgressLoader from '../ui/ProgressLoader';
 
 
-
 interface PreviewImage {
-    id: string,
+    id: mongoose.Types.ObjectId,
     src: string
 }
 
@@ -35,8 +34,10 @@ const EditProduct = () => {
 
 
     useEffect(() => {
-        dispatch(getProducts())
+        if (status === Status.IDLE)
+            dispatch(getProducts())
     }, [])
+
 
     useEffect(() => {
 
@@ -47,13 +48,13 @@ const EditProduct = () => {
                 navigate('/404')
             }
 
-            
+
 
             let tempProduct: ProductEditInput = {} as ProductEditInput
 
-            const {imgs, ...rest} = product[0]
+            const { imgs, ...rest } = product[0]
 
-            tempProduct = { ...rest, newImgs: [], oldImgs: imgs,  }
+            tempProduct = { ...rest, newImgs: [], oldImgs: imgs, }
 
             // console.log(tempProduct);
 
@@ -68,8 +69,6 @@ const EditProduct = () => {
 
     const { title, sku, price, oldImgs, newImgs, slug, colors, stockStatus, sizes, quantity, description, category, featured } = formData
 
-
-
     useEffect(() => {
         if (newImgs?.length > 0) {
 
@@ -80,7 +79,7 @@ const EditProduct = () => {
                 reader.onload = () => {
                     if (reader.result) {
                         const previewImg: PreviewImage = {
-                            id: img._id as keyof ProductImageInput,
+                            id: img._id,
                             src: reader.result as string
                         }
                         previews.push(previewImg);
@@ -127,8 +126,8 @@ const EditProduct = () => {
             val = [...newImgs] as ProductImageInput[]
             for (let i = 0; i < files!.length; i++) {
                 const file: ProductImageInput = {
-                    _id: new mongoose.Types.ObjectId() as unknown as string,
-                    img: files![i]
+                    img: files![i],
+                    _id: new mongoose.Types.ObjectId()
                 }
                 val.push(file)
             }
@@ -199,7 +198,7 @@ const EditProduct = () => {
     }
 
 
-    const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: mongoose.Types.ObjectId) => {
         e.preventDefault()
         e.stopPropagation()
         const updateImgs = [...newImgs]
@@ -404,7 +403,7 @@ const EditProduct = () => {
 
                                     {
                                         imgPreviews.map((img: PreviewImage) =>
-                                            <div key={img.id} className='relative'>
+                                            <div key={img.id as unknown as string} className='relative'>
                                                 <img className='w-14 h-14 object-cover' src={img.src} />
                                                 <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
                                                     <Close classN='w-1/2 bg-black' />

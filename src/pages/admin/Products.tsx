@@ -16,16 +16,15 @@ const Products = () => {
 
   const dispatch = useStoreDispatch()
 
-  const { products, status, action } = useProduct()
+  const { products, status, action, error } = useProduct()
 
-  const {filteredData, setParams, params} = useSearch(products)
+  const { filteredData, setParams, params } = useSearch(products)
 
   useEffect(() => {
     if (status === Status.IDLE) {
       dispatch(getProducts())
     }
   }, [])
-
 
 
   useEffect(() => {
@@ -66,6 +65,17 @@ const Products = () => {
 
   }, [action])
 
+  useEffect(() => {  
+    if (error) {
+      const newToast: Toast = {
+        id: uuidv4(),
+        variant: Toast_Vairant.WARNING,
+        msg: error
+      }
+      dispatch(addToast(newToast))
+    }
+  }, [error])
+
 
   if (status == Status.IDLE || status == Status.PENDING) {
     return <ProgressLoader />
@@ -74,6 +84,8 @@ const Products = () => {
   if (status === Status.FULFILLED && action !== Action.FETCH) {
     return <ProgressLoader />
   }
+
+
 
   return (
 
@@ -85,16 +97,16 @@ const Products = () => {
           <div className='relative'>
             <SearchIcon />
 
-            <input 
-            type='text'
-             className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10'
-              value={params} 
+            <input
+              type='text'
+              className='text-black py-2 px-4 rounded cursor-pointer border-slate-400 border-[1px] text-sm text-left outline-none pl-10'
+              value={params}
               placeholder='Search products'
-              onChange={(e)=>setParams(e.target.value)}
-              />
+              onChange={(e) => setParams(e.target.value)}
+            />
           </div>
 
-          <Link to="/admin/products/add" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm'>Add Product</Link>
+          <Link to="./add" className='bg-black text-white py-2 px-4 rounded text-center cursor-pointer text-sm'>Add Product</Link>
         </div>
       </div>
 

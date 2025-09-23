@@ -94,7 +94,6 @@ export const GET_PRODUCTS = gql`
     price
     quantity
     imgs {
-      fileName
       id
       url
     }

@@ -1,4 +1,5 @@
 import { JwtPayload } from "jwt-decode"
+import { Types } from "mongoose"
 
 export interface Address {
     street: string,
@@ -143,7 +144,7 @@ export interface QueriedProductImage extends ProductImage {
     __typename?: string
 }
 export interface ProductImageInput {
-    _id: string,
+    _id: Types.ObjectId,
     img: File
 }
 

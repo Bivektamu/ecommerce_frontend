@@ -11,6 +11,7 @@ import CustomNavLink from '../CustomNavLink'
 import { NavLink } from 'react-router-dom'
 import useAvatar from '../hooks/useAvatar'
 import { FaShoppingCart } from 'react-icons/fa'
+import { GiShoppingCart } from 'react-icons/gi'
 
 
 const Header = () => {
@@ -60,8 +61,8 @@ const Header = () => {
         <div className="flex gap-x-6 items-center">
           <Search data={products} />
 
-          <CustomNavLink to='/cart'>
-            <FaShoppingCart />
+          <CustomNavLink to='/cart' cssClass="text-2xl">
+            <GiShoppingCart  />
           </CustomNavLink>
           <div className='relative group'>
             <button className='block rounded-full w-8 h-8 overflow-hidden'>

@@ -54,7 +54,6 @@ mutation CreateProduct($input: CreateProduct) {
     featured
     id
     imgs {
-      fileName
       id
       url
     }

@@ -1,54 +1,58 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { ProductInput, Colour, Size, ValidateSchema, FormError, Status, Action, ProductImageInput } from '../../store/types'
+import { ProductInput, Colour, Size, ValidateSchema, FormError, Status, Action, ProductImageInput, Toast, Toast_Vairant } from '../../store/types'
 import validateForm from '../../utils/validate';
 import Close from '../ui/Close';
 import { useStoreDispatch } from '../../store';
 import { addProduct, useProduct } from '../../store/slices/productSlice';
-import mongoose from 'mongoose';
-;
 import { Navigate } from 'react-router-dom';
+import { IoCloudUploadOutline } from 'react-icons/io5';
+import { v4 } from 'uuid';
+import { addToast } from '../../store/slices/toastSlice';
 
+import {Types} from 'mongoose';
 
 interface PrviewImage {
-    id: string,
+    id: Types.ObjectId,
     src: string
 }
 
+const initial: ProductInput = {
+    title: 'Test',
+    sku: 'TETS123',
+    price: 987,
+    imgs: [],
+    slug: 'test',
+    colors: [Colour.BLACK],
+    stockStatus: true,
+    sizes: [Size.LARGE],
+    quantity: 980,
+    description: 'test',
+    featured: false,
+    category: 'test'
+}
+
 // const initial: ProductInput = {
-//     title: 'Test',
-//     sku: 'TETS123',
-//     price: 987,
+//     title: '',
+//     sku: '',
+//     price: null,
 //     imgs: [],
-//     slug: 'test',
-//     colors: [Colour.BLACK],
-//     stockStatus: true,
-//     sizes: [Size.LARGE],
-//     quantity: 980,
-//     description: 'test',
+//     slug: '',
+//     colors: [],
+//     stockStatus: false,
+//     sizes: [],
+//     quantity: null,
+//     description: '',
 //     featured: false,
-//     category: 'test'
+//     category: ''
 // }
 
-const initial: ProductInput = {
-    title: '',
-    sku: '',
-    price: null,
-    imgs: [],
-    slug: '',
-    colors: [],
-    stockStatus: false,
-    sizes: [],
-    quantity: null,
-    description: '',
-    featured: false,
-    category: ''
-}
+const MAX_FILE_SIZE = 1
 
 const AddProduct = () => {
 
     const dispatch = useStoreDispatch()
 
-    const { status, action } = useProduct()
+    const { status, action, error } = useProduct()
 
 
     const [formData, setFormData] = useState<ProductInput>(initial)
@@ -70,6 +74,48 @@ const AddProduct = () => {
         }
     }, [formData])
 
+    useEffect(() => {
+        if (error) {
+            const newToast: Toast = {
+                id: v4(),
+                variant: Toast_Vairant.WARNING,
+                msg: error
+            }
+            dispatch(addToast(newToast))
+        }
+    }, [error])
+
+    useEffect(() => {
+
+        if (imgs.length > 0) {
+
+            const previews: PrviewImage[] = []
+
+
+            imgs.forEach((productImg: ProductImageInput) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    if (reader.result) {
+                        const newPreview: PrviewImage = {
+                            id: productImg._id,
+                            src: reader.result as string
+                        }
+                        previews.push(newPreview);
+                        if (previews.length === imgs.length) {
+                            setImagePreviews(previews);
+                        }
+                    }
+                };
+                reader.readAsDataURL(productImg.img as File);
+            })
+        }
+        else {
+            setImagePreviews([])
+        }
+    }, [imgs])
+
+
     const changeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         e.stopPropagation()
 
@@ -81,11 +127,22 @@ const AddProduct = () => {
             const files: FileList = event.files as FileList
             val = [...imgs] as ProductImageInput[]
             for (let i = 0; i < files!.length; i++) {
-                const file: ProductImageInput = {
-                    _id: new mongoose.Types.ObjectId() as unknown as string,
-                    img: files![i]
+                const maxSize = MAX_FILE_SIZE * 1024 * 1024
+                if (files[i].size > maxSize) {
+                    const newToast: Toast = {
+                        id: v4(),
+                        variant: Toast_Vairant.WARNING,
+                        msg: `Please upload image less than ${MAX_FILE_SIZE} MB`
+                    }
+                    dispatch(addToast(newToast))
                 }
-                val.push(file)
+                else {
+                    const file: ProductImageInput = {
+                        _id: new Types.ObjectId(),
+                        img: files![i]
+                    }
+                    val.push(file)
+                }
             }
 
         }
@@ -152,7 +209,7 @@ const AddProduct = () => {
         }))
     }
 
-    const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    const previewHandler = (e: MouseEvent<HTMLButtonElement>, id: Types.ObjectId) => {
         e.preventDefault()
         e.stopPropagation()
         const updateImgs = [...imgs]
@@ -164,6 +221,7 @@ const AddProduct = () => {
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
+
         const validateSchema: ValidateSchema<unknown>[] =
             [
                 {
@@ -219,42 +277,12 @@ const AddProduct = () => {
         if (Object.keys(errors).length > 0) {
             return setFormErrors({ ...errors })
         }
+        console.log(formData)
 
         dispatch(addProduct(formData))
     }
 
-    useEffect(() => {
 
-        if (imgs.length > 0) {
-
-            const previews: PrviewImage[] = []
-
-            // console.log(imgs);
-            
-
-
-            imgs.forEach((productImg: ProductImageInput) => {
-                const reader = new FileReader();
-
-                reader.onload = () => {
-                    if (reader.result) {
-                        const newPreview:PrviewImage = {
-                            id: productImg._id,
-                            src: reader.result as string
-                        }
-                        previews.push(newPreview);
-                        if (previews.length === imgs.length) {
-                            setImagePreviews(previews);
-                        }
-                    }
-                };
-                reader.readAsDataURL(productImg.img as File);
-            })
-        }
-        else {
-            setImagePreviews([])
-        }
-    }, [imgs])
 
 
     if (status === Status.FULFILLED && action === Action.ADD) {
@@ -293,9 +321,7 @@ const AddProduct = () => {
                     <fieldset className=''>
                         <span className='capitalize font-medium text-slate-600 text-sm block mb-2 w-full'>images</span>
                         <label htmlFor="images" className='border-[1px] outline-none flex items-center gap-x-4 px-4 py-2 rounded w-full'>
-                            <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.80769 16.2857H2.41209C2.09441 16.2857 1.78975 16.1595 1.56511 15.9349C1.34048 15.7103 1.21429 15.4056 1.21429 15.0879V5.5055M1.21429 5.5055H16.7857M1.21429 5.5055L3.86143 1.31318C3.96387 1.13559 4.11017 0.987268 4.28634 0.882406C4.46251 0.777545 4.66264 0.719655 4.86758 0.714279H13.1324C13.3374 0.719655 13.5375 0.777545 13.7137 0.882406C13.8898 0.987268 14.0362 1.13559 14.1386 1.31318L16.7857 5.5055M16.7857 5.5055V15.0879C16.7857 15.4056 16.6595 15.7103 16.4349 15.9349C16.2103 16.1595 15.9056 16.2857 15.5879 16.2857H13.1923M6.00545 12.0934L8.99996 9.09889M8.99996 9.09889L11.9945 12.0934M8.99996 9.09889L9.00004 16.2857M9.00004 0.714279V5.50549" stroke="#5C5F6A" strokeWidth="1.42857" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
+                            <IoCloudUploadOutline />
                             <span className=' text-slate-500 font-emdium'>
                                 Choose product images
                             </span>
@@ -311,7 +337,7 @@ const AddProduct = () => {
                             <div className='flex gap-x-4 gap-y-8 mt-8 flex-wrap'>
                                 {
                                     imgPreviews.map((img: PrviewImage) =>
-                                        <div key={img.id} className='relative'>
+                                        <div key={v4()} className='relative'>
                                             <img className='w-14 h-14 object-cover' src={img.src} />
                                             <button onClick={(e) => previewHandler(e, img.id)} type='button' className='w-6 h-6 absolute -top-3 -right-3 bg-slate-400 rounded-full flex items-center'>
                                                 <Close classN='bg-black w-1/2' />
